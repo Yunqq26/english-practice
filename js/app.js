@@ -248,12 +248,10 @@ function handleLogin() {
   currentUser = { username: user, role: users[user].role };
   saveSession(currentUser);
   loadCurrentUserData();
-  apiDownloadToLocal(currentUser.username);
   document.querySelector('.header').style.display = '';
   showAppAfterLogin();
   var sbtn = document.getElementById("btnSyncCloud");
   if(sbtn) sbtn.style.display = "";
-  if (currentUser) apiSyncTotal(currentUser.username, getTotalTranslations());
 }
 
 function handleRegister() {
@@ -1314,7 +1312,6 @@ function handleSubmit() {
   });
   state.progress[today].completed = true;
   recalcStats(); saveState();
-  if (currentUser) apiSyncTotal(currentUser.username, getTotalTranslations());
 
   renderAnalysis(answer);
   renderStats(); renderHistory(); updateTodayProgress();
@@ -1393,7 +1390,6 @@ function handleShowAnswer() {
   });
   state.progress[today].completed = true;
   recalcStats(); saveState();
-  if (currentUser) apiSyncTotal(currentUser.username, getTotalTranslations());
 
   document.getElementById('analysisPanel').hidden = false;
   document.getElementById('referenceDisplay').innerHTML = makeClickableReference(currentQuestion.reference, currentQuestion.source);
@@ -1614,9 +1610,7 @@ function init() {
   if (session) {
     currentUser = session;
     loadCurrentUserData();
-  apiDownloadToLocal(currentUser.username);
     showAppAfterLogin();
-  if (currentUser) apiSyncTotal(currentUser.username, getTotalTranslations());
     return;
   }
 

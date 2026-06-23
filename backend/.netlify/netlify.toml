@@ -1,0 +1,43 @@
+headersOrigin = "config"
+plugins = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "C:\\Users\\18857\\Desktop\\Trsl.Yunqq\\english-practice\\backend"
+publishOrigin = "config"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+for = "sw.js"
+
+[headers.values]
+Cache-Control = "no-cache"
+
+[[headers]]
+for = "manifest.json"
+
+[headers.values]
+Cache-Control = "public, max-age=3600"
