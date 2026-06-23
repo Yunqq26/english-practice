@@ -237,11 +237,20 @@ function selectRole(role) {
   document.getElementById('adminKeyWrap').style.display = role === 'admin' ? 'block' : 'none';
 }
 
-function handleLogin() {
+async function handleLogin() {
   const user = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value;
   const err = document.getElementById('loginError');
   if (!user || !pass) { err.textContent = '请输入用户名和密码'; err.classList.add('show'); return; }
+  try {
+    const data = await apiLogin(user, pass);
+    currentUser = { username: data.username, role: 'user' };
+    saveSession(currentUser);
+    await apiDownload(user);
+    loadCurrentUserData();
+    document.querySelector('.header').style.display = '';
+    return showAppAfterLogin();
+  } catch(e) {}
   const users = getUsers();
   if (!users[user]) { err.textContent = '用户不存在'; err.classList.add('show'); return; }
   if (users[user].password !== hashPW(pass)) { err.textContent = '密码错误'; err.classList.add('show'); return; }
@@ -250,27 +259,28 @@ function handleLogin() {
   loadCurrentUserData();
   document.querySelector('.header').style.display = '';
   showAppAfterLogin();
-  var sbtn = document.getElementById("btnSyncCloud");
-  if(sbtn) sbtn.style.display = "";
 }
 
-function handleRegister() {
+async function handleRegister() {
   const user = document.getElementById('regUser').value.trim();
   const pass = document.getElementById('regPass').value;
   const pass2 = document.getElementById('regPass2').value;
   const captcha = document.getElementById('regCaptcha').value.trim().toUpperCase();
-  const role = document.getElementById('regRole').value;
-  const adminKey = document.getElementById('regAdminKey') ? document.getElementById('regAdminKey').value.trim() : '';
   const err = document.getElementById('regError');
   if (!user) { err.textContent = '请输入用户名'; err.classList.add('show'); return; }
   if (user.length < 2) { err.textContent = '用户名至少2个字符'; err.classList.add('show'); return; }
   if (pass.length < 8) { err.textContent = '密码至少8位'; err.classList.add('show'); return; }
   if (pass !== pass2) { err.textContent = '两次密码不一致'; err.classList.add('show'); return; }
   if (captcha !== currentCaptcha) { err.textContent = '验证码错误'; err.classList.add('show'); return; }
-  if (role === 'admin' && adminKey !== ADMIN_KEY) { err.textContent = '管理员密钥错误'; err.classList.add('show'); return; }
+  try {
+    await apiRegister(user, pass);
+    err.className = 'auth-success';
+    err.textContent = '✅ 注册成功！即将跳转登录...';
+    return setTimeout(() => renderAuthPage('login'), 1200);
+  } catch(e) {}
   const users = getUsers();
   if (users[user]) { err.textContent = '用户名已存在'; err.classList.add('show'); return; }
-  users[user] = { password: hashPW(pass), role: role };
+  users[user] = { password: hashPW(pass), role: 'user' };
   saveUsers(users);
   const all = getAllUserData();
   if (!all[user]) all[user] = { progress: {}, stats: { totalDays:0, completedDays:0, streak:0 }, vocab: { words: {} } };

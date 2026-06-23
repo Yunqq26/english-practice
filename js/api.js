@@ -1,14 +1,54 @@
-// ===== 排行榜 + 数据迁移 API =====
+// ===== 云端 API 连接层 =====
 const API_BASE = 'https://backend-production-80b8b.up.railway.app/api';
 
-async function apiLeaderboard() {
-  try {
-    const r = await fetch(API_BASE + '/public/leaderboard');
-    if (!r.ok) return [];
-    return await r.json();
-  } catch(e) { return []; }
+// ---- 登录 / 注册 ----
+async function apiLogin(username, password) {
+  const r = await fetch(API_BASE + '/auth/login', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ username, password })
+  });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || '登录失败');
+  return d;
 }
 
+async function apiRegister(username, password) {
+  const r = await fetch(API_BASE + '/auth/register', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ username, password })
+  });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || '注册失败');
+  return d;
+}
+
+// ---- 数据下载（登录时调用，合并到本地，不覆盖） ----
+async function apiDownload(username) {
+  try {
+    const r = await fetch(API_BASE + '/public/export/' + encodeURIComponent(username));
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data || !data.progress) return;
+    const all = getAllUserData();
+    const local = all[username] || { progress: {}, stats: {}, vocab: { words: {} } };
+    // 合并：云端有且本地没有的才写入，本地有的保留
+    const merged = {
+      progress: { ...data.progress, ...local.progress },
+      stats: local.stats.totalDays ? local.stats : (data.stats ? {
+        totalDays: data.stats.total_days || 0,
+        completedDays: data.stats.completed_days || 0,
+        streak: data.stats.streak || 0
+      } : { totalDays:0, completedDays:0, streak:0 }),
+      vocab: local.vocab?.words && Object.keys(local.vocab.words).length
+        ? local.vocab
+        : (data.vocab || { words: {} })
+    };
+    all[username] = merged;
+    saveAllUserData(all);
+  } catch(e) { /* 静默失败，不影响本地登录 */ }
+}
+
+// ---- 数据上传 ----
 async function apiSyncTotal(username, total) {
   try {
     await fetch(API_BASE + '/public/sync-stats', {
@@ -18,87 +58,11 @@ async function apiSyncTotal(username, total) {
   } catch(e) {}
 }
 
-// 📤 一键导入全部本地数据到云端
-async function apiImportAll(username) {
-  const data = getAllUserData();
-  const userData = data[username];
-  if (!userData) return { ok: false, msg: '没有找到 ' + username + ' 的数据' };
-
-  // 收集作文库
-  let essays = [], essayProgress = {};
+// ---- 排行榜 ----
+async function apiLeaderboard() {
   try {
-    const ed = JSON.parse(localStorage.getItem('eng_essays')) || { essays: [], progress: {} };
-    essays = ed.essays;
-    essayProgress = ed.progress;
-  } catch(e) {}
-
-  const body = {
-    username,
-    progress: userData.progress || {},
-    stats: userData.stats || {},
-    vocab: userData.vocab || {},
-    essays,
-    essayProgress
-  };
-
-  try {
-    const r = await fetch(API_BASE + '/public/import', {
-      method: 'PUT', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(body)
-    });
-    const d = await r.json();
-    return d.ok ? { ok: true } : { ok: false, msg: '导入失败' };
-  } catch(e) {
-    return { ok: false, msg: '无法连接服务器' };
-  }
-}
-
-
-// ☁️ 一键上传本地数据到云端
-async function syncLocalToCloud() {
-  const btn = document.getElementById('btnSyncCloud');
-  if (!currentUser) { alert('请先登录'); return; }
-  btn.textContent = '⏳ 上传中...';
-  btn.disabled = true;
-  try {
-    const r = await apiImportAll(currentUser.username);
-    if (r.ok) {
-      btn.textContent = '✅ 上传成功！';
-      setTimeout(() => { btn.style.display = 'none'; }, 2000);
-      renderLeaderboard();
-    } else {
-      alert(r.msg);
-      btn.textContent = '☁️ 上传本地数据到云端';
-    }
-  } catch(e) {
-    alert('上传失败');
-    btn.textContent = '☁️ 上传本地数据到云端';
-  }
-  btn.disabled = false;
-}
-
-
-// 📥 从云端下载数据到本地
-async function apiDownloadToLocal(username) {
-  try {
-    const r = await fetch(API_BASE + '/public/export/' + encodeURIComponent(username));
-    if (!r.ok) return false;
-    const data = await r.json();
-    if (!data) return false;
-    const all = getAllUserData();
-    all[username] = {
-      progress: data.progress || {},
-      stats: data.stats ? { totalDays: data.stats.total_days || 0, completedDays: data.stats.completed_days || 0, streak: data.stats.streak || 0 } : { totalDays:0, completedDays:0, streak:0 },
-      vocab: data.vocab || { words: {} }
-    };
-    saveAllUserData(all);
-    if (data.essays && data.essays.length) {
-      try {
-        const old = JSON.parse(localStorage.getItem('eng_essays')) || { essays: [], progress: {} };
-        old.essays = data.essays;
-        localStorage.setItem('eng_essays', JSON.stringify(old));
-      } catch(e) {}
-    }
-    return true;
-  } catch(e) { return false; }
+    const r = await fetch(API_BASE + '/public/leaderboard');
+    if (!r.ok) return [];
+    return await r.json();
+  } catch(e) { return []; }
 }
