@@ -1312,6 +1312,7 @@ function handleSubmit() {
   });
   state.progress[today].completed = true;
   recalcStats(); saveState();
+  if (currentUser) apiSyncTotal(currentUser.username, getTotalTranslations());
 
   renderAnalysis(answer);
   renderStats(); renderHistory(); updateTodayProgress();
