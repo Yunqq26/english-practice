@@ -1,2 +1,5 @@
-# Local Netlify folder
-.netlify
+node_modules/
+deploy.tar
+make-icons.js
+.DS_Store
+*.db
