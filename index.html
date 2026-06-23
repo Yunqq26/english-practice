@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Practice · Daily Translation</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <h1><svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg> English Practice</h1>
+      <div class="header-meta">
+        <span class="day-badge" id="dayBadge">Day #--</span>
+        <span class="date-display" id="dateDisplay"></span>
+      </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+      <button class="nav-tab active" data-tab="translation">📖 翻译</button>
+      <button class="nav-tab" data-tab="essay">📚 作文库</button>
+      <button class="nav-tab" data-tab="selftest">✍️ 好句自测</button>
+    </nav>
+
+    <!-- ===== Page: 翻译 ===== -->
+    <div id="pageTranslation" class="page-section">
+
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="sentence">📝 Sentence</button>
+      <button class="mode-btn" data-mode="paragraph">📄 Paragraph</button>
+      <button class="mode-btn" data-mode="review">📖 Review <span id="reviewBadge" class="review-badge" hidden>0</span></button>
+    </div>
+
+    <!-- Main: Question + Input -->
+    <main class="main-card" id="mainCard">
+      <div class="question-section">
+        <h2>❓ Translate the following sentence:</h2>
+        <div class="source-sentence" id="sourceSentence">Loading...</div>
+      </div>
+
+      <div class="input-section">
+        <label for="translationInput">✏️ Your answer:</label>
+        <textarea id="translationInput" rows="3" placeholder="Type your English translation here..." autofocus></textarea>
+        <div class="char-count" id="charCount">0 characters</div>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn btn-primary" id="btnSubmit">Submit</button>
+        <button class="btn btn-outline" id="btnShowAnswer">Show Answer</button>
+        <button class="btn btn-ghost" id="btnNextDay">Next Day →</button>
+        <button class="btn btn-ghost" id="btnHistory">📜 History</button>
+      </div>
+    </main>
+
+    <!-- Analysis Panel -->
+    <section class="analysis-panel" id="analysisPanel" hidden>
+      <h2>📊 分析</h2>
+
+      <!-- Score Summary (always visible) -->
+      <div class="analysis-section" id="sectionScore" hidden>
+        <h3>🏆 分数总结</h3>
+        <div id="scoreContent" class="score-display"></div>
+      </div>
+
+      <!-- Answer Comparison -->
+      <details class="analysis-section collapse-section" id="sectionComparison">
+        <summary><h3>📝 答案对比</h3></summary>
+        <div style="margin-top:10px">
+          <div style="margin-bottom:10px"><span style="color:#888;font-size:0.85rem">✏️ 你的翻译</span><div id="userAnswerDisplay" class="user-answer" style="margin-top:4px"></div></div>
+          <div><span style="color:#888;font-size:0.85rem">📖 参考答案</span><div id="referenceDisplay" class="reference-answer" style="margin-top:4px"></div></div>
+        </div>
+      </details>
+
+      <!-- Teacher Feedback -->
+      <details class="analysis-section collapse-section" id="sectionFeedback">
+        <summary><h3>👩‍🏫 老师评语</h3></summary>
+        <div id="feedbackContent" class="feedback-content"></div>
+      </details>
+
+      <!-- Scoring Points -->
+      <details class="analysis-section collapse-section" id="sectionKeyPoints">
+        <summary><h3>🎯 踩分点分析</h3></summary>
+        <p class="kp-hint">✅ 匹配 · 🔄 同义替换 · ❌ 未使用</p>
+        <div id="keyPointsContent"></div>
+      </details>
+
+      <!-- Word-level Diff -->
+      <details class="analysis-section collapse-section" id="sectionDiff">
+        <summary><h3>✅ 逐词对比</h3></summary>
+        <div style="margin-top:10px">
+          <div id="diffLegend" class="diff-legend">
+            <span class="diff-label same">✓ 匹配</span>
+            <span class="diff-label missing">✗ 遗漏</span>
+            <span class="diff-label extra">+ 多余</span>
+            <span class="diff-label substituted">~ 替换</span>
+          </div>
+          <div id="diffContent" class="diff-content"></div>
+        </div>
+      </details>
+
+      <!-- Grammar Check -->
+      <details class="analysis-section collapse-section" id="sectionGrammarIssues">
+        <summary><h3>🔧 语法检查</h3></summary>
+        <div id="grammarIssuesContent"></div>
+      </details>
+
+      <!-- Grammar Notes -->
+      <details class="analysis-section collapse-section" id="sectionGrammar">
+        <summary><h3>🔍 语法笔记</h3></summary>
+        <div id="grammarContent"></div>
+      </details>
+
+      <!-- Vocabulary -->
+      <details class="analysis-section collapse-section" id="sectionVocabulary">
+        <summary><h3>💡 词汇建议</h3></summary>
+        <div id="vocabContent"></div>
+      </details>
+
+      <!-- Alternatives -->
+      <details class="analysis-section collapse-section" id="sectionAlternatives">
+        <summary><h3>🔄 其他表达方式</h3></summary>
+        <div id="alternativesContent"></div>
+      </details>
+
+      <!-- Ask AI -->
+      <details class="analysis-section collapse-section" id="sectionAskAI">
+        <summary><h3>💡 问问老师</h3></summary>
+        <div id="askAIContent" style="margin-top:10px;font-size:0.9rem"></div>
+      </details>
+    </section>
+
+    <!-- History & Stats -->
+    <section class="bottom-panel">
+      <div class="stats-card">
+        <h3>📈 Progress</h3>
+        <div id="statsContent">
+          <span class="stat-item">Total: <strong id="statTotal">0</strong></span>
+          <span class="stat-item">Completed: <strong id="statCompleted">0</strong></span>
+          <span class="stat-item">Streak: <strong id="statStreak">0</strong> days</span>
+          <span class="stat-item">📖 Vocab: <strong id="statVocab">0</strong> words</span>
+        </div>
+        <button id="btnSyncCloud" style="display:none;margin-top:10px;padding:6px 14px;border:none;border-radius:10px;background:#6366f1;color:#fff;font-size:0.78rem;cursor:pointer;font-family:inherit" onclick="syncLocalToCloud()">☁️ 上传本地数据到云端</button>
+      </div>
+
+      <!-- Heatmap -->
+      <div class="heatmap-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:0.85rem;color:#888">🔥 练习热力图</span>
+          <span style="font-size:0.75rem;color:#bbb" id="heatmapTotal">0 practices</span>
+        </div>
+        <div id="heatmapContainer" class="heatmap-grid"></div>
+      </div>
+
+      <details class="history-card">
+        <summary>📜 History</summary>
+        <div id="historyList">
+          <p class="empty-hint">No records yet. Complete today's exercise to start!</p>
+        </div>
+      </details>
+    </section>
+
+    </div><!-- /pageTranslation -->
+
+    <!-- ===== Page: 作文库 ===== -->
+    <div id="pageEssayBank" class="page-section" hidden>
+      <div class="essay-import">
+        <input type="text" id="essayTitle" class="essay-title-input" placeholder="作文标题（选填）">
+        <textarea id="essayContent" class="essay-content-textarea" rows="5" placeholder="粘贴英文作文到这里..."></textarea>
+        <textarea id="essayZhContent" class="essay-content-textarea" rows="4" placeholder="粘贴中文翻译到这里（选填·逐句对照）" style="min-height:80px"></textarea>
+        <button class="btn btn-primary" id="btnImportEssay">📥 导入作文</button>
+      </div>
+      <div class="essay-divider"></div>
+      <div id="essayList" class="essay-list">
+        <p class="empty-hint" id="essayEmpty">还没有导入作文，在上方粘贴一篇开始吧。</p>
+      </div>
+    </div>
+
+    <!-- ===== Page: 好句自测 ===== -->
+    <div id="pageSelfTest" class="page-section" hidden>
+      <div class="selftest-top">
+        <label class="selftest-label">选择作文：</label>
+        <select id="selftestEssaySelect" class="selftest-select">
+          <option value="">-- 请先导入作文 --</option>
+        </select>
+      </div>
+      <div id="selftestBody" class="selftest-body">
+        <p class="empty-hint">请先在作文库导入作文，然后在这里选择开始默写。</p>
+      </div>
+    </div>
+
+    <aside class="sd">
+    <div class="sd-card">
+      <div class="sd-title">🏆 排行榜</div>
+      <div id="leaderboardBody"><div class="lb-empty">加载中...</div></div>
+    </div>
+  </aside>
+
+</div>
+
+  <!-- History Modal -->
+  <div class="modal-overlay" id="historyModal">  <!-- removed hidden, use CSS class instead -->
+    <div class="modal-scrim" id="historyScrim"></div>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2>📜 Practice History</h2>
+        <button class="modal-close" id="historyClose">✕</button>
+      </div>
+      <div class="modal-body" id="historyModalBody">
+        <p style="color:#999">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/analyzer.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/essay.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
+    }
+  </script>
+</body>
+</html>

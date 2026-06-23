@@ -1,0 +1,19 @@
+{
+  "name": "english-practice",
+  "version": "1.0.0",
+  "description": "A browser-based CET-6 English translation practice system. One exercise per day with multi-dimensional analysis.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "claude-skills-frontend": "^1.4.0"
+  },
+  "dependencies": {
+    "sharp": "^0.35.2"
+  }
+}
