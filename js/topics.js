@@ -1,560 +1,211 @@
-// ===== 专题练习题库 =====
-// 每个题目包含 grammarPoints 用于分析中高亮知识点
-
+// ===== 专题练习题库（四六级难度，每专题20题）=====
 const TOPICS = [
   {
-    id: "attr-clause",
-    name: "定语从句",
-    icon: "🔗",
+    id: "attr-clause", name: "定语从句", icon: "🔗",
     desc: "关系代词 who/which/that/whom 引导的定语从句",
     questions: [
-      {
-        id: 101, type: "topic",
-        source: "我昨天买的书非常有趣。",
-        reference: "The book that I bought yesterday is very interesting.",
-        grammar: "定语从句由关系代词 that 引导，修饰先行词 the book。在从句中 that 作 bought 的宾语，可以省略。",
-        grammarPoints: [
-          { name: "关系代词 that", detail: "指物，在从句中作宾语时可省略", used: true },
-          { name: "先行词", detail: "被定语从句修饰的名词 the book", used: true },
-          { name: "从句语序", detail: "定语从句用陈述语序: I bought yesterday", used: true }
-        ],
-        keywords: [
-          { word: "bought", synonyms: ["purchased"], note: "buy 的过去式，表示'购买'" },
-          { word: "interesting", synonyms: ["fascinating", "engaging"], note: "'有趣的'，形容事物" },
-          { word: "yesterday", synonyms: [], note: "'昨天'，时间状语" }
-        ],
-        alternatives: [
-          "The book which I bought yesterday is very fascinating.",
-          "The book I bought yesterday is very interesting."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 102, type: "topic",
-        source: "站在那边的女孩是我的妹妹。",
-        reference: "The girl who is standing over there is my sister.",
-        grammar: "定语从句由关系代词 who 引导，修饰先行词 the girl。who 在从句中作主语，不能省略。",
-        grammarPoints: [
-          { name: "关系代词 who", detail: "指人，在从句中作主语时不可省略", used: true },
-          { name: "先行词", detail: "被修饰的名词 the girl", used: true },
-          { name: "主谓一致", detail: "关系代词 who 指代 the girl，从句动词用 is", used: true }
-        ],
-        keywords: [
-          { word: "standing", synonyms: ["sitting", "lying"], note: "stand 的现在分词，'站着的'" },
-          { word: "over there", synonyms: [], note: "'在那边'，地点状语" }
-        ],
-        alternatives: [
-          "The girl standing over there is my sister.",
-          "The girl that is standing over there is my sister."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 103, type: "topic",
-        source: "这是我曾经工作过的那家公司。",
-        reference: "This is the company where I used to work.",
-        grammar: "定语从句由关系副词 where 引导，修饰先行词 the company。where 在从句中作地点状语，相当于 in which。",
-        grammarPoints: [
-          { name: "关系副词 where", detail: "指地点，在从句中作地点状语 = in/at which", used: true },
-          { name: "used to", detail: "'过去常常'，表示过去习惯性动作", used: true },
-          { name: "先行词 the company", detail: "被定语从句修饰的地点名词", used: true }
-        ],
-        keywords: [
-          { word: "company", synonyms: ["corporation", "firm"], note: "'公司'" },
-          { word: "used to", synonyms: ["would"], note: "'过去常常'，后接动词原形" }
-        ],
-        alternatives: [
-          "This is the company in which I used to work.",
-          "This is the company that I used to work for."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 104, type: "topic",
-        source: "他考试通过了，这让大家都很高兴。",
-        reference: "He passed the exam, which made everyone very happy.",
-        grammar: "非限制性定语从句用 which 引导，修饰前面整个句子。非限制性定语从句用逗号隔开，不能用 that 替换。",
-        grammarPoints: [
-          { name: "非限制性定语从句", detail: "修饰整句话，用逗号隔开，不能用 that", used: true },
-          { name: "关系代词 which", detail: "指代前面整个句子，作主语", used: true },
-          { name: "逗号分隔", detail: "非限制性定语从句必须用逗号与主句隔开", used: true }
-        ],
-        keywords: [
-          { word: "passed", synonyms: ["aced"], note: "pass 的过去式，'通过（考试）'" },
-          { word: "exam", synonyms: ["test", "examination"], note: "'考试'" },
-          { word: "everyone", synonyms: ["everybody"], note: "'每个人'" }
-        ],
-        alternatives: [
-          "He passed the exam, which made everybody very happy.",
-          "He passed the examination, which delighted everyone."
-        ],
-        difficulty: "CET-6"
-      },
-      {
-        id: 105, type: "topic",
-        source: "这就是我们一直在找的那个人。",
-        reference: "This is the person whom we have been looking for.",
-        grammar: "定语从句由关系代词 whom 引导，修饰先行词 the person。whom 在从句中作介词 for 的宾语，正式语体中常用。",
-        grammarPoints: [
-          { name: "关系代词 whom", detail: "指人，在从句中作宾语（正式用法）", used: true },
-          { name: "介词宾语", detail: "whom 作介词 for 的宾语，介词可提前", used: true },
-          { name: "完成进行时", detail: "have been looking 表示从过去持续到现在的动作", used: true }
-        ],
-        keywords: [
-          { word: "person", synonyms: ["individual", "guy"], note: "'人'" },
-          { word: "looking for", synonyms: ["searching for", "seeking"], note: "'寻找'" }
-        ],
-        alternatives: [
-          "This is the person who we have been looking for.",
-          "This is the person for whom we have been looking."
-        ],
-        difficulty: "CET-6"
-      }
+      {id:101, source:"我昨天买的书非常有趣。", reference:"The book that I bought yesterday is very interesting.", grammarPoints:[{name:"关系代词 that",detail:"指物，在从句中作宾语时可省略"},{name:"先行词",detail:"被定语从句修饰的名词 the book"},{name:"从句语序",detail:"定语从句用陈述语序"}], keywords:[{word:"bought",synonyms:["purchased"],note:"buy 的过去式"},{word:"interesting",synonyms:["fascinating"],note:"有趣的"}], alternatives:["The book which I bought yesterday is very interesting.","The book I bought yesterday is very interesting."]},
+      {id:102, source:"站在那边的女孩是我的妹妹。", reference:"The girl who is standing over there is my sister.", grammarPoints:[{name:"关系代词 who",detail:"指人，在从句中作主语不可省略"},{name:"先行词",detail:"被修饰的名词 the girl"},{name:"主谓一致",detail:"关系代词指代 the girl，从句动词用 is"}], keywords:[{word:"standing",synonyms:[],note:"站着的"},{word:"over there",synonyms:[],note:"在那边"}], alternatives:["The girl standing over there is my sister.","The girl that is standing over there is my sister."]},
+      {id:103, source:"这是我曾经工作过的那家公司。", reference:"This is the company where I used to work.", grammarPoints:[{name:"关系副词 where",detail:"指地点，在从句中作地点状语"},{name:"used to",detail:"过去常常"},{name:"先行词 company",detail:"被定语从句修饰的地点名词"}], keywords:[{word:"company",synonyms:["corporation"],note:"公司"},{word:"used to",synonyms:["would"],note:"过去常常"}], alternatives:["This is the company in which I used to work.","This is the company that I used to work for."]},
+      {id:104, source:"他考试通过了，这让大家都很高兴。", reference:"He passed the exam, which made everyone very happy.", grammarPoints:[{name:"非限制性定语从句",detail:"修饰整句话，用逗号隔开，不能用 that"},{name:"关系代词 which",detail:"指代前面整个句子"},{name:"逗号分隔",detail:"非限制性定语从句必须用逗号隔开"}], keywords:[{word:"passed",synonyms:["aced"],note:"通过"},{word:"exam",synonyms:["test"],note:"考试"}], alternatives:["He passed the exam, which made everybody very happy.","He passed the examination, which delighted everyone."]},
+      {id:105, source:"这就是我们一直在找的那个人。", reference:"This is the person whom we have been looking for.", grammarPoints:[{name:"关系代词 whom",detail:"指人，在从句中作宾语（正式用法）"},{name:"介词宾语",detail:"whom 作介词 for 的宾语"},{name:"完成进行时",detail:"have been looking 表示持续到现在的动作"}], keywords:[{word:"person",synonyms:["individual"],note:"人"},{word:"looking for",synonyms:["searching for"],note:"寻找"}], alternatives:["This is the person who we have been looking for.","This is the person for whom we have been looking."]},
+      {id:106, source:"她是我见过的最善良的人。", reference:"She is the kindest person that I have ever met.", grammarPoints:[{name:"最高级先行词",detail:"先行词有最高级修饰时，定语从句用 that"},{name:"ever met",detail:"ever 用于完成时，表示'曾经'"},{name:"kindest",detail:"kind 的最高级，最善良的"}], keywords:[{word:"kindest",synonyms:["most gentle"],note:"最善良的"},{word:"ever met",synonyms:["ever encountered"],note:"曾经遇到过的"}], alternatives:["She is the kindest person I have ever met.","She is the most kind-hearted person that I have ever known."]},
+      {id:107, source:"他出生的那个城市现在变得非常现代化了。", reference:"The city where he was born has become very modern.", grammarPoints:[{name:"关系副词 where",detail:"where he was born 修饰 the city"},{name:"被动语态",detail:"was born 是出生，固定被动"},{name:"become 的用法",detail:"become 作系动词，变成"}], keywords:[{word:"was born",synonyms:[],note:"出生"},{word:"modern",synonyms:["contemporary"],note:"现代的"}], alternatives:["The city in which he was born has become very modern.","The city that he was born in has become very modern."]},
+      {id:108, source:"我有两个哥哥，都是医生。", reference:"I have two brothers, both of whom are doctors.", grammarPoints:[{name:"非限制性 + 介词+whom",detail:"both of whom 引导非限制性定语从句"},{name:"both of",detail:"表示两者都"},{name:"介词提前",detail:"whom 作 of 的宾语"}], keywords:[{word:"brothers",synonyms:["siblings"],note:"兄弟"},{word:"doctors",synonyms:["physicians"],note:"医生"}], alternatives:["I have two brothers, both are doctors.","I have two brothers, and both of them are doctors."]},
+      {id:109, source:"你知道他迟到的原因吗？", reference:"Do you know the reason why he was late?", grammarPoints:[{name:"关系副词 why",detail:"why 修饰 the reason，在从句中作原因状语"},{name:"the reason why",detail:"固定搭配，'…的原因'"},{name:"be late",detail:"迟到"}], keywords:[{word:"reason",synonyms:["cause"],note:"原因"},{word:"late",synonyms:["tardy"],note:"迟到的"}], alternatives:["Do you know the reason for which he was late?","Do you know why he was late?"]},
+      {id:110, source:"我永远不会忘记我们第一次见面的那一天。", reference:"I will never forget the day when we first met.", grammarPoints:[{name:"关系副词 when",detail:"when 修饰 the day，在从句中作时间状语"},{name:"never forget",detail:"永远不忘记"},{name:"first met",detail:"第一次见面"}], keywords:[{word:"forget",synonyms:[]},{word:"met",synonyms:["encountered"],note:"见面"}], alternatives:["I will never forget the day on which we first met.","I will never forget the day that we first met."]},
+      {id:111, source:"他借给我的那笔钱已经还了。", reference:"The money that he lent me has been paid back.", grammarPoints:[{name:"关系代词 that",detail:"指物 money，作 lent 的宾语"},{name:"被动语态",detail:"has been paid back 现在完成被动"},{name:"lend/borrow",detail:"lend 借出，borrow 借入"}], keywords:[{word:"lent",synonyms:["loaned"],note:"借出"},{word:"paid back",synonyms:["repaid"],note:"归还"}], alternatives:["The money he lent me has been repaid.","The money which he lent me has been paid back."]},
+      {id:112, source:"她戴的项链是祖母留给她的。", reference:"The necklace that she is wearing was left to her by her grandmother.", grammarPoints:[{name:"定语从句",detail:"that she is wearing 修饰 the necklace"},{name:"被动语态",detail:"was left 被留下"},{name:"wear 进行时",detail:"is wearing 表示正戴着"}], keywords:[{word:"necklace",synonyms:[]},{word:"wearing",synonyms:["putting on"],note:"戴着"},{word:"grandmother",synonyms:["grandma"],note:"祖母"}], alternatives:["The necklace she is wearing was left to her by her grandmother.","She is wearing a necklace that her grandmother left her."]},
+      {id:113, source:"我们讨论了很多问题，其中一些非常有意义。", reference:"We discussed many issues, some of which were very meaningful.", grammarPoints:[{name:"非限制性 + some of which",detail:"some of which 引导非限制性定语从句"},{name:"some of",detail:"其中的一些"},{name:"meaningful",detail:"有意义的"}], keywords:[{word:"discussed",synonyms:["talked about"],note:"讨论"},{word:"issues",synonyms:["problems"],note:"问题"},{word:"meaningful",synonyms:["significant"],note:"有意义的"}], alternatives:["We discussed many issues, and some of them were very meaningful.","We talked about many issues, some of which were very meaningful."]},
+      {id:114, source:"正在建造的那座桥明年完工。", reference:"The bridge that is being built will be completed next year.", grammarPoints:[{name:"被动进行",detail:"is being built 被动语态的进行时"},{name:"定语从句",detail:"that is being built 修饰 the bridge"},{name:"将来被动",detail:"will be completed 将来时被动语态"}], keywords:[{word:"being built",synonyms:["under construction"],note:"正在建造"},{word:"completed",synonyms:["finished"],note:"完工"}], alternatives:["The bridge being built will be completed next year.","The bridge under construction will be finished next year."]},
+      {id:115, source:"那个曾经是贫困村庄的地方现在变成了旅游景点。", reference:"The place which used to be a poor village has become a tourist attraction.", grammarPoints:[{name:"定语从句",detail:"which used to be 修饰 the place"},{name:"used to be",detail:"过去曾是"},{name:"has become",detail:"已经变成"}], keywords:[{word:"poor",synonyms:["impoverished"],note:"贫困的"},{word:"tourist attraction",synonyms:["scenic spot"],note:"旅游景点"}], alternatives:["The place that used to be a poor village has become a tourist attraction.","Where there used to be a poor village is now a tourist attraction."]},
+      {id:116, source:"这就是他成功的秘诀。", reference:"This is the secret by which he achieved success.", grammarPoints:[{name:"介词+which",detail:"by which 引导定语从句，表示方式"},{name:"by which",detail:"通过这个方式"},{name:"achieved success",detail:"取得成功"}], keywords:[{word:"secret",synonyms:["key"],note:"秘诀"},{word:"achieved",synonyms:["attained"],note:"取得"}], alternatives:["This is the secret that he achieved success by.","This is the secret that led to his success."]},
+      {id:117, source:"她不认识那些帮助过她的人。", reference:"She doesn't recognize those who have helped her.", grammarPoints:[{name:"关系代词 who",detail:"指人 those，作主语"},{name:"those who",detail:"固定搭配，'那些…的人'"},{name:"现在完成时",detail:"have helped 表示到现在的帮助"}], keywords:[{word:"recognize",synonyms:["know"],note:"认出"},{word:"helped",synonyms:["assisted"],note:"帮助"}], alternatives:["She doesn't recognize the people who have helped her.","She doesn't know those that have helped her."]},
+      {id:118, source:"我所要的只是一个机会。", reference:"All that I want is just a chance.", grammarPoints:[{name:"all that",detail:"先行词是 all，定语从句用 that"},{name:"不定代词+that",detail:"不定代词后定语从句用 that 不用 which"},{name:"just a chance",detail:"只是一个机会"}], keywords:[{word:"want",synonyms:["need"],note:"想要"},{word:"chance",synonyms:["opportunity"],note:"机会"}], alternatives:["All I want is just a chance.","What I want is just an opportunity."]},
+      {id:119, source:"这座山是我们昨天爬的那座的三倍高。", reference:"This mountain is three times as high as the one that we climbed yesterday.", grammarPoints:[{name:"倍数比较",detail:"three times as high as 三倍高"},{name:"the one that",detail:"the one 替代前面提到的事物"},{name:"定语从句",detail:"that we climbed 修饰 the one"}], keywords:[{word:"mountain",synonyms:["peak"],note:"山"},{word:"climbed",synonyms:["ascended"],note:"攀登"}], alternatives:["This mountain is three times higher than the one we climbed yesterday.","This mountain is three times as high as the one we climbed yesterday."]},
+      {id:120, source:"她给我写了一封信，信中表达了她深深的歉意。", reference:"She wrote me a letter, in which she expressed her deep apology.", grammarPoints:[{name:"介词+which",detail:"in which 引导非限制性定语从句"},{name:"非限制性",detail:"修饰前面的 a letter"},{name:"expressed apology",detail:"表达歉意"}], keywords:[{word:"letter",synonyms:["note"],note:"信"},{word:"expressed",synonyms:["conveyed"],note:"表达"},{word:"apology",synonyms:["regret"],note:"歉意"}], alternatives:["She wrote me a letter, and in it she expressed her deep apology.","She wrote me a letter where she expressed her deep apology."]}
     ]
   },
   {
-    id: "adv-clause",
-    name: "状语从句",
-    icon: "⏱️",
-    desc: "时间/原因/条件/让步/目的状语从句",
+    id: "adv-clause", name: "状语从句", icon: "⏱️",
+    desc: "时间/原因/条件/让步/目的/结果状语从句",
     questions: [
-      {
-        id: 201, type: "topic",
-        source: "虽然他很努力，但还是没通过考试。",
-        reference: "Although he worked very hard, he still didn't pass the exam.",
-        grammar: "although 引导让步状语从句，表示'虽然…但是…'。注意英语中 although 和 but 不能同时使用。",
-        grammarPoints: [
-          { name: "让步状语从句", detail: "although/though 引导，表示'虽然'", used: true },
-          { name: "连词不并用", detail: "although 和 but 不能同时出现在一个句子中", used: true },
-          { name: "still 用法", detail: "在主句中用 still 表示'仍然'，加强转折语气", used: true }
-        ],
-        keywords: [
-          { word: "Although", synonyms: ["Though", "Even though"], note: "'虽然'，引导让步状语从句" },
-          { word: "worked hard", synonyms: ["studied hard", "strived"], note: "'努力学习'" },
-          { word: "pass", synonyms: ["ace"], note: "'通过'" }
-        ],
-        alternatives: [
-          "Though he worked very hard, he still failed the exam.",
-          "He worked very hard, but he still didn't pass the exam."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 202, type: "topic",
-        source: "如果明天下雨，比赛就会取消。",
-        reference: "If it rains tomorrow, the match will be cancelled.",
-        grammar: "if 引导条件状语从句，遵循'主将从现'原则：从句用一般现在时 rains，主句用一般将来时 will be cancelled。",
-        grammarPoints: [
-          { name: "条件状语从句", detail: "if 引导，表示'如果'", used: true },
-          { name: "主将从现", detail: "从句用一般现在时，主句用一般将来时", used: true },
-          { name: "被动语态", detail: "will be cancelled 是将来时的被动语态", used: true }
-        ],
-        keywords: [
-          { word: "rains", synonyms: [], note: "rain 的第三人称单数，从句用一般现在时表将来" },
-          { word: "match", synonyms: ["game", "competition"], note: "'比赛'" },
-          { word: "cancelled", synonyms: ["called off"], note: "'取消'" }
-        ],
-        alternatives: [
-          "If it rains tomorrow, the game will be called off.",
-          "Should it rain tomorrow, the match will be cancelled."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 203, type: "topic",
-        source: "她因为迟到了，所以向老师道了歉。",
-        reference: "She apologized to the teacher because she was late.",
-        grammar: "because 引导原因状语从句，直接说明因果关系。because 引导的从句通常放在主句后面，也可以放在前面。",
-        grammarPoints: [
-          { name: "原因状语从句", detail: "because 引导，表示直接原因", used: true },
-          { name: "apologize to", detail: "'向某人道歉'，固定搭配", used: true },
-          { name: "because vs since", detail: "because 表示直接原因，since 表示已知原因", used: true }
-        ],
-        keywords: [
-          { word: "apologized", synonyms: ["said sorry"], note: "apologize 的过去式，'道歉'" },
-          { word: "teacher", synonyms: ["instructor"], note: "'老师'" },
-          { word: "late", synonyms: ["not on time"], note: "'迟到的'" }
-        ],
-        alternatives: [
-          "Because she was late, she apologized to the teacher.",
-          "She said sorry to the teacher for being late."
-        ],
-        difficulty: "CET-4"
-      }
+      {id:201, source:"虽然他很努力，但还是没通过考试。", reference:"Although he worked very hard, he still didn't pass the exam.", grammarPoints:[{name:"让步状语从句",detail:"although 表示'虽然'"},{name:"连词不并用",detail:"although 和 but 不能同时用"},{name:"still",detail:"仍然，加强转折语气"}], keywords:[{word:"Although",synonyms:["Though"],note:"虽然"},{word:"worked hard",synonyms:["studied hard"],note:"努力学习"},{word:"pass",synonyms:["ace"],note:"通过"}], alternatives:["Though he worked very hard, he still failed the exam.","He worked very hard, but he still didn't pass the exam."]},
+      {id:202, source:"如果明天下雨，比赛就会取消。", reference:"If it rains tomorrow, the match will be cancelled.", grammarPoints:[{name:"条件状语从句",detail:"if 引导，表示'如果'"},{name:"主将从现",detail:"从句一般现在时，主句一般将来时"},{name:"被动语态",detail:"will be cancelled 将来被动"}], keywords:[{word:"rains",synonyms:[],note:"下雨，从句用一般现在时"},{word:"match",synonyms:["game"],note:"比赛"},{word:"cancelled",synonyms:["called off"],note:"取消"}], alternatives:["If it rains tomorrow, the game will be called off.","Should it rain tomorrow, the match will be cancelled."]},
+      {id:203, source:"她因为迟到了，所以向老师道了歉。", reference:"She apologized to the teacher because she was late.", grammarPoints:[{name:"原因状语从句",detail:"because 引导"},{name:"apologize to",detail:"向某人道歉"},{name:"because vs since",detail:"because 直接原因，since 已知原因"}], keywords:[{word:"apologized",synonyms:["said sorry"],note:"道歉"},{word:"teacher",synonyms:["instructor"],note:"老师"},{word:"late",synonyms:["tardy"],note:"迟到"}], alternatives:["Because she was late, she apologized to the teacher.","She said sorry to the teacher for being late."]},
+      {id:204, source:"除非你努力，否则不会成功。", reference:"You will not succeed unless you work hard.", grammarPoints:[{name:"条件状语从句",detail:"unless = if not 除非"},{name:"主将从现",detail:"unless 从句一般现在时"},{name:"succeed",detail:"成功"}], keywords:[{word:"unless",synonyms:["if not"],note:"除非"},{word:"succeed",synonyms:["achieve success"],note:"成功"},{word:"work hard",synonyms:["strive"],note:"努力工作"}], alternatives:["You will not succeed if you do not work hard.","Unless you strive, you will not succeed."]},
+      {id:205, source:"她一听到这个消息就哭了起来。", reference:"As soon as she heard the news, she burst into tears.", grammarPoints:[{name:"时间状语从句",detail:"as soon as 一…就…"},{name:"burst into",detail:"突然进入某种状态"},{name:"过去时",detail:"描述过去发生的事情"}], keywords:[{word:"as soon as",synonyms:["the moment"],note:"一…就…"},{word:"heard",synonyms:["learned"],note:"听到"},{word:"burst into tears",synonyms:["started crying"],note:"突然哭起来"}], alternatives:["The moment she heard the news, she burst into tears.","She burst into tears as soon as she heard the news."]},
+      {id:206, source:"为了让更多人了解这个问题，他写了一篇文章。", reference:"He wrote an article so that more people could understand this issue.", grammarPoints:[{name:"目的状语从句",detail:"so that 为了，表示目的"},{name:"情态动词 could",detail:"can 的过去式，表示能够"},{name:"目的状语的位置",detail:"so that 从句通常放在主句后"}], keywords:[{word:"so that",synonyms:["in order that"],note:"为了"},{word:"article",synonyms:["essay"],note:"文章"},{word:"understand",synonyms:["comprehend"],note:"了解"}], alternatives:["He wrote an article in order that more people could understand this issue.","To let more people understand this issue, he wrote an article."]},
+      {id:207, source:"虽然天气很冷，但他还是去游泳了。", reference:"Although it was very cold, he still went swimming.", grammarPoints:[{name:"让步状语从句",detail:"although 引导"},{name:"go swimming",detail:"去游泳"},{name:"though/although/even though",detail:"三者都可以表示'虽然'"}], keywords:[{word:"cold",synonyms:["chilly"],note:"冷的"},{word:"went swimming",synonyms:[],note:"去游泳"}], alternatives:["Though it was very cold, he still went swimming.","Even though it was cold, he went swimming."]},
+      {id:208, source:"既然你已经答应了，就应该遵守承诺。", reference:"Since you have promised, you should keep your word.", grammarPoints:[{name:"原因状语从句",detail:"since 既然，表示已知原因"},{name:"keep one's word",detail:"遵守承诺"},{name:"should",detail:"应该，表义务"}], keywords:[{word:"since",synonyms:["now that"],note:"既然"},{word:"promised",synonyms:["pledged"],note:"答应"},{word:"keep your word",synonyms:["keep your promise"],note:"遵守承诺"}], alternatives:["Now that you have promised, you should keep your word.","Since you have made a promise, you should keep it."]},
+      {id:209, source:"这个箱子太重了，我搬不动。", reference:"The box is so heavy that I cannot carry it.", grammarPoints:[{name:"结果状语从句",detail:"so...that... 如此…以至于…"},{name:"so + adj + that",detail:"so 修饰形容词 heavy"},{name:"can/cannot",detail:"能/不能"}], keywords:[{word:"so heavy",synonyms:["too heavy"],note:"如此重"},{word:"carry",synonyms:["lift"],note:"搬动"}], alternatives:["The box is too heavy for me to carry.","The box is so heavy that I can't lift it."]},
+      {id:210, source:"即使明天下雨，我也会去。", reference:"Even if it rains tomorrow, I will still go.", grammarPoints:[{name:"让步状语从句",detail:"even if 即使"},{name:"主将从现",detail:"从句一般现在时"},{name:"even if vs even though",detail:"even if 假设，even though 事实"}], keywords:[{word:"even if",synonyms:["even though"],note:"即使"},{word:"rains",synonyms:[],note:"下雨"}], alternatives:["Even though it rains tomorrow, I will still go.","I will still go even if it rains tomorrow."]},
+      {id:211, source:"他一边走路一边听音乐。", reference:"He listens to music while he is walking.", grammarPoints:[{name:"时间状语从句",detail:"while 表示'在…期间'"},{name:"while + 进行时",detail:"while 从句常用进行时"},{name:"listen to",detail:"听"}], keywords:[{word:"while",synonyms:["as"],note:"当…时"},{word:"listens to",synonyms:[],note:"听"},{word:"walking",synonyms:[],note:"走路"}], alternatives:["While walking, he listens to music.","He listens to music as he walks."]},
+      {id:212, source:"虽然他是外国人，但中文说得很好。", reference:"Although he is a foreigner, he speaks Chinese very well.", grammarPoints:[{name:"让步状语从句",detail:"although 表示对比"},{name:"foreigner",detail:"外国人"},{name:"speaks...well",detail:"说得好"}], keywords:[{word:"foreigner",synonyms:["alien"],note:"外国人"},{word:"speaks Chinese",synonyms:[],note:"说中文"}], alternatives:["He is a foreigner, but he speaks Chinese very well.","Though he is a foreigner, he speaks Chinese very well."]},
+      {id:213, source:"因为下大雨，航班延误了。", reference:"The flight was delayed because it was raining heavily.", grammarPoints:[{name:"原因状语从句",detail:"because 引导"},{name:"被动语态",detail:"was delayed 被延误"},{name:"raining heavily",detail:"下大雨"}], keywords:[{word:"flight",synonyms:["plane"],note:"航班"},{word:"delayed",synonyms:["postponed"],note:"延误"},{word:"raining heavily",synonyms:["pouring"],note:"下大雨"}], alternatives:["The flight was delayed because of the heavy rain.","Because it was raining heavily, the flight was delayed."]},
+      {id:214, source:"直到他解释了，我才明白他的意思。", reference:"I didn't understand what he meant until he explained.", grammarPoints:[{name:"时间状语从句",detail:"until 直到"},{name:"not...until",detail:"直到…才…"},{name:"过去时",detail:"整句用过去时"}], keywords:[{word:"until",synonyms:["till"],note:"直到"},{word:"explained",synonyms:["clarified"],note:"解释"},{word:"meant",synonyms:["intended"],note:"意思"}], alternatives:["Not until he explained did I understand what he meant.","I didn't get what he meant until he explained."]},
+      {id:215, source:"如果你需要帮助，尽管告诉我。", reference:"If you need any help, just let me know.", grammarPoints:[{name:"条件状语从句",detail:"if 引导"},{name:"主将从现",detail:"if 从句用一般现在时"},{name:"let me know",detail:"告诉我"}], keywords:[{word:"need",synonyms:["require"],note:"需要"},{word:"help",synonyms:["assistance"],note:"帮助"}], alternatives:["Should you need any help, just let me know.","Let me know if you need any help."]},
+      {id:216, source:"他太累了，以至于在会议上睡着了。", reference:"He was so tired that he fell asleep during the meeting.", grammarPoints:[{name:"结果状语从句",detail:"so...that... 结果"},{name:"fall asleep",detail:"睡着"},{name:"during the meeting",detail:"在会议期间"}], keywords:[{word:"tired",synonyms:["exhausted"],note:"累的"},{word:"fell asleep",synonyms:["dozed off"],note:"睡着了"},{word:"meeting",synonyms:["conference"],note:"会议"}], alternatives:["He was too tired to stay awake during the meeting.","So tired was he that he fell asleep during the meeting."]},
+      {id:217, source:"每次我去那家餐厅，都看到很多人排队。", reference:"Every time I go to that restaurant, I see many people waiting in line.", grammarPoints:[{name:"时间状语从句",detail:"every time 每次，引导时间状语从句"},{name:"see + object + doing",detail:"看到某人在做某事"},{name:"wait in line",detail:"排队"}], keywords:[{word:"every time",synonyms:["whenever"],note:"每次"},{word:"restaurant",synonyms:["diner"],note:"餐厅"},{word:"waiting in line",synonyms:["queuing"],note:"排队"}], alternatives:["Whenever I go to that restaurant, I see many people queuing.","I see many people waiting in line every time I go to that restaurant."]},
+      {id:218, source:"他跑得很快，以便能赶上公交车。", reference:"He ran fast so that he could catch the bus.", grammarPoints:[{name:"目的状语从句",detail:"so that 以便，表示目的"},{name:"could catch",detail:"能够赶上"},{name:"fast",detail:"快地，副词"}], keywords:[{word:"ran",synonyms:["dashed"],note:"跑"},{word:"fast",synonyms:["quickly"],note:"快地"},{word:"catch",synonyms:["board"],note:"赶上"}], alternatives:["He ran fast in order to catch the bus.","He ran so fast that he could catch the bus."]},
+      {id:219, source:"尽管有很多困难，他们最终还是成功了。", reference:"Despite there being many difficulties, they finally succeeded.", grammarPoints:[{name:"让步状语从句",detail:"despite + 名词/动名词"},{name:"despite vs although",detail:"despite 是介词，接名词；although 是连词接从句"},{name:"finally succeeded",detail:"最终成功"}], keywords:[{word:"Despite",synonyms:["In spite of"],note:"尽管"},{word:"difficulties",synonyms:["challenges"],note:"困难"},{word:"succeeded",synonyms:["made it"],note:"成功"}], alternatives:["In spite of many difficulties, they finally succeeded.","Although there were many difficulties, they finally succeeded."]},
+      {id:220, source:"她那天没来开会，因为她生病了。", reference:"She didn't come to the meeting because she was ill.", grammarPoints:[{name:"原因状语从句",detail:"because 引导"},{name:"be ill",detail:"生病了"},{name:"过去时",detail:"描述过去的事"}], keywords:[{word:"ill",synonyms:["sick"],note:"生病的"},{word:"meeting",synonyms:["conference"],note:"会议"}], alternatives:["She was absent from the meeting because she was ill.","Because she was ill, she didn't come to the meeting."]}
     ]
   },
   {
-    id: "noun-clause",
-    name: "名词性从句",
-    icon: "💬",
-    desc: "主语从句/宾语从句/表语从句/同位语从句",
+    id: "noun-clause", name: "名词性从句", icon: "💬",
+    desc: "主语/宾语/表语/同位语从句",
     questions: [
-      {
-        id: 301, type: "topic",
-        source: "众所周知，吸烟有害健康。",
-        reference: "It is well known that smoking is harmful to health.",
-        grammar: "that 引导主语从句，it 作形式主语。真正的主语是 that smoking is harmful to health，放在句末避免头重脚轻。",
-        grammarPoints: [
-          { name: "主语从句", detail: "that 从句作主语，it 作形式主语", used: true },
-          { name: "形式主语 it", detail: "it 代替真正的主语放在句首", used: true },
-          { name: "固定句型", detail: "It is well known that... = '众所周知'" , used: true }
-        ],
-        keywords: [
-          { word: "well known", synonyms: ["widely known", "common knowledge"], note: "'众所周知的'" },
-          { word: "smoking", synonyms: [], note: "smoke 的动名词，'吸烟'" },
-          { word: "harmful", synonyms: ["damaging", "detrimental"], note: "'有害的'" }
-        ],
-        alternatives: [
-          "That smoking is harmful to health is well known.",
-          "It is common knowledge that smoking damages health."
-        ],
-        difficulty: "CET-6"
-      },
-      {
-        id: 302, type: "topic",
-        source: "我不知道他什么时候回来。",
-        reference: "I don't know when he will come back.",
-        grammar: "when 引导宾语从句，作 know 的宾语。宾语从句用陈述语序 he will come back，不是疑问语序 will he come back。",
-        grammarPoints: [
-          { name: "宾语从句", detail: "when 引导的从句作 know 的宾语", used: true },
-          { name: "陈述语序", detail: "宾语从句必须用陈述语序，不是疑问语序", used: true },
-          { name: "连接副词 when", detail: "在从句中作时间状语", used: true }
-        ],
-        keywords: [
-          { word: "know", synonyms: ["understand", "tell"], note: "'知道'" },
-          { word: "come back", synonyms: ["return"], note: "'回来'" }
-        ],
-        alternatives: [
-          "I have no idea when he will come back.",
-          "I don't know when he is coming back."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 303, type: "topic",
-        source: "问题是我们是否应该接受这个提议。",
-        reference: "The question is whether we should accept the proposal.",
-        grammar: "whether 引导表语从句，放在系动词 is 后面作表语。whether 表示'是否'，与 or not 连用时可换成 if。",
-        grammarPoints: [
-          { name: "表语从句", detail: "whether 从句放在系动词后作表语", used: true },
-          { name: "whether vs if", detail: "表语从句中只能用 whether，不能用 if", used: true },
-          { name: "should 的用法", detail: "表示'应该'，提建议的语气", used: true }
-        ],
-        keywords: [
-          { word: "whether", synonyms: ["if"], note: "'是否'，表语从句中不能用 if 替换" },
-          { word: "accept", synonyms: ["agree to"], note: "'接受'" },
-          { word: "proposal", synonyms: ["suggestion", "offer"], note: "'提议，提案'" }
-        ],
-        alternatives: [
-          "The question is whether we should agree to the proposal.",
-          "Whether we should accept the proposal is the question."
-        ],
-        difficulty: "CET-6"
-      }
+      {id:301, source:"众所周知，吸烟有害健康。", reference:"It is well known that smoking is harmful to health.", grammarPoints:[{name:"主语从句",detail:"that 从句作主语，it 作形式主语"},{name:"形式主语 it",detail:"代替真正的主语放在句首"},{name:"固定句型",detail:"It is well known that..."}], keywords:[{word:"well known",synonyms:["widely known"],note:"众所周知的"},{word:"smoking",synonyms:[],note:"吸烟"},{word:"harmful",synonyms:["damaging"],note:"有害的"}], alternatives:["That smoking is harmful to health is well known.","It is common knowledge that smoking damages health."]},
+      {id:302, source:"我不知道他什么时候回来。", reference:"I don't know when he will come back.", grammarPoints:[{name:"宾语从句",detail:"when 从句作 know 的宾语"},{name:"陈述语序",detail:"宾语从句用陈述语序"},{name:"连接副词 when",detail:"在从句中作时间状语"}], keywords:[{word:"know",synonyms:["understand"],note:"知道"},{word:"come back",synonyms:["return"],note:"回来"}], alternatives:["I have no idea when he will come back.","I don't know when he is coming back."]},
+      {id:303, source:"问题是我们是否应该接受这个提议。", reference:"The question is whether we should accept the proposal.", grammarPoints:[{name:"表语从句",detail:"whether 从句放在系动词后作表语"},{name:"whether vs if",detail:"表语从句只能用 whether"},{name:"should",detail:"应该"}], keywords:[{word:"whether",synonyms:["if"],note:"是否"},{word:"accept",synonyms:["agree to"],note:"接受"},{word:"proposal",synonyms:["suggestion"],note:"提议"}], alternatives:["The question is whether we should agree to the proposal.","Whether we should accept the proposal is the question."]},
+      {id:304, source:"这就是他所担心的事情。", reference:"This is what he is worried about.", grammarPoints:[{name:"表语从句",detail:"what 从句放在 is 后作表语"},{name:"what 从句",detail:"what = the thing that"},{name:"be worried about",detail:"担心"}], keywords:[{word:"worried about",synonyms:["concerned about"],note:"担心"},{word:"what",synonyms:["the thing that"]}], alternatives:["This is the thing that he is worried about.","That is what concerns him."]},
+      {id:305, source:"他是否能来还不确定。", reference:"Whether he can come is still uncertain.", grammarPoints:[{name:"主语从句",detail:"Whether he can come 作主语"},{name:"whether 放句首",detail:"主语从句放句首时不用 if"},{name:"still uncertain",detail:"还不确定"}], keywords:[{word:"whether",synonyms:[],note:"是否"},{word:"uncertain",synonyms:["unknown"],note:"不确定的"}], alternatives:["It is still uncertain whether he can come.","It is still not known if he can come."]},
+      {id:306, source:"她告诉我她明天会来。", reference:"She told me that she would come tomorrow.", grammarPoints:[{name:"宾语从句",detail:"that 从句作 told 的宾语"},{name:"时态一致",detail:"主句过去时 told，从句用过去将来 would come"},{name:"that 可省略",detail:"宾语从句的 that 可省略"}], keywords:[{word:"told",synonyms:["informed"],note:"告诉"},{word:"would come",synonyms:[],note:"会来"}], alternatives:["She told me she would come tomorrow.","She informed me that she would come tomorrow."]},
+      {id:307, source:"事实是他对这件事一无所知。", reference:"The fact is that he knows nothing about it.", grammarPoints:[{name:"表语从句",detail:"that 从句放在 is 后作表语"},{name:"knows nothing about",detail:"对…一无所知"},{name:"The fact is that",detail:"事实是…"}], keywords:[{word:"fact",synonyms:["truth"],note:"事实"},{word:"knows nothing",synonyms:["is unaware"],note:"一无所知"}], alternatives:["The truth is that he knows nothing about it.","The fact is that he doesn't know anything about it."]},
+      {id:308, source:"他为什么辞职仍然是个谜。", reference:"Why he resigned remains a mystery.", grammarPoints:[{name:"主语从句",detail:"Why he resigned 作主语"},{name:"remains",detail:"仍然是"},{name:"mystery",detail:"谜"}], keywords:[{word:"resigned",synonyms:["quit"],note:"辞职"},{word:"remains",synonyms:["stays"],note:"仍然"},{word:"mystery",synonyms:["puzzle"],note:"谜"}], alternatives:["It remains a mystery why he resigned.","Why he quit is still a mystery."]},
+      {id:309, source:"我相信他说的话。", reference:"I believe what he said.", grammarPoints:[{name:"宾语从句",detail:"what he said 作 believe 的宾语"},{name:"what 从句",detail:"what = the thing that"},{name:"believe",detail:"相信"}], keywords:[{word:"believe",synonyms:["trust"],note:"相信"},{word:"said",synonyms:["stated"],note:"说"}], alternatives:["I trust what he said.","I believe in what he said."]},
+      {id:310, source:"他是否适合这份工作还有待观察。", reference:"Whether he is suitable for this job remains to be seen.", grammarPoints:[{name:"主语从句",detail:"Whether he is suitable 作主语"},{name:"remains to be seen",detail:"有待观察"},{name:"suitable for",detail:"适合"}], keywords:[{word:"suitable",synonyms:["qualified"],note:"适合的"},{word:"remains to be seen",synonyms:["is yet to be known"]}], alternatives:["It remains to be seen whether he is suitable for this job.","It is yet to be known if he is fit for this job."]},
+      {id:311, source:"我的想法是我们应该先讨论一下。", reference:"My idea is that we should discuss it first.", grammarPoints:[{name:"表语从句",detail:"that 从句放在 is 后作表语"},{name:"My idea is that",detail:"我的想法是"},{name:"should + do",detail:"应该做"}], keywords:[{word:"idea",synonyms:["opinion"],note:"想法"},{word:"discuss",synonyms:["talk about"],note:"讨论"}], alternatives:["My opinion is that we should talk about it first.","I think we should discuss it first."]},
+      {id:312, source:"你能告诉我去火车站怎么走吗？", reference:"Can you tell me how I can get to the railway station?", grammarPoints:[{name:"宾语从句",detail:"how 从句作 tell 的宾语"},{name:"陈述语序",detail:"how I can get，不是 how can I get"},{name:"get to",detail:"到达"}], keywords:[{word:"get to",synonyms:["reach"],note:"到达"},{word:"railway station",synonyms:["train station"],note:"火车站"}], alternatives:["Can you tell me the way to the railway station?","Could you tell me how to get to the railway station?"]},
+      {id:313, source:"我们赢得比赛的消息很快传开了。", reference:"The news that we won the match spread quickly.", grammarPoints:[{name:"同位语从句",detail:"that we won 解释 the news 的内容"},{name:"同位语 vs 定语",detail:"同位语从句说明内容，定语从句修饰"},{name:"spread quickly",detail:"迅速传开"}], keywords:[{word:"news",synonyms:["message"],note:"消息"},{word:"won",synonyms:[],note:"赢得"},{word:"spread",synonyms:["circulated"],note:"传开"}], alternatives:["The news spread quickly that we had won the match.","Word that we won the match spread quickly."]},
+      {id:314, source:"我不知道该选哪一个。", reference:"I don't know which one I should choose.", grammarPoints:[{name:"宾语从句",detail:"which one 从句作 know 的宾语"},{name:"陈述语序",detail:"I should choose，不是 should I choose"},{name:"which one",detail:"哪一个"}], keywords:[{word:"choose",synonyms:["select"],note:"选择"}], alternatives:["I don't know which one to choose.","I have no idea which one I should pick."]},
+      {id:315, source:"重要的是我们要保持冷静。", reference:"What matters is that we stay calm.", grammarPoints:[{name:"主语从句",detail:"What matters 作主语"},{name:"表语从句",detail:"that we stay calm 作表语"},{name:"stay calm",detail:"保持冷静"}], keywords:[{word:"matters",synonyms:["counts"],note:"重要"},{word:"calm",synonyms:["composed"],note:"冷静的"}], alternatives:["What is important is that we stay calm.","The important thing is that we keep calm."]},
+      {id:316, source:"他在事故中幸存下来真是个奇迹。", reference:"It is a miracle that he survived the accident.", grammarPoints:[{name:"主语从句",detail:"that he survived 作主语，it 作形式主语"},{name:"survive",detail:"幸存"},{name:"miracle",detail:"奇迹"}], keywords:[{word:"miracle",synonyms:["wonder"],note:"奇迹"},{word:"survived",synonyms:["lived through"],note:"幸存"},{word:"accident",synonyms:["crash"],note:"事故"}], alternatives:["That he survived the accident is a miracle.","It is a wonder that he lived through the accident."]},
+      {id:317, source:"问题不在于他说了什么，而在于他做了什么。", reference:"The question is not what he said but what he did.", grammarPoints:[{name:"表语从句",detail:"what 从句作表语"},{name:"not...but...",detail:"不是…而是…"},{name:"平行结构",detail:"what he said 和 what he did 平行"}], keywords:[{word:"question",synonyms:["issue"],note:"问题"},{word:"said",synonyms:["claimed"],note:"说"}], alternatives:["It's not about what he said but what he did.","What matters is not his words but his actions."]},
+      {id:318, source:"老师强调我们应该多练习。", reference:"The teacher emphasized that we should practice more.", grammarPoints:[{name:"宾语从句",detail:"that 从句作 emphasized 的宾语"},{name:"emphasize + that",detail:"强调…"},{name:"should + do",detail:"应该做"}], keywords:[{word:"emphasized",synonyms:["stressed"],note:"强调"},{word:"practice",synonyms:["exercise"],note:"练习"}], alternatives:["The teacher stressed that we should practice more.","The teacher emphasized the importance of practicing more."]},
+      {id:319, source:"他是否诚实值得怀疑。", reference:"It is doubtful whether he is honest.", grammarPoints:[{name:"主语从句",detail:"whether he is honest 作主语"},{name:"形式主语 it",detail:"it 代替主语从句"},{name:"doubtful",detail:"值得怀疑的"}], keywords:[{word:"doubtful",synonyms:["questionable"],note:"值得怀疑的"},{word:"honest",synonyms:["truthful"],note:"诚实的"}], alternatives:["Whether he is honest is doubtful.","It is questionable whether he is honest."]},
+      {id:320, source:"这就是我不同意你的地方。", reference:"That's where I disagree with you.", grammarPoints:[{name:"表语从句",detail:"where 从句放在 is 后作表语"},{name:"disagree with",detail:"不同意某人"},{name:"where 从句",detail:"where = the point where"}], keywords:[{word:"disagree",synonyms:["differ"],note:"不同意"},{word:"where",synonyms:["the point where"]}], alternatives:["That's the point where I disagree with you.","That's what I disagree with you about."]}
     ]
   },
   {
-    id: "subjunctive",
-    name: "虚拟语气",
-    icon: "🎭",
+    id: "subjunctive", name: "虚拟语气", icon: "🎭",
     desc: "与事实相反的假设，用虚拟语气表达",
     questions: [
-      {
-        id: 401, type: "topic",
-        source: "如果我是你，我就会接受那个工作。",
-        reference: "If I were you, I would accept that job.",
-        grammar: "与现在事实相反的虚拟语气：从句用 if I were（不用 was），主句用 would + 动词原形。were 是虚拟语气的标志。",
-        grammarPoints: [
-          { name: "与现在相反", detail: "从句用一般过去时(be 用 were)，主句用 would + do", used: true },
-          { name: "if I were", detail: "虚拟语气中 be 动词一律用 were，不用 was", used: true },
-          { name: "would + do", detail: "主句用 would + 动词原形表示虚拟结果", used: true }
-        ],
-        keywords: [
-          { word: "were", synonyms: [], note: "虚拟语气中 be 动词用 were，不是 was" },
-          { word: "would accept", synonyms: [], note: "主句用 would + 动词原形" },
-          { word: "job", synonyms: ["position", "offer"], note: "'工作'" }
-        ],
-        alternatives: [
-          "If I were you, I'd take that job.",
-          "Were I you, I would accept that job."
-        ],
-        difficulty: "CET-6"
-      },
-      {
-        id: 402, type: "topic",
-        source: "要是昨天我知道这个消息，我就会来了。",
-        reference: "If I had known the news yesterday, I would have come.",
-        grammar: "与过去事实相反的虚拟语气：从句用 had + 过去分词，主句用 would have + 过去分词。表示对已发生事情的假设。",
-        grammarPoints: [
-          { name: "与过去相反", detail: "从句用 had + done，主句用 would have + done", used: true },
-          { name: "had known", detail: "对过去的假设，从句用过去完成时", used: true },
-          { name: "would have come", detail: "主句用 would have + 过去分词", used: true }
-        ],
-        keywords: [
-          { word: "had known", synonyms: ["had been aware"], note: "虚拟语气中表示'如果知道'" },
-          { word: "news", synonyms: ["information", "message"], note: "'消息'" },
-          { word: "would have come", synonyms: [], note: "'就会来'，虚拟语气主句形式" }
-        ],
-        alternatives: [
-          "Had I known the news yesterday, I would have come.",
-          "If I had known about it yesterday, I would have shown up."
-        ],
-        difficulty: "CET-6"
-      },
-      {
-        id: 403, type: "topic",
-        source: "老师建议他每天练习英语。",
-        reference: "The teacher suggested that he practice English every day.",
-        grammar: "suggest 等表示'建议/要求/命令'的动词后的 that 从句用虚拟语气：(should) + 动词原形。practice 用原形不加 s。",
-        grammarPoints: [
-          { name: "suggest 虚拟", detail: "suggest/advise/recommend 后 that 从句用(should) do", used: true },
-          { name: "动词原形", detail: "he practice（不加 s），虚拟语气中不论人称都用原形", used: true },
-          { name: "should 省略", detail: "表示建议的虚拟语气中 should 可以省略", used: true }
-        ],
-        keywords: [
-          { word: "suggested", synonyms: ["recommended", "advised"], note: "'建议'，后接虚拟语气" },
-          { word: "practice", synonyms: ["work on"], note: "'练习'，suggest 后用原形" },
-          { word: "every day", synonyms: ["daily"], note: "'每天'，时间状语" }
-        ],
-        alternatives: [
-          "The teacher recommended that he practice English daily.",
-          "The teacher suggested that he should practice English every day."
-        ],
-        difficulty: "CET-6"
-      }
+      {id:401, source:"如果我是你，我就会接受那个工作。", reference:"If I were you, I would accept that job.", grammarPoints:[{name:"与现在相反",detail:"从句一般过去时(be 用 were)，主句 would + do"},{name:"if I were",detail:"虚拟语气 be 一律用 were"},{name:"would + do",detail:"主句 would + 动词原形"}], keywords:[{word:"were",synonyms:[],note:"虚拟语气 be 用 were"},{word:"would accept",synonyms:[],note:"会接受"}], alternatives:["If I were you, I'd take that job.","Were I you, I would accept that job."]},
+      {id:402, source:"要是昨天我知道这个消息，我就会来了。", reference:"If I had known the news yesterday, I would have come.", grammarPoints:[{name:"与过去相反",detail:"从句 had + done，主句 would have + done"},{name:"had known",detail:"对过去假设"},{name:"would have come",detail:"就会来"}], keywords:[{word:"had known",synonyms:["had been aware"],note:"如果知道"},{word:"would have come",synonyms:[],note:"就会来"}], alternatives:["Had I known the news yesterday, I would have come.","If I had known about it yesterday, I would have shown up."]},
+      {id:403, source:"老师建议他每天练习英语。", reference:"The teacher suggested that he practice English every day.", grammarPoints:[{name:"suggest 虚拟",detail:"suggest/advise/recommend 后 that 从句用(should) do"},{name:"动词原形",detail:"he practice（不加 s）"},{name:"should 省略",detail:"表示建议的虚拟可省略 should"}], keywords:[{word:"suggested",synonyms:["recommended"],note:"建议"},{word:"practice",synonyms:["work on"],note:"练习"}], alternatives:["The teacher recommended that he practice English daily.","The teacher suggested that he should practice English every day."]},
+      {id:404, source:"要是现在下雨就好了。", reference:"I wish it were raining now.", grammarPoints:[{name:"wish 虚拟",detail:"wish 后用虚拟语气表示不太可能实现的愿望"},{name:"与现在相反",detail:"wish + 一般过去时(be 用 were)"},{name:"wish 与 hope",detail:"wish 表不太可能，hope 表可能"}], keywords:[{word:"wish",synonyms:[],note:"希望（不太可能实现）"},{word:"were raining",synonyms:[],note:"虚拟语气"}], alternatives:["If only it were raining now.","I wish it would rain now."]},
+      {id:405, source:"如果没有你的帮助，我不会成功。", reference:"Without your help, I would not have succeeded.", grammarPoints:[{name:"含蓄虚拟",detail:"without 短语代替 if 从句"},{name:"与过去相反",detail:"would not have succeeded"},{name:"without",detail:"如果没有"}], keywords:[{word:"Without",synonyms:["But for"],note:"如果没有"},{word:"succeeded",synonyms:["made it"],note:"成功"}], alternatives:["But for your help, I would not have succeeded.","If it had not been for your help, I would not have succeeded."]},
+      {id:406, source:"他建议我们早点出发。", reference:"He suggested that we set off early.", grammarPoints:[{name:"suggest 虚拟",detail:"suggest + that + (should) + 动词原形"},{name:"set off",detail:"出发"},{name:"动词原形",detail:"we set（不是 sets）"}], keywords:[{word:"suggested",synonyms:["proposed"],note:"建议"},{word:"set off",synonyms:["depart"],note:"出发"}], alternatives:["He proposed that we set off early.","He suggested that we should set off early."]},
+      {id:407, source:"她要求每个人都参加会议。", reference:"She demanded that everyone attend the meeting.", grammarPoints:[{name:"demand 虚拟",detail:"demand + that + (should) + 动词原形"},{name:"attend",detail:"参加，用原形"},{name:"表示要求的动词",detail:"demand/require/insist 等后用虚拟"}], keywords:[{word:"demanded",synonyms:["required"],note:"要求"},{word:"attend",synonyms:["participate in"],note:"参加"}], alternatives:["She required that everyone attend the meeting.","She demanded that everyone should attend the meeting."]},
+      {id:408, source:"要是我当时听了你的建议就好了。", reference:"If only I had taken your advice.", grammarPoints:[{name:"If only",detail:"要是…就好了，强烈的愿望"},{name:"与过去相反",detail:"had + 过去分词"},{name:"take advice",detail:"听取建议"}], keywords:[{word:"If only",synonyms:["I wish"],note:"要是…就好了"},{word:"taken",synonyms:["followed"],note:"听取"}], alternatives:["I wish I had taken your advice.","If only I had followed your suggestion."]},
+      {id:409, source:"他看起来好像什么事都没发生一样。", reference:"He looks as if nothing had happened.", grammarPoints:[{name:"as if 虚拟",detail:"as if 后用虚拟语气"},{name:"与过去相反",detail:"as if + 过去完成时"},{name:"as if/though",detail:"好像"}], keywords:[{word:"as if",synonyms:["as though"],note:"好像"},{word:"had happened",synonyms:[],note:"虚拟语气"}], alternatives:["He looks as though nothing had happened.","He acts as if nothing happened."]},
+      {id:410, source:"有必要立即采取措施。", reference:"It is necessary that measures be taken immediately.", grammarPoints:[{name:"necessary 虚拟",detail:"It is necessary that + (should) + 动词原形"},{name:"be taken",detail:"被动语态原形"},{name:"It is + adj + that",detail:"形容词表示建议/必要"}], keywords:[{word:"necessary",synonyms:["essential"],note:"必要的"},{word:"measures",synonyms:["steps"],note:"措施"},{word:"taken",synonyms:["adopted"],note:"采取"}], alternatives:["It is essential that measures be taken immediately.","It is necessary for measures to be taken immediately."]},
+      {id:411, source:"我真希望我当初学了更多的技能。", reference:"I wish I had learned more skills.", grammarPoints:[{name:"wish + 过去完成",detail:"对过去的愿望"},{name:"had learned",detail:"过去完成时表虚拟"},{name:"skills",detail:"技能"}], keywords:[{word:"wish",synonyms:["regret"],note:"希望"},{word:"had learned",synonyms:[],note:"虚拟语气"},{word:"skills",synonyms:["abilities"],note:"技能"}], alternatives:["If only I had learned more skills.","I regret not having learned more skills."]},
+      {id:412, source:"他坚持要自己付钱。", reference:"He insisted that he pay for it himself.", grammarPoints:[{name:"insist 虚拟",detail:"insist + that + (should) + 动词原形"},{name:"pay for",detail:"支付"},{name:"himself",detail:"他自己"}], keywords:[{word:"insisted",synonyms:["persisted"],note:"坚持"},{word:"pay for",synonyms:["cover"],note:"支付"}], alternatives:["He insisted on paying for it himself.","He insisted that he should pay for it himself."]},
+      {id:413, source:"要不是下雨，我们就去野餐了。", reference:"But for the rain, we would have gone on a picnic.", grammarPoints:[{name:"含蓄虚拟",detail:"But for = If it hadn't been for"},{name:"与过去相反",detail:"would have gone"},{name:"go on a picnic",detail:"去野餐"}], keywords:[{word:"But for",synonyms:["Without"],note:"要不是"},{word:"rain",synonyms:["bad weather"],note:"下雨"},{word:"picnic",synonyms:[],note:"野餐"}], alternatives:["If it hadn't rained, we would have gone on a picnic.","Without the rain, we would have had a picnic."]},
+      {id:414, source:"你本该更小心的。", reference:"You should have been more careful.", grammarPoints:[{name:"should have done",detail:"本该做而没做"},{name:"虚拟语气",detail:"表达遗憾或责备"},{name:"should vs must",detail:"should have 应该，must have 一定"}], keywords:[{word:"should have been",synonyms:["ought to have been"],note:"本该"}], alternatives:["You ought to have been more careful.","You should have been more cautious."]},
+      {id:415, source:"我多希望当时没有说那句话。", reference:"How I wish I had not said that.", grammarPoints:[{name:"wish + 过去完成",detail:"对过去的懊悔"},{name:"had not said",detail:"虚拟语气，与过去事实相反"},{name:"How I wish",detail:"我多希望"}], keywords:[{word:"wish",synonyms:["regret"],note:"希望"},{word:"said",synonyms:["uttered"],note:"说"}], alternatives:["I wish I hadn't said that.","If only I hadn't said that."]},
+      {id:416, source:"她要是来了就好了。", reference:"She would have come if she had been able to.", grammarPoints:[{name:"与过去相反",detail:"if + had done, would have + done"},{name:"省略 if",detail:"Had she been able to"},{name:"be able to",detail:"能够"}], keywords:[{word:"would have come",synonyms:[],note:"会来"},{word:"had been able to",synonyms:["had been capable"],note:"当时能够"}], alternatives:["Had she been able to, she would have come.","If she had been able to come, she would have."]},
+      {id:417, source:"该回家了。", reference:"It is time that we went home.", grammarPoints:[{name:"It is time that",detail:"该做…了，that 从句用一般过去时虚拟"},{name:"went home",detail:"回家"},{name:"虚拟语气",detail:"It's time 后用过去时表虚拟"}], keywords:[{word:"time",synonyms:[]},{word:"went home",synonyms:["returned home"],note:"回家"}], alternatives:["It is time for us to go home.","It is time we went home."]},
+      {id:418, source:"我宁愿你昨天没告诉他。", reference:"I would rather you had not told him yesterday.", grammarPoints:[{name:"would rather + 过去完成",detail:"宁愿（与过去相反）"},{name:"had not told",detail:"虚拟语气"},{name:"would rather",detail:"宁愿"}], keywords:[{word:"would rather",synonyms:["would prefer"],note:"宁愿"},{word:"told",synonyms:["informed"],note:"告诉"}], alternatives:["I would prefer that you had not told him yesterday.","I wish you hadn't told him yesterday."]},
+      {id:419, source:"他命令士兵们立即出发。", reference:"He commanded that the soldiers set off immediately.", grammarPoints:[{name:"command 虚拟",detail:"command + that + (should) + 动词原形"},{name:"set off",detail:"出发"},{name:"immediately",detail:"立即"}], keywords:[{word:"commanded",synonyms:["ordered"],note:"命令"},{word:"set off",synonyms:["march"],note:"出发"},{word:"immediately",synonyms:["at once"],note:"立即"}], alternatives:["He ordered that the soldiers set off immediately.","He commanded that the soldiers should set off at once."]},
+      {id:420, source:"要不是他及时赶到，她就遇险了。", reference:"If he had not arrived in time, she would have been in danger.", grammarPoints:[{name:"与过去相反",detail:"if + had done, would have + done"},{name:"in time",detail:"及时"},{name:"in danger",detail:"处于危险中"}], keywords:[{word:"arrived",synonyms:["come"],note:"到达"},{word:"in time",synonyms:["on time"],note:"及时"},{word:"danger",synonyms:["peril"],note:"危险"}], alternatives:["Had he not arrived in time, she would have been in danger.","She would have been in danger if he hadn't arrived in time."]}
     ]
   },
   {
-    id: "passive",
-    name: "被动语态",
-    icon: "🔄",
+    id: "passive", name: "被动语态", icon: "🔄",
     desc: "各种时态的被动语态 be + 过去分词",
     questions: [
-      {
-        id: 501, type: "topic",
-        source: "这座桥是去年建造的。",
-        reference: "This bridge was built last year.",
-        grammar: "一般过去时的被动语态：was/were + 过去分词。built 是 build 的过去分词，动作的承受者 this bridge 作主语。",
-        grammarPoints: [
-          { name: "一般过去被动", detail: "was/were + 过去分词，表示过去发生的被动动作", used: true },
-          { name: "过去分词", detail: "build → built，不规则变化", used: true },
-          { name: "动作承受者作主语", detail: "桥是被建造的，所以用被动语态", used: true }
-        ],
-        keywords: [
-          { word: "was built", synonyms: ["was constructed", "was erected"], note: "'被建造'，被动语态" },
-          { word: "bridge", synonyms: [], note: "'桥'" },
-          { word: "last year", synonyms: [], note: "'去年'，过去时间状语" }
-        ],
-        alternatives: [
-          "This bridge was constructed last year.",
-          "The construction of this bridge was completed last year."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 502, type: "topic",
-        source: "这些问题需要在会议上讨论。",
-        reference: "These problems need to be discussed at the meeting.",
-        grammar: "need to be + 过去分词，表示'需要被…'，是不定式的被动形式。也可以换成 need discussing（主动形式表被动含义）。",
-        grammarPoints: [
-          { name: "不定式被动", detail: "to be + 过去分词，表示'需要被做'" , used: true },
-          { name: "need doing", detail: "need discussing = need to be discussed，主动表被动", used: true },
-          { name: "介词 at", detail: "at the meeting '在会上'，固定搭配", used: true }
-        ],
-        keywords: [
-          { word: "need to be discussed", synonyms: ["need discussing"], note: "'需要被讨论'" },
-          { word: "problems", synonyms: ["issues", "matters"], note: "'问题'" },
-          { word: "meeting", synonyms: ["conference"], note: "'会议'" }
-        ],
-        alternatives: [
-          "These problems need discussing at the meeting.",
-          "These issues need to be talked about at the meeting."
-        ],
-        difficulty: "CET-6"
-      }
+      {id:501, source:"这座桥是去年建造的。", reference:"This bridge was built last year.", grammarPoints:[{name:"一般过去被动",detail:"was/were + 过去分词"},{name:"过去分词",detail:"build → built，不规则"},{name:"动作承受者作主语",detail:"桥是被建造的用被动"}], keywords:[{word:"was built",synonyms:["was constructed"],note:"被建造"}], alternatives:["This bridge was constructed last year.","The construction of this bridge was completed last year."]},
+      {id:502, source:"这些问题需要在会议上讨论。", reference:"These problems need to be discussed at the meeting.", grammarPoints:[{name:"不定式被动",detail:"to be + 过去分词"},{name:"need doing",detail:"need discussing = need to be discussed"},{name:"at the meeting",detail:"在会上"}], keywords:[{word:"need to be discussed",synonyms:["need discussing"],note:"需要被讨论"}], alternatives:["These problems need discussing at the meeting.","These issues need to be talked about at the meeting."]},
+      {id:503, source:"这台机器每天都被使用。", reference:"This machine is used every day.", grammarPoints:[{name:"一般现在被动",detail:"is/are + 过去分词"},{name:"used",detail:"use 的过去分词"},{name:"every day",detail:"每天"}], keywords:[{word:"is used",synonyms:["is utilized"],note:"被使用"}], alternatives:["This machine is utilized every day.","They use this machine every day."]},
+      {id:504, source:"信已经寄出去了。", reference:"The letter has been sent.", grammarPoints:[{name:"现在完成被动",detail:"has/have been + 过去分词"},{name:"sent",detail:"send 的过去分词"},{name:"完成被动",detail:"表示已经完成的被动动作"}], keywords:[{word:"has been sent",synonyms:["has been mailed"],note:"已被寄出"}], alternatives:["The letter has been mailed.","The letter was sent."]},
+      {id:505, source:"会议将在下周一举行。", reference:"The meeting will be held next Monday.", grammarPoints:[{name:"一般将来被动",detail:"will be + 过去分词"},{name:"held",detail:"hold 的过去分词"},{name:"next Monday",detail:"下周一"}], keywords:[{word:"will be held",synonyms:["will take place"],note:"将被举行"}], alternatives:["The meeting will take place next Monday.","The meeting is to be held next Monday."]},
+      {id:506, source:"这座建筑正在被翻新。", reference:"The building is being renovated.", grammarPoints:[{name:"现在进行被动",detail:"is/are being + 过去分词"},{name:"being renovated",detail:"正在被翻新"},{name:"进行时被动",detail:"表示正在被做"}], keywords:[{word:"is being renovated",synonyms:["is under renovation"],note:"正在被翻新"}], alternatives:["The building is under renovation.","They are renovating the building."]},
+      {id:507, source:"所有的票都已经卖完了。", reference:"All the tickets have been sold out.", grammarPoints:[{name:"现在完成被动",detail:"have been + 过去分词"},{name:"sold out",detail:"卖完"},{name:"all the tickets",detail:"所有票"}], keywords:[{word:"have been sold out",synonyms:["are sold out"],note:"已售罄"}], alternatives:["All the tickets are sold out.","All tickets have been sold."]},
+      {id:508, source:"这个项目是由一群学生完成的。", reference:"This project was completed by a group of students.", grammarPoints:[{name:"一般过去被动",detail:"was/were + 过去分词"},{name:"by + 动作执行者",detail:"引出被动语态的动作发出者"},{name:"a group of",detail:"一群"}], keywords:[{word:"was completed",synonyms:["was finished"],note:"被完成"},{word:"by",synonyms:[],note:"被，引出动作发出者"}], alternatives:["A group of students completed this project.","This project was finished by a group of students."]},
+      {id:509, source:"这项工作必须按时完成。", reference:"This work must be finished on time.", grammarPoints:[{name:"情态动词被动",detail:"must/can/should + be + 过去分词"},{name:"must be finished",detail:"必须被完成"},{name:"on time",detail:"按时"}], keywords:[{word:"must be finished",synonyms:["has to be completed"],note:"必须被完成"}], alternatives:["This work has to be completed on time.","This work must be done on schedule."]},
+      {id:510, source:"他被大家认为是诚实的人。", reference:"He is considered to be an honest person.", grammarPoints:[{name:"被动 + 不定式",detail:"is considered to be"},{name:"considered",detail:"认为"},{name:"honest person",detail:"诚实的人"}], keywords:[{word:"is considered",synonyms:["is regarded"],note:"被认为"}], alternatives:["He is regarded as an honest person.","People consider him to be an honest person."]},
+      {id:511, source:"这家餐厅已经开了20年了。", reference:"This restaurant has been open for 20 years.", grammarPoints:[{name:"现在完成时",detail:"has been + 形容词"},{name:"open",detail:"开着的，形容词"},{name:"for 20 years",detail:"20年了"}], keywords:[{word:"has been open",synonyms:["has been operating"],note:"已营业"}], alternatives:["This restaurant has been operating for 20 years.","This restaurant opened 20 years ago."]},
+      {id:512, source:"这本书被翻译成了多种语言。", reference:"This book has been translated into many languages.", grammarPoints:[{name:"现在完成被动",detail:"has been + 过去分词"},{name:"translated into",detail:"被翻译成"},{name:"many languages",detail:"多种语言"}], keywords:[{word:"has been translated",synonyms:["has been rendered"],note:"被翻译"}], alternatives:["This book has been rendered into many languages.","This book is available in many languages."]},
+      {id:513, source:"学生们被告知考试时间。", reference:"The students were informed of the exam time.", grammarPoints:[{name:"一般过去被动",detail:"were + 过去分词"},{name:"inform of",detail:"通知"},{name:"被动 + 双宾语",detail:"inform sb of sth → be informed of sth"}], keywords:[{word:"were informed",synonyms:["were told"],note:"被告知"}], alternatives:["The students were told the exam time.","Someone informed the students of the exam time."]},
+      {id:514, source:"这些照片可以放在网上吗？", reference:"Can these photos be posted online?", grammarPoints:[{name:"情态动词被动",detail:"can + be + 过去分词"},{name:"posted online",detail:"发到网上"},{name:"疑问句被动",detail:"情态动词提到主语前"}], keywords:[{word:"be posted",synonyms:["be uploaded"],note:"被发布"}], alternatives:["Can these photos be uploaded online?","Can we post these photos online?"]},
+      {id:515, source:"这个小镇以其美丽的风景而闻名。", reference:"This small town is known for its beautiful scenery.", grammarPoints:[{name:"be known for",detail:"因…而闻名"},{name:"被动语态",detail:"is known 被动形式"},{name:"its beautiful scenery",detail:"它美丽的风景"}], keywords:[{word:"is known for",synonyms:["is famous for"],note:"以…闻名"}], alternatives:["This small town is famous for its beautiful scenery.","This small town is renowned for its beautiful landscape."]},
+      {id:516, source:"事故发生时，他在送往医院的路上。", reference:"He was being taken to the hospital when the accident happened.", grammarPoints:[{name:"过去进行被动",detail:"was/were being + 过去分词"},{name:"过去进行被动",detail:"表示过去正在被做"},{name:"when + 一般过去",detail:"when 后面接突然发生的动作"}], keywords:[{word:"was being taken",synonyms:["was being rushed"],note:"正被送往"}], alternatives:["He was on his way to the hospital when the accident happened.","They were taking him to the hospital when the accident happened."]},
+      {id:517, source:"这个问题下周会被讨论。", reference:"This issue will be discussed next week.", grammarPoints:[{name:"将来时被动",detail:"will be + 过去分词"},{name:"discussed",detail:"讨论"},{name:"next week",detail:"下周"}], keywords:[{word:"will be discussed",synonyms:["will be talked about"],note:"将被讨论"}], alternatives:["This issue is going to be discussed next week.","They will discuss this issue next week."]},
+      {id:518, source:"她的演讲受到了热烈欢迎。", reference:"Her speech was warmly welcomed.", grammarPoints:[{name:"一般过去被动",detail:"was + 过去分词"},{name:"warmly welcomed",detail:"受到热烈欢迎"},{name:"被动 + 副词",detail:"副词 warmly 修饰 welcomed"}], keywords:[{word:"was welcomed",synonyms:["was received"],note:"被欢迎"}], alternatives:["Her speech was warmly received.","People warmly welcomed her speech."]},
+      {id:519, source:"这些旧建筑将被拆除。", reference:"These old buildings are going to be demolished.", grammarPoints:[{name:"将来被动",detail:"be going to be + 过去分词"},{name:"demolished",detail:"拆除"},{name:"旧建筑",detail:"old buildings"}], keywords:[{word:"are going to be demolished",synonyms:["will be torn down"],note:"将被拆除"}], alternatives:["These old buildings will be demolished.","These old buildings are to be torn down."]},
+      {id:520, source:"事故原因正在调查中。", reference:"The cause of the accident is being investigated.", grammarPoints:[{name:"现在进行被动",detail:"is being + 过去分词"},{name:"investigated",detail:"调查"},{name:"the cause of",detail:"…的原因"}], keywords:[{word:"is being investigated",synonyms:["is under investigation"],note:"正在被调查"}], alternatives:["The cause of the accident is under investigation.","They are investigating the cause of the accident."]}
     ]
   },
   {
-    id: "non-finite",
-    name: "非谓语动词",
-    icon: "✏️",
+    id: "non-finite", name: "非谓语动词", icon: "✏️",
     desc: "不定式/动名词/分词的用法",
     questions: [
-      {
-        id: 601, type: "topic",
-        source: "学英语最好的方法是多练习。",
-        reference: "The best way to learn English is to practice a lot.",
-        grammar: "不定式 to learn 作定语修饰 way，不定式 to practice 作表语。不定式在句中充当名词、形容词、副词的作用。",
-        grammarPoints: [
-          { name: "不定式作定语", detail: "to learn 修饰 way，'学英语的方式'", used: true },
-          { name: "不定式作表语", detail: "to practice 放在 is 后作表语", used: true },
-          { name: "the best way to", detail: "固定搭配，'做…最好的方法'", used: true }
-        ],
-        keywords: [
-          { word: "way to learn", synonyms: ["method of learning"], note: "'学…的方法'" },
-          { word: "practice", synonyms: ["exercise"], note: "'练习'" },
-          { word: "a lot", synonyms: ["a great deal"], note: "'大量地'" }
-        ],
-        alternatives: [
-          "The best method of learning English is practicing a lot.",
-          "Practicing a lot is the best way to learn English."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 602, type: "topic",
-        source: "他坐在椅子上，看着窗外。",
-        reference: "He sat in the chair, looking out of the window.",
-        grammar: "现在分词 looking 作伴随状语，表示与谓语同时发生的动作。现在分词 looking 的逻辑主语是主句主语 he。",
-        grammarPoints: [
-          { name: "现在分词作伴随状语", detail: "looking 表示与 sat 同时发生的伴随动作", used: true },
-          { name: "逻辑主语一致", detail: "looking 的逻辑主语与主句主语 he 一致", used: true },
-          { name: "分词作状语", detail: "现在分词表主动，过去分词表被动", used: true }
-        ],
-        keywords: [
-          { word: "sat", synonyms: ["was sitting"], note: "sit 的过去式，'坐'" },
-          { word: "chair", synonyms: ["seat"], note: "'椅子'" },
-          { word: "looking out", synonyms: ["gazing out"], note: "'向外看'" }
-        ],
-        alternatives: [
-          "He sat in the chair and looked out of the window.",
-          "Sitting in the chair, he looked out of the window."
-        ],
-        difficulty: "CET-6"
-      }
+      {id:601, source:"学英语最好的方法是多练习。", reference:"The best way to learn English is to practice a lot.", grammarPoints:[{name:"不定式作定语",detail:"to learn 修饰 way"},{name:"不定式作表语",detail:"to practice 放在 is 后"},{name:"the best way to",detail:"做…最好的方法"}], keywords:[{word:"way to learn",synonyms:["method of learning"],note:"学…的方法"},{word:"practice",synonyms:["exercise"],note:"练习"}], alternatives:["The best method of learning English is practicing a lot.","Practicing a lot is the best way to learn English."]},
+      {id:602, source:"他坐在椅子上，看着窗外。", reference:"He sat in the chair, looking out of the window.", grammarPoints:[{name:"现在分词作伴随状语",detail:"looking 表示伴随动作"},{name:"逻辑主语一致",detail:"looking 的逻辑主语是 he"},{name:"分词作状语",detail:"现在分词表主动"}], keywords:[{word:"sat",synonyms:["was sitting"],note:"坐"},{word:"looking out",synonyms:["gazing out"],note:"向外看"}], alternatives:["He sat in the chair and looked out of the window.","Sitting in the chair, he looked out of the window."]},
+      {id:603, source:"他太害怕了，不敢说话。", reference:"He was too frightened to speak.", grammarPoints:[{name:"too...to...",detail:"太…以至于不能…"},{name:"不定式",detail:"to speak 表示结果"},{name:"frightened",detail:"害怕的"}], keywords:[{word:"frightened",synonyms:["scared"],note:"害怕的"},{word:"speak",synonyms:["talk"],note:"说话"}], alternatives:["He was so frightened that he couldn't speak.","He was scared to speak."]},
+      {id:604, source:"她喜欢在早上跑步。", reference:"She enjoys running in the morning.", grammarPoints:[{name:"动名词作宾语",detail:"enjoy + doing"},{name:"动名词",detail:"running 是动名词"},{name:"enjoy doing",detail:"喜欢做某事"}], keywords:[{word:"enjoys",synonyms:["likes"],note:"喜欢"},{word:"running",synonyms:["jogging"],note:"跑步"}], alternatives:["She likes running in the morning.","She is fond of running in the morning."]},
+      {id:605, source:"为了赶上火车，他早早出发了。", reference:"To catch the train, he set off early.", grammarPoints:[{name:"不定式作目的状语",detail:"to catch 表示目的"},{name:"set off",detail:"出发"},{name:"不定式放句首",detail:"可以放在句首表示强调"}], keywords:[{word:"To catch",synonyms:["In order to catch"],note:"为了赶上"},{word:"set off",synonyms:["departed"],note:"出发"}], alternatives:["He set off early in order to catch the train.","He left early so as to catch the train."]},
+      {id:606, source:"我正在考虑换工作。", reference:"I am considering changing my job.", grammarPoints:[{name:"consider + doing",detail:"考虑做某事"},{name:"动名词作宾语",detail:"changing 是动名词"},{name:"consider + to do",detail:"认为（宾语补足语）"}], keywords:[{word:"considering",synonyms:["thinking about"],note:"考虑"},{word:"changing",synonyms:["switching"],note:"换"}], alternatives:["I am thinking about changing my job.","I am considering a job change."]},
+      {id:607, source:"被问到这个问题时，他沉默了。", reference:"Asked about this question, he fell silent.", grammarPoints:[{name:"过去分词作状语",detail:"Asked 表示被动"},{name:"分词逻辑主语",detail:"Asked 的逻辑主语是 he"},{name:"过去分词表被动",detail:"他被问到"}], keywords:[{word:"Asked",synonyms:["Questioned"],note:"被问到"},{word:"fell silent",synonyms:["became quiet"],note:"沉默了"}], alternatives:["When he was asked about this question, he fell silent.","Questioned about this, he kept silent."]},
+      {id:608, source:"这本书值得一读。", reference:"This book is worth reading.", grammarPoints:[{name:"be worth doing",detail:"值得做"},{name:"动名词主动表被动",detail:"reading 表示被动含义"},{name:"worth 的用法",detail:"worth + 名词/动名词"}], keywords:[{word:"worth",synonyms:["deserving"],note:"值得"},{word:"reading",synonyms:[],note:"阅读"}], alternatives:["This book is worthy of being read.","This book deserves to be read."]},
+      {id:609, source:"我习惯睡前喝茶。", reference:"I am used to drinking tea before bed.", grammarPoints:[{name:"be used to + doing",detail:"习惯做某事"},{name:"to 是介词",detail:"to 后面接名词/动名词"},{name:"区别",detail:"used to do 过去常常"}], keywords:[{word:"am used to",synonyms:["am accustomed to"],note:"习惯"},{word:"drinking",synonyms:[],note:"喝"}], alternatives:["I am accustomed to drinking tea before bed.","I am in the habit of drinking tea before bed."]},
+      {id:610, source:"看到妈妈，他笑了。", reference:"Seeing his mother, he smiled.", grammarPoints:[{name:"现在分词作时间状语",detail:"Seeing = When he saw"},{name:"分词作状语",detail:"现在分词表示主动"},{name:"两个动作同时",detail:"see 和 smile 几乎同时"}], keywords:[{word:"Seeing",synonyms:["Spotting"],note:"看到"},{word:"smiled",synonyms:["grinned"],note:"笑了"}], alternatives:["When he saw his mother, he smiled.","Upon seeing his mother, he smiled."]},
+      {id:611, source:"他承认犯了错。", reference:"He admitted having made a mistake.", grammarPoints:[{name:"admit + doing",detail:"承认做了某事"},{name:"动名词完成式",detail:"having made 表示动作发生在 admit 之前"},{name:"admit to",detail:"admit to + doing"}], keywords:[{word:"admitted",synonyms:["confessed"],note:"承认"},{word:"made a mistake",synonyms:["erred"],note:"犯错"}], alternatives:["He admitted making a mistake.","He confessed to having made a mistake."]},
+      {id:612, source:"他每天早上花一个小时读英语。", reference:"He spends an hour reading English every morning.", grammarPoints:[{name:"spend time doing",detail:"花时间做某事"},{name:"spend + 时间 + doing",detail:"固定搭配"},{name:"reading 是动名词",detail:"作宾语补足语"}], keywords:[{word:"spends",synonyms:["devotes"],note:"花"},{word:"reading",synonyms:["studying"],note:"读"}], alternatives:["He devotes an hour to reading English every morning.","It takes him an hour to read English every morning."]},
+      {id:613, source:"我想知道如何解决这个问题。", reference:"I want to know how to solve this problem.", grammarPoints:[{name:"疑问词 + 不定式",detail:"how to solve 作宾语"},{name:"不定式短语",detail:"how to solve this problem"},{name:"want to know",detail:"想知道"}], keywords:[{word:"want to know",synonyms:["wonder"],note:"想知道"},{word:"solve",synonyms:["resolve"],note:"解决"}], alternatives:["I wonder how to solve this problem.","I would like to know how to solve this problem."]},
+      {id:614, source:"她一来我就告诉她这个好消息。", reference:"I told her the good news upon her arrival.", grammarPoints:[{name:"upon/on + 名词",detail:"一…就…"},{name:"upon arrival",detail:"一来就"},{name:"动名词也可",detail:"upon arriving"}], keywords:[{word:"upon",synonyms:["on"],note:"在…时"},{word:"arrival",synonyms:["coming"],note:"到达"}], alternatives:["I told her the good news when she arrived.","I told her the good news upon her coming."]},
+      {id:615, source:"被她的话感动了，他哭了。", reference:"Moved by her words, he cried.", grammarPoints:[{name:"过去分词作原因状语",detail:"Moved = Because he was moved"},{name:"过去分词表被动",detail:"他被感动"},{name:"分词作状语",detail:"表原因"}], keywords:[{word:"Moved",synonyms:["Touched"],note:"被感动"},{word:"words",synonyms:["remarks"],note:"话"}], alternatives:["He was moved by her words and cried.","Touched by her words, he burst into tears."]},
+      {id:616, source:"我没有别的选择了。", reference:"I have no choice but to accept it.", grammarPoints:[{name:"have no choice but to do",detail:"别无选择只能"},{name:"but to do",detail:"except to do 除了做"},{name:"不定式",detail:"to accept 不定式"}], keywords:[{word:"no choice",synonyms:["no alternative"],note:"别无选择"},{word:"accept",synonyms:["agree to"],note:"接受"}], alternatives:["I have no alternative but to accept it.","I can do nothing but accept it."]},
+      {id:617, source:"这本书有助于提高你的写作。", reference:"This book helps improve your writing.", grammarPoints:[{name:"help + do/to do",detail:"help 后不定式可省略 to"},{name:"improve your writing",detail:"提高你的写作"},{name:"help doing",detail:"忍不住做（help doing）"}], keywords:[{word:"helps",synonyms:["assists"],note:"帮助"},{word:"improve",synonyms:["enhance"],note:"提高"}], alternatives:["This book helps to improve your writing.","This book is helpful for improving your writing."]},
+      {id:618, source:"他忍不住笑了。", reference:"He couldn't help laughing.", grammarPoints:[{name:"can't help + doing",detail:"忍不住做某事"},{name:"动名词",detail:"laughing"},{name:"固定搭配",detail:"can't help/stand/resist + doing"}], keywords:[{word:"couldn't help",synonyms:["couldn't resist"],note:"忍不住"},{word:"laughing",synonyms:["chuckling"],note:"笑"}], alternatives:["He couldn't resist laughing.","He couldn't help but laugh."]},
+      {id:619, source:"她希望被认真对待。", reference:"She wants to be taken seriously.", grammarPoints:[{name:"不定式被动",detail:"to be + 过去分词"},{name:"taken seriously",detail:"被认真对待"},{name:"不定式的时态",detail:"to be taken 表被动"}], keywords:[{word:"wants",synonyms:["desires"],note:"希望"},{word:"to be taken seriously",synonyms:["to be respected"],note:"被认真对待"}], alternatives:["She desires to be taken seriously.","She wishes to be treated seriously."]},
+      {id:620, source:"做完作业后，他去看电视了。", reference:"Having finished his homework, he went to watch TV.", grammarPoints:[{name:"分词的完成式",detail:"Having finished = After he finished"},{name:"完成分词",detail:"表示动作发生在谓语之前"},{name:"现在分词完成式",detail:"Having + 过去分词"}], keywords:[{word:"Having finished",synonyms:["After finishing"],note:"做完后"},{word:"homework",synonyms:["assignment"],note:"作业"}], alternatives:["After finishing his homework, he went to watch TV.","He went to watch TV after he had finished his homework."]}
     ]
   },
   {
-    id: "inversion",
-    name: "倒装句",
-    icon: "↔️",
+    id: "inversion", name: "倒装句", icon: "↔️",
     desc: "完全倒装和部分倒装的结构",
     questions: [
-      {
-        id: 701, type: "topic",
-        source: "直到他回到家，他才意识到丢了钱包。",
-        reference: "Not until he got home did he realize he had lost his wallet.",
-        grammar: "Not until 放在句首时，主句用部分倒装：did + 主语 + 动词原形。until 从句本身不倒装。",
-        grammarPoints: [
-          { name: "not until 倒装", detail: "not until 放句首，主句倒装", used: true },
-          { name: "部分倒装", detail: "did + 主语 + realize，助动词提前", used: true },
-          { name: "过去完成时", detail: "had lost 发生在 realized 之前", used: true }
-        ],
-        keywords: [
-          { word: "Not until", synonyms: ["Only when"], note: "'直到…才'，放句首主句倒装" },
-          { word: "got home", synonyms: ["arrived home"], note: "'到家'" },
-          { word: "realize", synonyms: ["notice"], note: "'意识到'" },
-          { word: "wallet", synonyms: ["purse"], note: "'钱包'" }
-        ],
-        alternatives: [
-          "Only when he got home did he realize he had lost his wallet.",
-          "He didn't realize he had lost his wallet until he got home."
-        ],
-        difficulty: "CET-6"
-      },
-      {
-        id: 702, type: "topic",
-        source: "只有通过努力工作，你才能成功。",
-        reference: "Only by working hard can you succeed.",
-        grammar: "'Only + 介词短语' 放在句首时，主句用部分倒装：can + 主语 + 动词原形。这是典型的强调性倒装结构。",
-        grammarPoints: [
-          { name: "only 倒装", detail: "only + 状语放句首，主句倒装", used: true },
-          { name: "情态动词提前", detail: "can 提到主语 you 前面", used: true },
-          { name: "by doing", detail: "by working hard '通过努力工作'，方式状语", used: true }
-        ],
-        keywords: [
-          { word: "Only by", synonyms: ["Only through"], note: "'只有通过'，放句首倒装" },
-          { word: "working hard", synonyms: ["striving"], note: "'努力工作'" },
-          { word: "succeed", synonyms: ["achieve success"], note: "'成功'" }
-        ],
-        alternatives: [
-          "You can succeed only by working hard.",
-          "Only through hard work can you succeed."
-        ],
-        difficulty: "CET-6"
-      }
+      {id:701, source:"直到他回到家，他才意识到丢了钱包。", reference:"Not until he got home did he realize he had lost his wallet.", grammarPoints:[{name:"not until 倒装",detail:"放句首，主句倒装"},{name:"部分倒装",detail:"did + 主语 + realize"},{name:"过去完成时",detail:"had lost 发生在 realized 之前"}], keywords:[{word:"Not until",synonyms:["Only when"],note:"直到…才"},{word:"got home",synonyms:["arrived home"],note:"到家"}], alternatives:["Only when he got home did he realize he had lost his wallet.","He didn't realize he had lost his wallet until he got home."]},
+      {id:702, source:"只有通过努力工作，你才能成功。", reference:"Only by working hard can you succeed.", grammarPoints:[{name:"only 倒装",detail:"only + 状语放句首倒装"},{name:"部分倒装",detail:"can + 主语 + succeed"},{name:"by doing",detail:"方式状语"}], keywords:[{word:"Only by",synonyms:["Only through"],note:"只有通过"},{word:"working hard",synonyms:["striving"],note:"努力工作"}], alternatives:["You can succeed only by working hard.","Only through hard work can you succeed."]},
+      {id:703, source:"他不仅会说英语，还会说法语。", reference:"Not only does he speak English, but he also speaks French.", grammarPoints:[{name:"Not only 倒装",detail:"Not only 放句首，前半句倒装"},{name:"部分倒装",detail:"does + 主语 + speak"},{name:"but also",detail:"而且"}], keywords:[{word:"Not only",synonyms:[]},{word:"speaks",synonyms:["can speak"],note:"会说"}], alternatives:["He not only speaks English but also French.","Not only can he speak English, but also French."]},
+      {id:704, source:"我刚坐下电话就响了。", reference:"No sooner had I sat down than the phone rang.", grammarPoints:[{name:"No sooner...than",detail:"一…就…"},{name:"倒装",detail:"No sooner + had + 主语 + done"},{name:"过去完成时",detail:"had sat 发生在 rang 之前"}], keywords:[{word:"No sooner",synonyms:["Hardly"],note:"一…就…"},{word:"sat down",synonyms:["took my seat"],note:"坐下"}], alternatives:["Hardly had I sat down when the phone rang.","I had no sooner sat down than the phone rang."]},
+      {id:705, source:"我决不会那样做。", reference:"Under no circumstances will I do that.", grammarPoints:[{name:"否定词放句首",detail:"Under no circumstances 绝不"},{name:"倒装",detail:"will + 主语 + do"},{name:"否定倒装",detail:"否定短语放句首倒装"}], keywords:[{word:"Under no circumstances",synonyms:["On no account"],note:"绝不"}], alternatives:["On no account will I do that.","I will under no circumstances do that."]},
+      {id:706, source:"他一进门，所有人都安静了。", reference:"In he came, and everyone fell silent.", grammarPoints:[{name:"完全倒装",detail:"地点状语放句首，主谓倒装"},{name:"here/there/now 倒装",detail:"Here comes the bus"},{name:"fall silent",detail:"变得安静"}], keywords:[{word:"came in",synonyms:["entered"],note:"进来"},{word:"fell silent",synonyms:["became quiet"],note:"安静下来"}], alternatives:["He came in, and everyone fell silent.","In came he, and everyone was quiet."]},
+      {id:707, source:"他几乎没时间完成这项工作。", reference:"Seldom does he have time to finish this work.", grammarPoints:[{name:"频度副词倒装",detail:"Seldom/hardly/rarely 放句首倒装"},{name:"部分倒装",detail:"does + 主语 + have"},{name:"seldom + 一般现在",detail:"很少"}], keywords:[{word:"Seldom",synonyms:["Rarely"],note:"很少"},{word:"have time",synonyms:["have enough time"],note:"有时间"}], alternatives:["He seldom has time to finish this work.","Rarely does he have time to finish this work."]},
+      {id:708, source:"她不仅是个老师，还是位作家。", reference:"Not only is she a teacher, but she is also a writer.", grammarPoints:[{name:"Not only 倒装",detail:"放句首时前半句倒装"},{name:"is she",detail:"系动词提到主语前"},{name:"but also",detail:"而且"}], keywords:[{word:"Not only",synonyms:[],note:"不仅"},{word:"teacher",synonyms:["instructor"],note:"老师"}], alternatives:["She is not only a teacher but also a writer.","Not only does she teach, but she also writes."]},
+      {id:709, source:"房间前面有一棵大树。", reference:"In front of the room stands a big tree.", grammarPoints:[{name:"地点倒装",detail:"地点状语放句首，完全倒装"},{name:"完全倒装",detail:"谓语动词提到主语前"},{name:"stands",detail:"站着"}], keywords:[{word:"In front of",synonyms:["Before"],note:"在…前面"}], alternatives:["A big tree stands in front of the room.","There stands a big tree in front of the room."]},
+      {id:710, source:"她如此善良，大家都喜欢她。", reference:"So kind is she that everyone likes her.", grammarPoints:[{name:"so...that 倒装",detail:"So + adj 放句首，主句倒装"},{name:"部分倒装",detail:"is + 主语"},{name:"结果状语",detail:"that 从句表示结果"}], keywords:[{word:"So kind",synonyms:["Such a kind person"],note:"如此善良"}], alternatives:["She is so kind that everyone likes her.","Such a kind person is she that everyone likes her."]},
+      {id:711, source:"我很少遇到这么有趣的人。", reference:"Rarely do I meet such interesting people.", grammarPoints:[{name:"否定词倒装",detail:"Rarely 放句首倒装"},{name:"部分倒装",detail:"do + 主语 + meet"},{name:"rarely/seldom",detail:"很少"}], keywords:[{word:"Rarely",synonyms:["Seldom"],note:"很少"},{word:"meet",synonyms:["encounter"],note:"遇到"}], alternatives:["I rarely meet such interesting people.","Seldom do I meet such interesting people."]},
+      {id:712, source:"只有在那时我才意识到她是对的。", reference:"Only then did I realize that she was right.", grammarPoints:[{name:"Only + then",detail:"那时才，放句首倒装"},{name:"only + 副词",detail:"only then/now/today"},{name:"部分倒装",detail:"did + 主语 + realize"}], keywords:[{word:"Only then",synonyms:[],note:"只有那时"},{word:"realize",synonyms:["understand"],note:"意识到"}], alternatives:["Only at that moment did I realize she was right.","I didn't realize she was right until then."]},
+      {id:713, source:"她对自己的工作一丝不苟。", reference:"So meticulous is she about her work.", grammarPoints:[{name:"so + adj 倒装",detail:"强调形容词"},{name:"系动词倒装",detail:"is + 主语"},{name:"meticulous about",detail:"对…一丝不苟"}], keywords:[{word:"meticulous",synonyms:["careful"],note:"一丝不苟的"}], alternatives:["She is so meticulous about her work.","Such meticulousness does she have about her work."]},
+      {id:714, source:"虽然他是个孩子，但懂得很多。", reference:"Child as he is, he knows a lot.", grammarPoints:[{name:"as 倒装",detail:"名词/形容词 + as + 主语 + be 表让步"},{name:"冠词省略",detail:"Child as he is，不用 a"},{name:"as = although",detail:"虽然"}], keywords:[{word:"Child as",synonyms:["Though he is a child"],note:"虽然是个孩子"},{word:"knows a lot",synonyms:["is knowledgeable"],note:"懂得很多"}], alternatives:["Though he is a child, he knows a lot.","Although he is young, he knows a lot."]},
+      {id:715, source:"他们不仅参观了博物馆，还去了公园。", reference:"Not only did they visit the museum, but they also went to the park.", grammarPoints:[{name:"Not only 倒装",detail:"前半句倒装"},{name:"did they visit",detail:"助动词提前"},{name:"但 also",detail:"后半句不倒装"}], keywords:[{word:"Not only",synonyms:[],note:"不仅"},{word:"visit",synonyms:["tour"],note:"参观"}], alternatives:["They not only visited the museum but also went to the park.","Not only did they tour the museum, but they also went to the park."]},
+      {id:716, source:"她很少抱怨生活。", reference:"Hardly ever does she complain about life.", grammarPoints:[{name:"否定副词倒装",detail:"Hardly ever 放句首倒装"},{name:"部分倒装",detail:"does + 主语 + complain"},{name:"hardly ever",detail:"几乎从不"}], keywords:[{word:"Hardly ever",synonyms:["Almost never"],note:"几乎从不"},{word:"complain",synonyms:["grumble"],note:"抱怨"}], alternatives:["She hardly ever complains about life.","Almost never does she complain about life."]},
+      {id:717, source:"警察一来，小偷就跑了。", reference:"Away ran the thief when the police came.", grammarPoints:[{name:"副词倒装",detail:"away/off/out 等副词放句首完全倒装"},{name:"完全倒装",detail:"动词 ran 提到主语前"},{name:"主语是名词",detail:"名词作主语时倒装"}], keywords:[{word:"Away",synonyms:["Off"],note:"…跑了"},{word:"thief",synonyms:["robber"],note:"小偷"}], alternatives:["The thief ran away when the police came.","Off ran the thief when the police arrived."]},
+      {id:718, source:"他绝不放弃。", reference:"On no account will he give up.", grammarPoints:[{name:"否定短语倒装",detail:"On no account 放句首倒装"},{name:"will + 主语",detail:"情态动词提前"},{name:"give up",detail:"放弃"}], keywords:[{word:"On no account",synonyms:["Never"],note:"绝不"},{word:"give up",synonyms:["surrender"],note:"放弃"}], alternatives:["He will on no account give up.","Never will he give up."]},
+      {id:719, source:"他一到办公室就开始工作。", reference:"No sooner had he arrived at the office than he started working.", grammarPoints:[{name:"No sooner...than",detail:"一…就…"},{name:"过去完成倒装",detail:"had + 主语 + 过去分词"},{name:"than 后面",detail:"than 后面用一般过去时"}], keywords:[{word:"No sooner",synonyms:["Hardly"],note:"一…就…"},{word:"arrived",synonyms:["got to"],note:"到达"}], alternatives:["Hardly had he arrived at the office when he started working.","He had no sooner arrived at the office than he started working."]},
+      {id:720, source:"只有尝试过才知道能不能做到。", reference:"Only by trying can you know if you can do it.", grammarPoints:[{name:"Only 倒装",detail:"Only + 介词短语放句首"},{name:"can you know",detail:"部分倒装"},{name:"by doing",detail:"通过做"}], keywords:[{word:"Only by",synonyms:[],note:"只有通过"},{word:"trying",synonyms:["attempting"],note:"尝试"}], alternatives:["You can only know if you can do it by trying.","Only through trying can you know if you can do it."]}
     ]
   },
   {
-    id: "tenses",
-    name: "时态",
-    icon: "⏰",
+    id: "tenses", name: "时态", icon: "⏰",
     desc: "完成时/进行时/完成进行时的综合运用",
     questions: [
-      {
-        id: 801, type: "topic",
-        source: "我在这家公司已经工作了五年。",
-        reference: "I have been working in this company for five years.",
-        grammar: "现在完成进行时 have been + 现在分词，强调动作从过去开始持续到现在，并且可能继续下去。for + 时间段是一起使用的标志。",
-        grammarPoints: [
-          { name: "现在完成进行时", detail: "have been + doing，表示持续到现在的动作", used: true },
-          { name: "for + 时间段", detail: "for five years 表示动作持续了五年", used: true },
-          { name: "与完成时的区别", detail: "完成进行时强调持续，完成时强调结果", used: true }
-        ],
-        keywords: [
-          { word: "have been working", synonyms: ["have worked"], note: "'一直在工作'，完成进行时" },
-          { word: "company", synonyms: ["corporation", "firm"], note: "'公司'" },
-          { word: "for five years", synonyms: [], note: "'五年了'，时间段" }
-        ],
-        alternatives: [
-          "I have worked in this company for five years.",
-          "I have been employed by this company for five years."
-        ],
-        difficulty: "CET-4"
-      },
-      {
-        id: 802, type: "topic",
-        source: "到我毕业的时候，我已经学了十年英语了。",
-        reference: "By the time I graduate, I will have studied English for ten years.",
-        grammar: "将来完成时 will have + 过去分词，表示在将来某个时间点之前已经完成的动作。by the time '到…时候' 是标志词。",
-        grammarPoints: [
-          { name: "将来完成时", detail: "will have + 过去分词，表示将来某时已完成的动作", used: true },
-          { name: "by the time", detail: "'到…时'，引导时间状语从句", used: true },
-          { name: "从句用一般现在", detail: "时间状语从句中一般现在时表将来", used: true }
-        ],
-        keywords: [
-          { word: "By the time", synonyms: [], note: "'到…时候'，完成时标志词" },
-          { word: "graduate", synonyms: ["finish school"], note: "'毕业'" },
-          { word: "will have studied", synonyms: [], note: "'将已经学了'，将来完成时" }
-        ],
-        alternatives: [
-          "When I graduate, I will have been studying English for ten years.",
-          "By graduation, I will have studied English for ten years."
-        ],
-        difficulty: "CET-6"
-      },
-      {
-        id: 803, type: "topic",
-        source: "我正要出门这时电话响了。",
-        reference: "I was about to go out when the phone rang.",
-        grammar: "be about to do...when... 表示'正要…这时突然…'，用过去时态叙述过去发生的事情。when 表示'这时突然'。",
-        grammarPoints: [
-          { name: "be about to do", detail: "'正要做某事'，表示即将发生的动作", used: true },
-          { name: "when 特殊用法", detail: "when 表示'这时突然'，连接意外事件", used: true },
-          { name: "一般过去时", detail: "rang 表示过去发生的突然动作", used: true }
-        ],
-        keywords: [
-          { word: "was about to", synonyms: ["was going to"], note: "'正打算'" },
-          { word: "go out", synonyms: ["leave"], note: "'出门'" },
-          { word: "rang", synonyms: [], note: "ring 的过去式，'（电话）响了'" }
-        ],
-        alternatives: [
-          "I was just about to leave when the phone rang.",
-          "I was on the point of going out when the phone rang."
-        ],
-        difficulty: "CET-6"
-      }
+      {id:801, source:"我在这家公司已经工作了五年。", reference:"I have been working in this company for five years.", grammarPoints:[{name:"现在完成进行时",detail:"have been + doing"},{name:"for + 时间段",detail:"持续了五年"},{name:"强调持续",detail:"完成进行时强调持续"}], keywords:[{word:"have been working",synonyms:["have worked"],note:"一直在工作"},{word:"for five years",synonyms:[],note:"五年了"}], alternatives:["I have worked in this company for five years.","I have been employed by this company for five years."]},
+      {id:802, source:"到我毕业的时候，我已经学了十年英语了。", reference:"By the time I graduate, I will have studied English for ten years.", grammarPoints:[{name:"将来完成时",detail:"will have + 过去分词"},{name:"by the time",detail:"到…时候"},{name:"从句一般现在",detail:"时间状语从句一般现在表将来"}], keywords:[{word:"By the time",synonyms:[],note:"到…时候"},{word:"will have studied",synonyms:[],note:"将已经学了"}], alternatives:["When I graduate, I will have been studying English for ten years.","By graduation, I will have studied English for ten years."]},
+      {id:803, source:"我正要出门这时电话响了。", reference:"I was about to go out when the phone rang.", grammarPoints:[{name:"be about to do",detail:"正要做某事"},{name:"when 特殊用法",detail:"这时突然"},{name:"一般过去时",detail:"rang"}], keywords:[{word:"was about to",synonyms:["was going to"],note:"正打算"},{word:"rang",synonyms:[],note:"响了"}], alternatives:["I was just about to leave when the phone rang.","I was on the point of going out when the phone rang."]},
+      {id:804, source:"他去年已经大学毕业了。", reference:"He graduated from university last year.", grammarPoints:[{name:"一般过去时",detail:"last year 是过去时间"},{name:"graduated from",detail:"毕业于"},{name:"过去时标志",detail:"last year/yesterday/ago"}], keywords:[{word:"graduated",synonyms:["finished"],note:"毕业"},{word:"university",synonyms:["college"],note:"大学"}], alternatives:["He finished university last year.","He was graduated from university last year."]},
+      {id:805, source:"我从来没去过北京。", reference:"I have never been to Beijing.", grammarPoints:[{name:"现在完成时",detail:"have/has + 过去分词"},{name:"never",detail:"从来没有"},{name:"have been to",detail:"去过（已返回）"}], keywords:[{word:"have never been",synonyms:[],note:"从来没去过"}], alternatives:["I've never visited Beijing.","I have never been to Beijing before."]},
+      {id:806, source:"她正在洗澡的时候电话响了。", reference:"She was taking a shower when the phone rang.", grammarPoints:[{name:"过去进行时",detail:"was/were + doing"},{name:"when",detail:"这时突然"},{name:"长动作+短动作",detail:"进行时表长动作"}], keywords:[{word:"was taking a shower",synonyms:["was bathing"],note:"正在洗澡"},{word:"rang",synonyms:[],note:"响了"}], alternatives:["The phone rang while she was taking a shower.","She was in the shower when the phone rang."]},
+      {id:807, source:"他每天早晨都跑步。", reference:"He runs every morning.", grammarPoints:[{name:"一般现在时",detail:"表示习惯性动作"},{name:"第三人称单数",detail:"runs"},{name:"every morning",detail:"每天早晨"}], keywords:[{word:"runs",synonyms:["jogs"],note:"跑步"}], alternatives:["He goes running every morning.","He jogs every morning."]},
+      {id:808, source:"明天这个时候我们正在上课。", reference:"This time tomorrow we will be having class.", grammarPoints:[{name:"将来进行时",detail:"will be + doing"},{name:"this time tomorrow",detail:"明天这个时候"},{name:"将来进行",detail:"表示将来某时刻正在做"}], keywords:[{word:"will be having",synonyms:["will be attending"],note:"正在上"}], alternatives:["We will have class at this time tomorrow.","We will be attending class this time tomorrow."]},
+      {id:809, source:"她在打扫房间时发现了这张旧照片。", reference:"While she was cleaning the room, she found this old photo.", grammarPoints:[{name:"过去进行时 + 一般过去",detail:"while 从句进行时，主句一般过去"},{name:"find/found",detail:"发现"},{name:"while",detail:"在…期间"}], keywords:[{word:"was cleaning",synonyms:["was tidying"],note:"正在打扫"},{word:"found",synonyms:["discovered"],note:"发现"}], alternatives:["She found this old photo while cleaning the room.","While cleaning the room, she found this old photo."]},
+      {id:810, source:"我到家时她已经做好了晚饭。", reference:"When I got home, she had already cooked dinner.", grammarPoints:[{name:"过去完成时",detail:"had + 过去分词"},{name:"already",detail:"已经"},{name:"过去的过去",detail:"cook 发生在 get 之前"}], keywords:[{word:"had already cooked",synonyms:["had already prepared"],note:"已经做好了"},{word:"got home",synonyms:["arrived home"],note:"到家"}], alternatives:["She had already prepared dinner when I got home.","When I got home, dinner had already been prepared."]},
+      {id:811, source:"他今天早上遇到了一场事故。", reference:"He had an accident this morning.", grammarPoints:[{name:"一般过去时",detail:"this morning 表示过去"},{name:"had an accident",detail:"出事故"},{name:"过去时",detail:"明确过去时间"}], keywords:[{word:"had an accident",synonyms:["was in an accident"],note:"出事故"}], alternatives:["He was in an accident this morning.","An accident happened to him this morning."]},
+      {id:812, source:"到今年年底，他就工作十年了。", reference:"By the end of this year, he will have worked for ten years.", grammarPoints:[{name:"将来完成时",detail:"will have + 过去分词"},{name:"by the end of",detail:"到…底"},{name:"for ten years",detail:"十年"}], keywords:[{word:"By the end of",synonyms:[],note:"到…底"},{word:"will have worked",synonyms:[],note:"将已经工作"}], alternatives:["He will have been working for ten years by the end of this year.","By the end of this year, he will have been employed for ten years."]},
+      {id:813, source:"他当时正要离开，突然下起了雨。", reference:"He was about to leave when it suddenly started to rain.", grammarPoints:[{name:"be about to do",detail:"正要做"},{name:"when 突然",detail:"when + 一般过去"},{name:"started to rain",detail:"开始下雨"}], keywords:[{word:"was about to",synonyms:["was going to"],note:"正要"},{word:"suddenly",synonyms:["all of a sudden"],note:"突然"}], alternatives:["He was going to leave when it suddenly began to rain.","He was on the point of leaving when it started to rain."]},
+      {id:814, source:"他们结婚已经有20年了。", reference:"They have been married for 20 years.", grammarPoints:[{name:"现在完成时",detail:"表示持续到现在的状态"},{name:"for + 时间段",detail:"20年"},{name:"have been married",detail:"已婚状态"}], keywords:[{word:"have been married",synonyms:["got married"],note:"结婚"},{word:"for 20 years",synonyms:[],note:"20年了"}], alternatives:["They got married 20 years ago.","It has been 20 years since they got married."]},
+      {id:815, source:"他经常在上课时睡觉。", reference:"He often sleeps in class.", grammarPoints:[{name:"一般现在时",detail:"表示习惯"},{name:"often",detail:"经常"},{name:"in class",detail:"上课时"}], keywords:[{word:"often",synonyms:["frequently"],note:"经常"},{word:"sleeps",synonyms:["dozes off"],note:"睡觉"}], alternatives:["He often dozes off in class.","He frequently falls asleep in class."]},
+      {id:816, source:"等他到的时候，我们已经吃完了。", reference:"By the time he arrives, we will have already eaten.", grammarPoints:[{name:"将来完成时",detail:"will have + 过去分词"},{name:"by the time",detail:"到…时候"},{name:"从句一般现在",detail:"arrives 用一般现在表将来"}], keywords:[{word:"By the time",synonyms:[],note:"到…时"},{word:"will have eaten",synonyms:["will have finished eating"],note:"将已经吃完"}], alternatives:["When he arrives, we will have already finished eating.","We will have had our meal by the time he comes."]},
+      {id:817, source:"我在这里住了10年了。", reference:"I have lived here for 10 years.", grammarPoints:[{name:"现在完成时",detail:"表示从过去持续到现在的动作"},{name:"for + 时间段",detail:"10年"},{name:"have lived vs have been living",detail:"两者都可，完成进行时更强调持续"}], keywords:[{word:"have lived",synonyms:["have been living"],note:"住了"}], alternatives:["I have been living here for 10 years.","I moved here 10 years ago."]},
+      {id:818, source:"她昨天把钥匙弄丢了。", reference:"She lost her keys yesterday.", grammarPoints:[{name:"一般过去时",detail:"yesterday 是过去时间"},{name:"lost",detail:"lose 的过去式"},{name:"keys",detail:"钥匙"}], keywords:[{word:"lost",synonyms:["misplaced"],note:"弄丢"}], alternatives:["She misplaced her keys yesterday.","She had lost her keys yesterday."]},
+      {id:819, source:"明天下午三点我们正在考试。", reference:"We will be taking an exam at 3 pm tomorrow.", grammarPoints:[{name:"将来进行时",detail:"will be + doing"},{name:"at 3 pm tomorrow",detail:"具体将来时间点"},{name:"taking an exam",detail:"参加考试"}], keywords:[{word:"will be taking",synonyms:["will be having"],note:"正在考"},{word:"exam",synonyms:["test"],note:"考试"}], alternatives:["We will have an exam at 3 pm tomorrow.","At 3 pm tomorrow, we will be having an exam."]},
+      {id:820, source:"我已经好几年没见到他了。", reference:"I haven't seen him for years.", grammarPoints:[{name:"现在完成时否定",detail:"haven't + 过去分词"},{name:"for years",detail:"好几年"},{name:"see/seen",detail:"不规则动词"}], keywords:[{word:"haven't seen",synonyms:["haven't met"],note:"没见过"}], alternatives:["I haven't met him for years.","It has been years since I last saw him."]}
     ]
   }
 ];
-
-// 获取所有专题
-function getAllTopics() {
-  return TOPICS;
-}
-
-// 根据专题 ID 获取题目
-function getTopicQuestions(topicId) {
-  const topic = TOPICS.find(t => t.id === topicId);
-  return topic ? topic.questions : [];
-}
