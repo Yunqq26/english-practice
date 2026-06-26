@@ -2,6 +2,7 @@
 let currentTopicId = null;
 let currentTopicQuestion = null;
 let currentTopicIndex = -1;
+let currentTopicQuestions = [];
 
 function renderTopicGrid() {
   const el = document.getElementById('topicGrid');
