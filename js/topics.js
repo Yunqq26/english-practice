@@ -209,3 +209,9 @@ const TOPICS = [
     ]
   }
 ];
+
+function getAllTopics() { return TOPICS; }
+function getTopicQuestions(topicId) {
+  const t = TOPICS.find(t => t.id === topicId);
+  return t ? t.questions : [];
+}
