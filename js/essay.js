@@ -97,8 +97,10 @@ function initNav() {
       document.getElementById('pageTranslation').hidden = tab !== 'translation';
       document.getElementById('pageEssayBank').hidden = tab !== 'essay';
       document.getElementById('pageSelfTest').hidden = tab !== 'selftest';
+      document.getElementById('pageTopics').hidden = tab !== 'topics';
       if (tab === 'essay') renderEssayList();
       if (tab === 'selftest') initSelfTest();
+      if (tab === 'topics') renderTopicGrid();
     });
   });
 }
