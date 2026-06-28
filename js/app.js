@@ -249,13 +249,7 @@ async function handleLogin() {
     loadCurrentUserData();
     document.querySelector('.header').style.display = '';
     return showAppAfterLogin();
-  } catch(e) {
-    if (e.message === 'Failed to fetch') {
-      // 后端不通，走本地
-    } else {
-      err.textContent = e.message; err.classList.add('show'); return;
-    }
-  }
+  } catch(e) { /* 云端任何错误都走本地 */ }
   const users = getUsers();
   if (!users[user]) { err.textContent = '用户不存在'; err.classList.add('show'); return; }
   if (users[user].password !== hashPW(pass)) { err.textContent = '密码错误'; err.classList.add('show'); return; }
@@ -282,13 +276,7 @@ async function handleRegister() {
     err.className = 'auth-success';
     err.textContent = '✅ 注册成功！即将跳转登录...';
     return setTimeout(() => renderAuthPage('login'), 1200);
-  } catch(e) {
-    if (e.message === 'Failed to fetch') {
-      // 后端不通，走本地
-    } else {
-      err.textContent = e.message; err.classList.add('show'); return;
-    }
-  }
+  } catch(e) { /* 云端任何错误都走本地 */ }
   const users = getUsers();
   if (users[user]) { err.textContent = '用户名已存在'; err.classList.add('show'); return; }
   users[user] = { password: hashPW(pass), role: 'user' };
