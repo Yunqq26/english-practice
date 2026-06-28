@@ -194,101 +194,125 @@ const Analyzer = {
     return html;
   },
 
-  /** 详细解释为什么错，结合上下文给出具体语法说明 */
+  /** 根据具体句子上下文解释错误原因 */
   _explainError(userWord, refWord, userAnswer, reference, userTokens, refTokens) {
     const uw = userWord.toLowerCase();
     const rw = refWord.toLowerCase();
 
-    // 时态/动词形式错误
-    const tenseReason = this._checkTenseError(uw, rw, userTokens, refTokens);
-    if (tenseReason) return tenseReason;
+    // 找到错误词在句子中的位置，分析上下文
+    const userIdx = userTokens.findIndex(t => t === uw);
+    const refIdx = refTokens.findIndex(t => t === rw);
 
-    // 介词错误
-    const preps = ['in','on','at','to','for','of','with','by','from','about','into','through','during','without','against','between','under','over','after','before'];
-    if (preps.includes(uw) && preps.includes(rw)) {
-      if (rw === 'on' && uw === 'in') return {reason:'介词 on 和 in 混淆',fix:'表示"在具体某天/某日"用 on，表示"在某个时间段内"用 in'};
-      if (rw === 'at' && uw === 'in') return {reason:'介词 at 和 in 混淆',fix:'表示"在具体时刻/地点"用 at，表示"在较大范围"用 in'};
-      if (rw === 'for' && uw === 'since') return {reason:'for 和 since 混淆',fix:'for + 时间段，since + 时间点'};
-      if (rw === 'since' && uw === 'for') return {reason:'for 和 since 混淆',fix:'since + 时间点，for + 时间段'};
-      return {reason:'介词 "'+uw+'" 使用不当',fix:'此处应用介词 "'+rw+'"'};
-    }
+    // 获取前一个词（可能是主语）
+    const prevUserWord = userIdx > 0 ? userTokens[userIdx - 1] : '';
+    const prevRefWord = refIdx > 0 ? refTokens[refIdx - 1] : '';
 
-    // 冠词错误
-    const articles = ['a','an','the'];
-    if (articles.includes(uw) && articles.includes(rw)) {
-      if (rw === 'the') return {reason:'定冠词 the 和不定冠词混淆',fix:'特指双方都知道的事物时用 the，泛指时用 a/an'};
-      if (rw === 'a' || rw === 'an') return {reason:'冠词使用不当',fix:''+(rw==='a'?'以辅音开头的词前用 a':'以元音开头的词前用 an')};
-      return {reason:'冠词使用不当',fix:'此处应用 "'+rw+'"'};
-    }
+    // 查找句中的时间标志词
+    const pastMarkers = ['yesterday', 'last', 'ago', 'in 2020', 'in 2021', 'in 2022', 'in 2023', 'just now', 'the day before', 'previously', 'once', 'used to'];
+    const presentMarkers = ['every day', 'every week', 'every year', 'always', 'usually', 'often', 'sometimes', 'never', 'generally'];
+    const futureMarkers = ['tomorrow', 'next', 'soon', 'later', 'in the future', 'will', 'shall'];
+    const hasPast = pastMarkers.some(m => userTokens.join(' ').includes(m));
+    const hasPresent = presentMarkers.some(m => userTokens.join(' ').includes(m));
 
-    // 名词单复数
-    if (uw+'s' === rw || uw === rw+'s' || (uw.endsWith('y') && uw.slice(0,-1)+'ies' === rw)) {
-      return {reason:'名词单复数形式错误',fix:'此处应用 '+rw+'（'+(rw.length>uw.length?'复数形式':'单数形式')+'）'};
-    }
+    // 判断主语是否是第三人称单数
+    const thirdPersonSubjects = ['he','she','it','this','that','everyone','everybody','someone','somebody','no one','nobody','each','either','neither'];
+    const firstPersonSubjects = ['i','we'];
+    const pluralSubjects = ['they','you','we','these','those'];
+    const isThirdPerson = thirdPersonSubjects.includes(prevUserWord);
+    const isPlural = pluralSubjects.includes(prevUserWord);
 
-    // 默认
-    return {reason:'用词不当，此处推荐使用 "'+rw+'"',fix:'尝试用 "'+rw+'" 替换 "'+uw+'"'};
-  },
-
-  /** 检查时态/主谓一致错误 */
-  _checkTenseError(uw, rw, userTokens, refTokens) {
     // 构建不规则动词表
     const tenseMap = {"go":["went","gone","goes","going"],"come":["came","comes","coming"],"take":["took","taken","takes","taking"],"make":["made","makes","making"],"have":["had","has","having"],"do":["did","done","does","doing"],"get":["got","gotten","gets","getting"],"see":["saw","seen","sees","seeing"],"know":["knew","known","knows"],"think":["thought","thinks","thinking"],"say":["said","says","saying"],"tell":["told","tells","telling"],"give":["gave","given","gives","giving"],"find":["found","finds","finding"],"keep":["kept","keeps","keeping"],"leave":["left","leaves","leaving"],"meet":["met","meets","meeting"],"write":["wrote","written","writes","writing"],"speak":["spoke","spoken","speaks","speaking"],"build":["built","builds","building"],"buy":["bought","buys","buying"],"bring":["brought","brings","bringing"],"catch":["caught","catches","catching"],"choose":["chose","chosen","chooses","choosing"],"begin":["began","begun","begins","beginning"],"break":["broke","broken","breaks","breaking"],"drink":["drank","drunk","drinks","drinking"],"eat":["ate","eaten","eats","eating"],"fall":["fell","fallen","falls","falling"],"feel":["felt","feels","feeling"],"grow":["grew","grown","grows","growing"],"hold":["held","holds","holding"],"lead":["led","leads","leading"],"lose":["lost","loses","losing"],"pay":["paid","pays","paying"],"send":["sent","sends","sending"],"spend":["spent","spends","spending"],"stand":["stood","stands","standing"],"teach":["taught","teaches","teaching"],"understand":["understood","understands","understanding"],"wear":["wore","worn","wears","wearing"],"win":["won","wins","winning"]};
 
-    // 检查是否在同一动词的不同形式之间变化
+    // 查找动词属于哪个不规则动词
+    let verbBase = null;
     for (const [base, forms] of Object.entries(tenseMap)) {
-      if (![base,...forms].includes(uw) || ![base,...forms].includes(rw)) continue;
-      if (uw === rw) return null;
-
-      // 判断是第三人称单数形式 (goes/has/does)
-      if (rw.endsWith('s') && !uw.endsWith('s')) {
-        return {reason:'主谓不一致：主语是第三人称单数时，动词应加 s/es',fix:'将 "'+uw+'" 改为第三人称单数形式 "'+rw+'"'};
+      if ([base,...forms].includes(uw) && [base,...forms].includes(rw) && uw !== rw) {
+        verbBase = { base, forms };
+        break;
       }
-      if (uw.endsWith('s') && !rw.endsWith('s')) {
-        return {reason:'主谓不一致：主语不是第三人称单数时，动词不用加 s/es',fix:'将 "'+uw+'" 改为原形 "'+rw+'"'};
-      }
+    }
 
-      // 判断过去式 (went/had/did)
-      if (rw === base+'ed' || rw.endsWith('ed') || tenseMap[base] && forms.includes(rw) && !forms.includes(uw)) {
-        // 粗略判断：如果 uw 是原形而 rw 是过去式
-        if (uw === base) return {reason:'时态错误：描述过去发生的动作，应用过去式',fix:'将 "'+uw+'" 改为过去式 "'+rw+'"'};
-        if (rw === base) return {reason:'时态错误：描述一般事实或习惯，应用动词原形',fix:'将 "'+uw+'" 改为原形 "'+rw+'"'};
-        if (rw.endsWith('ing')) return {reason:'时态错误：此处应用现在分词/动名词形式',fix:'将 "'+uw+'" 改为 "'+rw+'"'};
+    if (verbBase) {
+      // 判断是原形→三单还是三单→原形
+      if (rw.endsWith('s') && !uw.endsWith('s') && (rw === verbBase.base + 's' || rw === verbBase.base + 'es')) {
+        const subject = prevUserWord ? '「' + prevUserWord + '」' : '主语';
+        return {reason:'主谓不一致：' + subject + ' 是第三人称单数，动词应用 ' + rw + '（加 s/es）',fix:'将 "' + uw + '" 改为第三人称单数形式 "' + rw + '"'};
+      }
+      if (uw.endsWith('s') && !rw.endsWith('s') && (uw === verbBase.base + 's' || uw === verbBase.base + 'es')) {
+        return {reason:'主谓不一致：主语不是第三人称单数时，动词不用加 s',fix:'将 "' + uw + '" 改为动词原形 "' + rw + '"'};
       }
 
-      // 过去分词 (gone/been/taken)
-      if (rw.endsWith('en') || rw === 'gone' || rw === 'been') {
-        return {reason:'时态错误：完成时或被动语态中应用过去分词',fix:'将 "'+uw+'" 改为过去分词 "'+rw+'"'};
+      // 判断时态
+      if (hasPast) {
+        return {reason:'时态错误：句中包含过去时间词，表示过去发生的动作',fix:'将 "' + uw + '" 改为过去式 "' + rw + '"'};
+      }
+      // 过去式
+      if (rw === verbBase.base + 'ed' || (rw.endsWith('ed') && !uw.endsWith('ed')) || (verbBase.forms.includes(rw) && rw !== verbBase.base && !rw.endsWith('s') && !rw.endsWith('ing'))) {
+        if (uw === verbBase.base) {
+          return {reason:'时态错误：这句话描述的是过去发生的事情，动词应该用过去式',fix:'将 "' + uw + '" 改为过去式 "' + rw + '"'};
+        }
+      }
+      if (uw.endsWith('ed') && rw === verbBase.base) {
+        return {reason:'时态错误：这句话描述的是客观事实或习惯性动作，应该用一般现在时',fix:'将 "' + uw + '" 改为动词原形 "' + rw + '"'};
       }
 
-      // 现在分词 (going/doing)
-      if (rw.endsWith('ing')) {
-        return {reason:'时态错误：进行时中应用现在分词形式',fix:'将 "'+uw+'" 改为现在分词 "'+rw+'"'};
+      // 现在分词
+      if (rw.endsWith('ing') && !uw.endsWith('ing')) {
+        return {reason:'时态错误：进行时中动词要用现在分词形式（-ing）',fix:'将 "' + uw + '" 改为现在分词 "' + rw + '"'};
+      }
+
+      // 过去分词
+      if ((rw.endsWith('en') || rw === 'gone' || rw === 'been') && !uw.endsWith('en') && uw !== 'been') {
+        return {reason:'时态错误：完成时或被动语态中动词要用过去分词形式',fix:'将 "' + uw + '" 改为过去分词 "' + rw + '"'};
       }
 
       // 默认时态说明
-      return {reason:'动词形式不正确',fix:'此处应用 "'+rw+'" 而非 "'+uw+'"'};
+      const reason = hasPast ? '过去时间' : (hasPresent ? '一般现在时' : '');
+      return {reason:'动词形式不正确' + (reason ? '（' + reason + '）' : ''),fix:'此处应用 "' + rw + '"'};
     }
 
-    // 检查 be 动词
+    // be 动词
     const beVerbs = ['am','is','are','was','were','be','been','being'];
     if (beVerbs.includes(uw) && beVerbs.includes(rw) && uw !== rw) {
-      if (rw === 'is' || rw === 'was') return {reason:'主谓不一致：主语是第三人称单数时，be 动词应用 "'+rw+'"',fix:'将 "'+uw+'" 改为 "'+rw+'"'};
-      if (rw === 'are' || rw === 'were') return {reason:'主谓不一致：主语是复数或 you 时，be 动词应用 "'+rw+'"',fix:'将 "'+uw+'" 改为 "'+rw+'"'};
-      if (rw === 'am') return {reason:'主语是 I 时，be 动词用 am',fix:'将 "'+uw+'" 改为 "am"'};
-      if (rw === 'was' || rw === 'were') return {reason:'时态错误：描述过去的动作应用过去时',fix:'将 "'+uw+'" 改为 "'+rw+'"'};
-      return {reason:'be 动词使用不当',fix:'此处应用 "'+rw+'"'};
+      if ((rw === 'is' || rw === 'was') && isThirdPerson) {
+        return {reason:'主谓一致：' + prevUserWord + ' 是第三人称单数，be 动词应用 ' + rw,fix:'将 "' + uw + '" 改为 "' + rw + '"'};
+      }
+      if ((rw === 'are' || rw === 'were') && isPlural) {
+        return {reason:'主谓一致：' + prevUserWord + ' 是复数，be 动词应用 ' + rw,fix:'将 "' + uw + '" 改为 "' + rw + '"'};
+      }
+      if (rw === 'am' && prevUserWord === 'i') {
+        return {reason:'主语是 I 时，be 动词必须用 am',fix:'将 "' + uw + '" 改为 "am"'};
+      }
+      return {reason:'be 动词使用不当',fix:'此处应用 "' + rw + '"'};
     }
 
-    // 检查 do/does/don't/doesn't
-    if ((uw === 'do' && rw === 'does') || (uw === 'does' && rw === 'do')) {
-      return {reason:'主谓不一致：主语是第三人称单数时用 does，否则用 do',fix:'将 "'+uw+'" 改为 "'+rw+'"'};
+    // do/does/don't/doesn't
+    if ((uw === 'do' && rw === 'does') || (uw === 'don\'t' && rw === 'doesn\'t')) {
+      return {reason:'主语是第三人称单数时，助动词用 does/doesn\'t',fix:'将 "' + uw + '" 改为 "' + rw + '"'};
     }
-    if ((uw === 'don't' && rw === 'doesn't') || (uw === 'doesn't' && rw === 'don't')) {
-      return {reason:'主谓不一致：主语是第三人称单数时否定用 doesn't，否则用 don't',fix:'将 "'+uw+'" 改为 "'+rw+'"'};
+    if ((uw === 'does' && rw === 'do') || (uw === 'doesn\'t' && rw === 'don\'t')) {
+      return {reason:'主语不是第三人称单数时，助动词用 do/don\'t',fix:'将 "' + uw + '" 改为 "' + rw + '"'};
     }
 
-    return null;
+    // 介词
+    const preps = ['in','on','at','to','for','of','with','by','from','about','into','through','during','without','against','between','under','over','after','before'];
+    if (preps.includes(uw) && preps.includes(rw)) {
+      return {reason:'介词 "' + uw + '" 和 "' + rw + '" 混淆',fix:'此处应用 "' + rw + '"，请根据后面搭配的名词选择合适的介词'};
+    }
+
+    // 冠词
+    const articles = ['a','an','the'];
+    if (articles.includes(uw) && articles.includes(rw)) {
+      return {reason:'冠词 "' + uw + '" 使用不当',fix:'此处应使用 "' + rw + '"'};
+    }
+
+    // 名词单复数
+    if (uw + 's' === rw || uw === rw + 's') {
+      return {reason:'名词单复数错误',fix:'此处应使用 ' + (rw.length > uw.length ? '复数形式 "' + rw + '"' : '单数形式 "' + rw + '"')};
+    }
+
+    return {reason:'此处推荐使用 "' + rw + '"',fix:'将 "' + uw + '" 改为 "' + rw + '"'};
   },  // ---- 3. Teacher-mode scoring ----
   scoreTranslation(userAnswer, reference, keywords, alternatives) {
     const user = userAnswer.toLowerCase().trim();
