@@ -136,4 +136,19 @@ router.get('/export/:username', async (req, res) => {
   res.json({ progress, stats, vocab: { words }, essays });
 });
 
+
+router.put('/reset-pw', async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).json({error:'参数错误'});
+  const db = await getDb();
+  const stmt = db.prepare('SELECT id FROM users WHERE username = ?');
+  stmt.bind([username]);
+  if (!stmt.step()) { stmt.free(); return res.json({error:'用户不存在'}); }
+  stmt.free();
+  const bcrypt = require('bcryptjs');
+  const hash = bcrypt.hashSync(password, 10);
+  db.run('UPDATE users SET password = ? WHERE username = ?', [hash, username]);
+  saveDb();
+  res.json({ok:true, msg:'密码已重置'});
+});
 module.exports = router;
