@@ -249,7 +249,17 @@ async function handleLogin() {
     loadCurrentUserData();
     document.querySelector('.header').style.display = '';
     return showAppAfterLogin();
-  } catch(e) { /* 云端任何错误都走本地 */ }
+  } catch(e) {
+    const users = getUsers();
+    if (users[user]) {
+      if (users[user].password !== hashPW(pass)) { err.textContent = '密码错误'; err.classList.add('show'); return; }
+      currentUser = { username: user, role: users[user].role };
+      saveSession(currentUser); loadCurrentUserData();
+      document.querySelector('.header').style.display = '';
+      return showAppAfterLogin();
+    }
+    err.textContent = e.message || '登录失败'; err.classList.add('show');
+  }
   const users = getUsers();
   if (!users[user]) { err.textContent = '用户不存在'; err.classList.add('show'); return; }
   if (users[user].password !== hashPW(pass)) { err.textContent = '密码错误'; err.classList.add('show'); return; }
