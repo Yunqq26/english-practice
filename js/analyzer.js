@@ -151,10 +151,9 @@ const Analyzer = {
    * 分析用户答案中的错误，生成逐词错误解释
    */
   explainErrors(diff, userAnswer, reference) {
-    const userTokens = userAnswer.replace(/[.,!?;:""''()'"'""'-–—]/g, ' ')
-      .split(/\s+/).filter(Boolean);
-    const refTokens = reference.replace(/[.,!?;:""''()'"'""'-–—]/g, ' ')
-      .split(/\s+/).filter(Boolean);
+    const tokenize = s => s.toLowerCase().replace(/[.,!?;:""''()''-]/g, ' ').split(/\s+/).filter(Boolean);
+    const userTokens = tokenize(userAnswer);
+    const refTokens = tokenize(reference);
     let ui = 0, ri = 0;
     const errors = [];
     for (const d of diff) {
@@ -163,16 +162,16 @@ const Analyzer = {
         errors.push({type:'synonym',userWord:userTokens[ui]||d.userWord,refWord:refTokens[ri]||d.refWord,reason:'同义词替换，可以接受',fix:'继续使用即可'});
         ui++; ri++;
       } else if (d.type === 'extra') {
-        errors.push({type:'extra',userWord:userTokens[ui]||d.word,refWord:'',reason:'多余的词，标准答案中不需要这个词',fix:'删除"'+this._escapeHtml(userTokens[ui]||d.word)+'"'});
+        errors.push({type:'extra',userWord:userTokens[ui]||d.word,refWord:'',reason:'多余的词，标准答案中不需要这个词',fix:'删除 "'+this._escapeHtml(userTokens[ui]||d.word)+'"'});
         ui++;
       } else if (d.type === 'missing') {
         const rw = refTokens[ri] || d.word;
-        errors.push({type:'missing',userWord:'',refWord:rw,reason:'遗漏了必要的词',fix:'补充"'+this._escapeHtml(rw)+'"'});
+        errors.push({type:'missing',userWord:'',refWord:rw,reason:'遗漏了必要的词',fix:'补充 "'+this._escapeHtml(rw)+'"'});
         ri++;
       } else if (d.type === 'substituted') {
         const uw = userTokens[ui] || '';
         const rw = refTokens[ri] || '';
-        errors.push({type:'substituted',userWord:uw,refWord:rw,reason:this._inferErrorType(uw,rw),fix:'应改为"'+this._escapeHtml(rw)+'"'});
+        errors.push({type:'substituted',userWord:uw,refWord:rw,reason:this._inferErrorType(uw,rw),fix:'应改为 "'+this._escapeHtml(rw)+'"'});
         ui++; ri++;
       }
     }
@@ -199,7 +198,7 @@ const Analyzer = {
     return html;
   },
 
-  /** 推断错误类型 */
+  /** 推断错误类型 */  /** 推断错误类型 */
   _inferErrorType(userWord, refWord) {
     const uw = userWord.toLowerCase();
     const rw = refWord.toLowerCase();
