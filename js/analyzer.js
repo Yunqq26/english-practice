@@ -151,28 +151,22 @@ const Analyzer = {
    * 分析用户答案中的错误，生成逐词错误解释
    */
   explainErrors(diff, userAnswer, reference) {
-    const tokenize = s => s.toLowerCase().replace(/[.,!?;:""''()''-]/g, ' ').split(/\s+/).filter(Boolean);
-    const userTokens = tokenize(userAnswer);
-    const refTokens = tokenize(reference);
-    let ui = 0, ri = 0;
+    // 直接从 diff 解析单词，不重新分词（避免与 wordDiff 分词不一致）
     const errors = [];
     for (const d of diff) {
-      if (d.type === 'same') { ui++; ri++; }
+      if (d.type === 'same') { /* 正确的词不显示 */ }
       else if (d.type === 'synonym') {
-        errors.push({type:'synonym',userWord:userTokens[ui]||d.userWord,refWord:refTokens[ri]||d.refWord,reason:'同义词替换，可以接受',fix:'继续使用即可'});
-        ui++; ri++;
+        errors.push({type:'synonym',userWord:d.userWord,refWord:d.refWord,reason:'同义词替换，可以接受',fix:'继续使用即可'});
       } else if (d.type === 'extra') {
-        errors.push({type:'extra',userWord:userTokens[ui]||d.word,refWord:'',reason:'多余的词，标准答案中不需要这个词',fix:'删除 "'+this._escapeHtml(userTokens[ui]||d.word)+'"'});
-        ui++;
+        errors.push({type:'extra',userWord:d.word,refWord:'',reason:'多余的词，标准答案中不需要这个词',fix:'删除 "'+this._escapeHtml(d.word)+'"'});
       } else if (d.type === 'missing') {
-        const rw = refTokens[ri] || d.word;
-        errors.push({type:'missing',userWord:'',refWord:rw,reason:'遗漏了必要的词',fix:'补充 "'+this._escapeHtml(rw)+'"'});
-        ri++;
+        errors.push({type:'missing',userWord:'',refWord:d.word,reason:'遗漏了必要的词',fix:'补充 "'+this._escapeHtml(d.word)+'"'});
       } else if (d.type === 'substituted') {
-        const uw = userTokens[ui] || '';
-        const rw = refTokens[ri] || '';
+        // word 格式: "userWord → refWord"
+        const parts = d.word.split(' → ');
+        const uw = parts[0] || '';
+        const rw = parts[1] || '';
         errors.push({type:'substituted',userWord:uw,refWord:rw,reason:this._inferErrorType(uw,rw),fix:'应改为 "'+this._escapeHtml(rw)+'"'});
-        ui++; ri++;
       }
     }
     if (!errors.length) return '';
@@ -198,7 +192,7 @@ const Analyzer = {
     return html;
   },
 
-  /** 推断错误类型 */  /** 推断错误类型 */
+  /** 推断错误类型 */  /** 推断错误类型 */  /** 推断错误类型 */
   _inferErrorType(userWord, refWord) {
     const uw = userWord.toLowerCase();
     const rw = refWord.toLowerCase();
