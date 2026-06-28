@@ -1104,6 +1104,11 @@ function renderAnalysis(userAnswer) {
 
   // Answer comparison (collapsible via <details>)
   document.getElementById('userAnswerDisplay').innerHTML = Analyzer.renderInlineCorrection(userAnswer, q.reference, q.keywords);
+  const explainEl = document.getElementById('userAnswerExplain');
+  if (explainEl) {
+    const diff = Analyzer.wordDiff(userAnswer, q.reference, q.keywords);
+    explainEl.innerHTML = Analyzer.explainErrors(diff, userAnswer, q.reference);
+  }
   document.getElementById('referenceDisplay').innerHTML = makeClickableReference(q.reference, q.source);
 
   // Feedback
@@ -1415,6 +1420,7 @@ function handleShowAnswer() {
 
   document.getElementById('analysisPanel').hidden = false;
   document.getElementById('referenceDisplay').innerHTML = makeClickableReference(currentQuestion.reference, currentQuestion.source);
+  document.getElementById('userAnswerExplain').innerHTML = '';
   document.getElementById('userAnswerDisplay').innerHTML = currentQuestion.keywords
     ? Analyzer.renderInlineCorrection(existingAnswer || '(skipped)', currentQuestion.reference, currentQuestion.keywords)
     : `<span>${existingAnswer || '(skipped)'}</span>`;

@@ -146,6 +146,75 @@ const Analyzer = {
     return parts.join(' ');
   },
 
+
+  /**
+   * 分析用户答案中的错误，生成逐词错误解释
+   */
+  explainErrors(diff, userAnswer, reference) {
+    const userTokens = userAnswer.replace(/[.,!?;:""''()'"'""'-–—]/g, ' ')
+      .split(/\s+/).filter(Boolean);
+    const refTokens = reference.replace(/[.,!?;:""''()'"'""'-–—]/g, ' ')
+      .split(/\s+/).filter(Boolean);
+    let ui = 0, ri = 0;
+    const errors = [];
+    for (const d of diff) {
+      if (d.type === 'same') { ui++; ri++; }
+      else if (d.type === 'synonym') {
+        errors.push({type:'synonym',userWord:userTokens[ui]||d.userWord,refWord:refTokens[ri]||d.refWord,reason:'同义词替换，可以接受',fix:'继续使用即可'});
+        ui++; ri++;
+      } else if (d.type === 'extra') {
+        errors.push({type:'extra',userWord:userTokens[ui]||d.word,refWord:'',reason:'多余的词，标准答案中不需要这个词',fix:'删除"'+this._escapeHtml(userTokens[ui]||d.word)+'"'});
+        ui++;
+      } else if (d.type === 'missing') {
+        const rw = refTokens[ri] || d.word;
+        errors.push({type:'missing',userWord:'',refWord:rw,reason:'遗漏了必要的词',fix:'补充"'+this._escapeHtml(rw)+'"'});
+        ri++;
+      } else if (d.type === 'substituted') {
+        const uw = userTokens[ui] || '';
+        const rw = refTokens[ri] || '';
+        errors.push({type:'substituted',userWord:uw,refWord:rw,reason:this._inferErrorType(uw,rw),fix:'应改为"'+this._escapeHtml(rw)+'"'});
+        ui++; ri++;
+      }
+    }
+    if (!errors.length) return '';
+    let html = '<div style="margin-top:10px;padding:12px 16px;background:#fff8f8;border-radius:10px;border:1px solid #fecaca">';
+    html += '<div style="font-size:0.85rem;font-weight:600;color:#e74c3c;margin-bottom:8px">❌ 逐词纠错</div>';
+    for (let i = 0; i < errors.length; i++) {
+      const e = errors[i];
+      const bg = e.type === 'synonym' ? '#f0f8ff' : '#fff5f5';
+      const color = e.type === 'synonym' ? '#4361ee' : '#e74c3c';
+      html += '<div style="background:'+bg+';border-radius:8px;padding:10px 14px;margin-bottom:6px;border-left:3px solid '+color+'">';
+      if (e.userWord) {
+        html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">' +
+          '<span style="color:#e74c3c;text-decoration:line-through;font-weight:600">'+this._escapeHtml(e.userWord)+'</span>';
+        if (e.refWord) html += '<span style="color:#999">→</span><span style="color:#27ae60;font-weight:600">'+this._escapeHtml(e.refWord)+'</span>';
+        html += '</div>';
+      } else {
+        html += '<div style="margin-bottom:2px"><span style="color:#27ae60;font-weight:600">缺少: '+this._escapeHtml(e.refWord)+'</span></div>';
+      }
+      html += '<div style="font-size:0.82rem;color:#555;line-height:1.5">📌 '+e.reason+'</div>';
+      html += '<div style="font-size:0.82rem;color:#27ae60;line-height:1.5">💡 '+e.fix+'</div></div>';
+    }
+    html += '</div>';
+    return html;
+  },
+
+  /** 推断错误类型 */
+  _inferErrorType(userWord, refWord) {
+    const uw = userWord.toLowerCase();
+    const rw = refWord.toLowerCase();
+    const tenseMap = {"go":["went","gone","goes","going"],"come":["came","comes","coming"],"take":["took","taken","takes","taking"],"make":["made","makes","making"],"have":["had","has","having"],"do":["did","done","does","doing"],"get":["got","gotten","gets","getting"],"see":["saw","seen","sees","seeing"],"know":["knew","known","knows"],"think":["thought","thinks","thinking"],"say":["said","says","saying"],"tell":["told","tells","telling"],"give":["gave","given","gives","giving"],"find":["found","finds","finding"],"keep":["kept","keeps","keeping"],"leave":["left","leaves","leaving"],"meet":["met","meets","meeting"],"write":["wrote","written","writes","writing"],"speak":["spoke","spoken","speaks","speaking"],"build":["built","builds","building"],"buy":["bought","buys","buying"],"bring":["brought","brings","bringing"],"catch":["caught","catches","catching"],"choose":["chose","chosen","chooses","choosing"],"begin":["began","begun","begins","beginning"],"break":["broke","broken","breaks","breaking"],"drink":["drank","drunk","drinks","drinking"],"eat":["ate","eaten","eats","eating"],"fall":["fell","fallen","falls","falling"],"feel":["felt","feels","feeling"],"grow":["grew","grown","grows","growing"],"hold":["held","holds","holding"],"lead":["led","leads","leading"],"lose":["lost","loses","losing"],"pay":["paid","pays","paying"],"read":["reads","reading"],"send":["sent","sends","sending"],"spend":["spent","spends","spending"],"stand":["stood","stands","standing"],"teach":["taught","teaches","teaching"],"understand":["understood","understands","understanding"],"wear":["wore","worn","wears","wearing"],"win":["won","wins","winning"]};
+    for (const [base, forms] of Object.entries(tenseMap)) {
+      if ([base,...forms].includes(uw) && [base,...forms].includes(rw) && uw !== rw)
+        return '时态/动词形式错误，应使用 "'+rw+'" 而非 "'+uw+'"';
+    }
+    if (uw+'s' === rw || uw === rw+'s') return '名词单复数形式错误';
+    const preps = ['in','on','at','to','for','of','with','by','from','about','into','through','during','without','against','between','under','over','after','before'];
+    if (preps.includes(uw) && preps.includes(rw) && uw !== rw) return '介词使用不当，此处应用 "'+rw+'" 而不是 "'+uw+'"';
+    const articles = ['a','an','the'];
+    if (articles.includes(uw) && articles.includes(rw)) return '冠词使用不当，此处应用 "'+rw+'"';
+    return '用词不当，推荐使用 "'+rw+'"';
+  },
   // ---- 3. Teacher-mode scoring ----
   scoreTranslation(userAnswer, reference, keywords, alternatives) {
     const user = userAnswer.toLowerCase().trim();
