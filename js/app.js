@@ -127,7 +127,7 @@ function renderAuthPage(action) {
   const panels = [document.getElementById('analysisPanel'), document.querySelector('.bottom-panel'), document.querySelector('.mode-toggle')];
   panels.forEach(p => { if (p) { p.style.display = 'none'; } });
   document.body.classList.add("login-page");
-  document.body.style.background = "#FAF8F3";
+  document.body.style.background = "#0D0F0C";
   document.body.style.padding = '0';
   document.body.style.margin = '0';
   const c = document.querySelector('.container');
@@ -139,7 +139,8 @@ function renderAuthPage(action) {
     const isLogin = mode === 'login';
     const penIcon = "✒️";
     const bookIcon = "📖";
-    return `<div class="auth-wrapper">
+    return `<div id="three-container" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0"></div>
+    <div class="auth-wrapper" style="background:transparent!important">
       <div class="auth-grid"></div>
       <div class="auth-s1 auth-star"></div><div class="auth-s2 auth-star"></div>
       <div class="auth-s3 auth-star"></div><div class="auth-s4 auth-star"></div>
