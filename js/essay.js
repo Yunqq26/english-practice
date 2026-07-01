@@ -98,9 +98,11 @@ function initNav() {
       document.getElementById('pageEssayBank').hidden = tab !== 'essay';
       document.getElementById('pageSelfTest').hidden = tab !== 'selftest';
       document.getElementById('pageTopics').hidden = tab !== 'topics';
+      document.getElementById('pageZhen').hidden = tab !== 'zhen';
       if (tab === 'essay') renderEssayList();
       if (tab === 'selftest') initSelfTest();
       if (tab === 'topics') renderTopicGrid();
+      if (tab === 'zhen') renderZhenPage();
     });
   });
 }

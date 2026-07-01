@@ -27,6 +27,7 @@
       <button class="nav-tab" data-tab="essay">📚 作文库</button>
       <button class="nav-tab" data-tab="selftest">✍️ 好句自测</button>
       <button class="nav-tab" data-tab="topics">📚 专题练习</button>
+      <button class="nav-tab" data-tab="zhen">📝 汉译英</button>
     </nav>
 
     <!-- ===== Page: 翻译 ===== -->
@@ -204,6 +205,11 @@
     <div id="topicAnalysis"></div>
   </div>
 
+  <!-- ===== Page: 汉译英 ===== -->
+  <div id="pageZhen" class="page-section" hidden>
+    <div id="zhenGrid"></div>
+  </div>
+
   <aside class="sd">
     <div class="sd-card">
       <div class="sd-title">🏆 排行榜</div>
@@ -234,6 +240,7 @@
   <script src="js/app.js"></script>
   <script src="js/topics.js"></script>
   <script src="js/topic-app.js"></script>
+  <script src="js/zhen-practice.js"></script>
   <script src="js/essay.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
