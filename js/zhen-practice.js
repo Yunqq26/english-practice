@@ -248,3 +248,50 @@ function renderZhenComplete() {
 }
 
 function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+
+function showZhenImportUI(){
+var el=document.getElementById('zhenGrid');
+el.innerHTML='<div class="zhen-notebook" style="max-width:500px;margin:20px auto">'+
+'<h2 style="font-family:Georgia,serif;color:#2B2B2B;margin-bottom:16px">📥 批量导入题库</h2>'+
+'<p style="color:#888;font-size:0.85rem;margin-bottom:16px">上传 JSON 文件，格式要求见说明。</p>'+
+'<label style="display:block;border:2px dashed #DDD6C8;border-radius:0;padding:40px;text-align:center;cursor:pointer;background:#FAF8F3">'+
+'<div style="font-size:2rem;margin-bottom:8px">📂</div>'+
+'<div style="color:#888;font-size:0.9rem">点击选择 JSON 文件</div>'+
+'<input type="file" id="zhenImportFile" accept=".json" style="display:none" onchange="handleZhenImport(event)">'+
+'</label>'+
+'<div style="margin-top:12px;display:flex;align-items:center;gap:8px">'+
+'<label style="font-size:0.82rem;color:#888;cursor:pointer"><input type="checkbox" id="zhenOverwriteCheck"> 覆盖已存在的题目</label></div>'+
+'<div id="zhenImportResult"></div>'+
+'<button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.78rem;margin-top:16px">← 返回</button></div>';
+}
+
+function handleZhenImport(event){
+var file=event.target.files&&event.target.files[0];if(!file)return;
+var reader=new FileReader();
+reader.onload=function(e){
+var text=e.target.result;var questions;
+try{questions=JSON.parse(text)}catch(err){showZhenImportMsg('#B23A2F','JSON 解析失败: '+err.message);return}
+if(!Array.isArray(questions)){showZhenImportMsg('#B23A2F','JSON 格式错误: 需要数组');return}
+var overwrite=document.getElementById('zhenOverwriteCheck')&&document.getElementById('zhenOverwriteCheck').checked;
+document.getElementById('zhenImportResult').innerHTML='<div style="padding:20px;text-align:center;color:#888">⏳ 正在导入 '+questions.length+' 题...</div>';
+fetch(ZHEN_API+'/batch-import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({questions:questions,overwrite:overwrite})})
+.then(function(r){return r.json()}).then(function(result){
+var html='<div style="background:#fff;border:1px solid #DDD6C8;padding:20px 24px;margin-top:16px"><div style="font-family:Georgia,serif;color:#2F5D50;font-size:1.1rem;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #DDD6C8">📊 导入结果</div>';
+html+='<div style="font-size:1.3rem;font-weight:700;color:#2F5D50">✅ 成功导入 '+result.imported+' 题</div>';
+if(result.skipped>0)html+='<div style="color:#C9A24B;font-size:0.85rem;margin-top:6px">⏭️ 跳过重复 '+result.skipped+' 题</div>';
+if(result.errors&&result.errors.length>0){
+html+='<div style="margin-top:12px"><div style="color:#B23A2F;font-weight:600;font-size:0.85rem;margin-bottom:4px">❌ 格式错误 '+result.errors.length+' 条:</div>';
+result.errors.forEach(function(e){html+='<div style="font-size:0.8rem;color:#B23A2F;padding:4px 0;border-bottom:1px solid #f0d0d0">'+e+'</div>'});
+html+='</div>';}
+if(result.imported===0&&result.errors.length===0)html+='<div style="color:#888;font-size:0.85rem;margin-top:8px">没有新题导入</div>';
+html+='</div>';
+document.getElementById('zhenImportResult').innerHTML=html;
+}).catch(function(err){showZhenImportMsg('#B23A2F','导入失败: '+err.message)});
+};
+reader.readAsText(file);
+}
+
+function showZhenImportMsg(color,msg){
+document.getElementById('zhenImportResult').innerHTML='<div style="background:#fff;border:1px solid #DDD6C8;padding:20px;margin-top:16px"><div style="font-size:1rem;color:'+color+';">'+msg+'</div></div>';
+}
