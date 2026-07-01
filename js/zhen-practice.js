@@ -1,250 +1,267 @@
-// ===== 汉译英专项练习 =====
+// ===== 汉译英 · 批注本风格 =====
 const ZHEN_API = 'https://backend-production-80b8b.up.railway.app/api/trans';
 let zhenState = { mode: null, questions: [], currentIdx: 0, answers: [] };
+let zhenBgParticles = [];
 
-/** 渲染题目文本：英文部分正常显示，中文提示斜体紫色，___ 高亮 */
-function renderPrompt(prompt) {
-  if (!prompt) return '';
-  // 处理格式: "英文 ___ (中文提示) 英文 ___ (中文提示)"
-  return prompt
-    .replace(/\(([^)]+)\)/g, '<span style="color:#7c3aed;font-style:italic;background:#f5f0ff;padding:1px 6px;border-radius:4px">($1)</span>')
-    .replace(/___+/g, '<span style="display:inline-block;min-width:80px;border-bottom:3px solid #6366f1;margin:0 4px;background:#f0f0ff;border-radius:4px;padding:0 8px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+function renderPrompt(p) {
+  if (!p) return '';
+  return p.replace(/\(([^)]+)\)/g,'<span style="color:#7c3aed;font-style:italic;background:#f5f0ff;padding:1px 6px;border-radius:2px">($1)</span>')
+    .replace(/___+/g,'<span style="display:inline-block;min-width:80px;border-bottom:3px solid #2F5D50;margin:0 4px;background:#f0faf0;border-radius:2px;padding:0 8px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
 }
 
+function initBgParticles(grammarPoints) {
+  const words = [];
+  if (grammarPoints) {
+    words.push(...grammarPoints.split(/[,，、\s]+/).filter(w => w.length > 0 && /[a-zA-Z]/.test(w)));
+  }
+  if (!words.length) words.push('that','which','who','-ing','to','if','the');
+  const existing = document.querySelectorAll('.zhen-bg-particle');
+  existing.forEach(e => e.remove());
+
+  for (let i = 0; i < 5; i++) {
+    const el = document.createElement('div');
+    el.className = 'zhen-bg-particle';
+    el.textContent = words[i % words.length];
+    el.style.left = (10 + Math.random() * 80) + '%';
+    el.style.fontSize = (12 + Math.random() * 8) + 'px';
+    el.style.animationDelay = (i * 4) + 's';
+    el.style.animationDuration = (18 + Math.random() * 10) + 's';
+    document.body.appendChild(el);
+  }
+}
+function clearBgParticles() {
+  document.querySelectorAll('.zhen-bg-particle').forEach(e => e.remove());
+}
+
+/* 粒子效果 */
+function spawnScoreParticles(score, x, y) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const count = score >= 2 ? 5 : 2;
+  const isPerfect = score >= 2;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'zhen-particle';
+    el.textContent = isPerfect ? '✓' : '✗';
+    el.style.left = (x + (Math.random()-0.5)*40) + 'px';
+    el.style.top = (y + (Math.random()-0.5)*20) + 'px';
+    el.style.fontSize = (16 + Math.random()*14) + 'px';
+    el.style.color = isPerfect ? '#2F5D50' : '#B23A2F';
+    el.style.fontWeight = '700';
+    el.style.fontFamily = '"Courier New",monospace';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+  }
+}
+
+function spawnStreakParticles(x, y) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const icons = ['📖','✨','🏆','⭐']; // book, sparkle, trophy, star (using simple shapes)
+  for (let i = 0; i < 6; i++) {
+    const el = document.createElement('div');
+    el.className = 'zhen-streak-particle';
+    el.textContent = icons[i % icons.length];
+    el.style.left = (x + (Math.random()-0.5)*80) + 'px';
+    el.style.top = y + 'px';
+    el.style.fontSize = (14 + Math.random()*10) + 'px';
+    el.style.animationDelay = (i * 0.12) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
+  }
+}
+
+function showWiggleError(errorEl) {
+  if (!errorEl || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  errorEl.classList.add('zhen-wiggle');
+  setTimeout(() => errorEl.classList.remove('zhen-wiggle'), 800);
+}
+
+/* 页面渲染 */
 function renderZhenPage() {
-  document.getElementById('zhenGrid').innerHTML = `
-    <div style="max-width:500px;margin:40px auto;text-align:center">
-      <div style="font-size:2rem;margin-bottom:10px">📝</div>
-      <div style="font-size:1.3rem;font-weight:700;color:#4a3f5c;margin-bottom:6px">汉译英专项练习</div>
-      <p style="color:#b8a8c8;font-size:0.85rem;margin-bottom:24px">浙江专升本英语备考 · AI 智能批改</p>
-      <div class="zhen-cards">
-        <div class="zhen-card" onclick="startZhenDaily()">
-          <div class="zhen-card-icon">📅</div>
-          <div class="zhen-card-title">每日五题</div>
-          <div class="zhen-card-desc">每天 5 题，覆盖不同语法模块。连续打卡养成习惯。</div>
-          <div id="zhenStreak" style="margin-top:8px;font-size:0.78rem;color:#f0ab60"></div>
-        </div>
-        <div class="zhen-card" onclick="showZhenFreeOptions()">
-          <div class="zhen-card-icon">📚</div>
-          <div class="zhen-card-title">自由练习</div>
-          <div class="zhen-card-desc">按语法模块筛选，自选题量，针对性薄弱环节训练。</div>
-        </div>
-      </div>
-    </div>
-  `;
+  clearBgParticles();
+  document.getElementById('zhenGrid').innerHTML = '<div class="zhen-notebook"><div style="text-align:center;padding:60px 0">' +
+    '<div style="font-size:2.2rem;margin-bottom:12px">📝</div>' +
+    '<h2 style="font-family:Georgia,serif;color:#2B2B2B;font-size:1.3rem;margin-bottom:6px">汉译英专项练习</h2>' +
+    '<p style="color:#999;font-size:0.85rem;margin-bottom:28px">浙江专升本英语备考 · AI 智能批改</p>' +
+    '<div class="zhen-cards">' +
+    '<div class="zhen-card" onclick="startZhenDaily()"><div class="zhen-card-icon">📅</div><div class="zhen-card-title">每日五题</div><div class="zhen-card-desc">每天 5 题，覆盖不同语法模块。连续打卡养成习惯。</div><div id="zhenStreak" style="margin-top:8px;font-size:0.78rem;color:#C9A24B"></div></div>' +
+    '<div class="zhen-card" onclick="showZhenFreeOptions()"><div class="zhen-card-icon">📚</div><div class="zhen-card-title">自由练习</div><div class="zhen-card-desc">按语法模块筛选，自选题量，针对性薄弱环节训练。</div></div>' +
+    '</div></div></div>';
   if (currentUser) {
-    fetch(ZHEN_API + '/streak/' + encodeURIComponent(currentUser.username))
-      .then(r => r.json()).then(d => {
-        const el = document.getElementById('zhenStreak');
-        if (el) el.textContent = '🔥 连续打卡 ' + d.current_streak + ' 天';
-      }).catch(() => {});
+    fetch(ZHEN_API+'/streak/'+encodeURIComponent(currentUser.username)).then(r=>r.json()).then(d=>{
+      const el=document.getElementById('zhenStreak');
+      if(el) el.textContent='🔥 连续打卡 '+d.current_streak+' 天';
+    }).catch(()=>{});
   }
 }
 
 async function startZhenDaily() {
-  if (!currentUser) { alert('请先登录'); return; }
-  zhenState.mode = 'daily';
-  zhenState.currentIdx = 0;
-  zhenState.answers = [];
-  try {
-    const r = await fetch(ZHEN_API + '/daily/' + encodeURIComponent(currentUser.username));
-    const data = await r.json();
-    if (data.empty) { alert('题库为空，请先联系管理员生成题目'); return; }
-    zhenState.questions = data.questions;
-    for (const [qid, ans] of Object.entries(data.answers || {})) {
-      zhenState.answers[zhenState.questions.findIndex(q => q.id == qid)] = ans;
-    }
+  if(!currentUser){alert('请先登录');return}
+  zhenState.mode='daily';zhenState.currentIdx=0;zhenState.answers=[];
+  try{
+    const r=await fetch(ZHEN_API+'/daily/'+encodeURIComponent(currentUser.username));
+    const data=await r.json();
+    if(data.empty){alert('题库为空');return}
+    zhenState.questions=data.questions;
+    for(const[qid,ans]of Object.entries(data.answers||{}))
+      zhenState.answers[zhenState.questions.findIndex(q=>q.id==qid)]=ans;
     renderZhenQuestion();
-  } catch(e) { alert('加载失败，请重试'); }
+  }catch(e){alert('加载失败');}
 }
 
 async function showZhenFreeOptions() {
-  if (!currentUser) { alert('请先登录'); return; }
-  try {
-    const r = await fetch(ZHEN_API + '/modules');
-    const modules = await r.json();
-    let modHtml = '<option value="all">全部模块</option>';
-    modules.forEach(m => { modHtml += '<option value="' + m + '">' + m + '</option>'; });
-    document.getElementById('zhenGrid').innerHTML = `
-      <div style="max-width:500px;margin:20px auto">
-        <div style="font-size:1.1rem;font-weight:700;color:#4a3f5c;margin-bottom:16px">📚 自由练习</div>
-        <label style="font-size:0.85rem;color:#888;display:block;margin-bottom:4px">选择语法模块</label>
-        <select id="zhenModuleSelect" style="width:100%;padding:10px 14px;border:2px solid #f0e0f0;border-radius:12px;font-size:0.9rem;font-family:inherit;margin-bottom:12px">${modHtml}</select>
-        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-          <button class="btn btn-outline" onclick="startZhenFree(5)">5 题</button>
-          <button class="btn btn-outline" onclick="startZhenFree(10)">10 题</button>
-          <button class="btn btn-outline" onclick="startZhenFree(20)">20 题</button>
-          <button class="btn btn-outline" onclick="startZhenFree(0)" style="color:#c084fc;border-color:#c084fc">只练错题</button>
-        </div>
-        <button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.78rem">← 返回</button>
-      </div>
-    `;
-  } catch(e) { alert('加载模块失败'); }
+  if(!currentUser){alert('请先登录');return}
+  try{
+    const r=await fetch(ZHEN_API+'/modules');
+    const modules=await r.json();
+    let mh='<option value="all">全部模块</option>';
+    modules.forEach(m=>{mh+='<option value="'+m+'">'+m+'</option>'});
+    document.getElementById('zhenGrid').innerHTML='<div class="zhen-notebook"><div style="max-width:500px;margin:20px auto">'+
+      '<h2 style="font-family:Georgia,serif;color:#2B2B2B;margin-bottom:16px">📚 自由练习</h2>'+
+      '<label style="font-size:0.82rem;color:#888;display:block;margin-bottom:4px">语法模块</label>'+
+      '<select id="zhenModuleSelect" style="width:100%;padding:10px 14px;border:1px solid #DDD6C8;border-radius:0;font-size:0.9rem;font-family:inherit;margin-bottom:12px">'+mh+'</select>'+
+      '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">'+
+      '<button class="btn btn-outline" onclick="startZhenFree(5)">5 题</button>'+
+      '<button class="btn btn-outline" onclick="startZhenFree(10)">10 题</button>'+
+      '<button class="btn btn-outline" onclick="startZhenFree(20)">20 题</button>'+
+      '<button class="btn btn-outline" onclick="startZhenFree(0)" style="color:#B23A2F;border-color:#B23A2F">只练错题</button></div>'+
+      '<button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.78rem">← 返回</button></div></div>';
+  }catch(e){alert('加载模块失败')}
 }
 
 async function startZhenFree(limit) {
-  const mod = document.getElementById('zhenModuleSelect').value;
-  const isWrongOnly = limit === 0;
-  try {
-    const r = await fetch(ZHEN_API + '/questions?module=' + encodeURIComponent(mod) + '&limit=' + (isWrongOnly ? 50 : limit) + '&wrongOnly=' + isWrongOnly + '&username=' + encodeURIComponent(currentUser.username));
-    const questions = await r.json();
-    if (!questions.length) { alert('没有符合条件的题目'); return; }
-    zhenState.mode = 'free';
-    zhenState.questions = questions;
-    zhenState.currentIdx = 0;
-    zhenState.answers = [];
+  const mod=document.getElementById('zhenModuleSelect').value;
+  const isWO=limit===0;
+  try{
+    const r=await fetch(ZHEN_API+'/questions?module='+encodeURIComponent(mod)+'&limit='+(isWO?50:limit)+'&wrongOnly='+isWO+'&username='+encodeURIComponent(currentUser.username));
+    const qs=await r.json();
+    if(!qs.length){alert('没有符合条件的题目');return}
+    zhenState.mode='free';zhenState.questions=qs;zhenState.currentIdx=0;zhenState.answers=[];
     renderZhenQuestion();
-  } catch(e) { alert('加载失败'); }
+  }catch(e){alert('加载失败')}
 }
 
 function renderZhenQuestion() {
-  if (zhenState.currentIdx >= zhenState.questions.length) {
-    renderZhenComplete();
-    return;
-  }
-  const q = zhenState.questions[zhenState.currentIdx];
-  const pos = zhenState.currentIdx + 1;
-  const total = zhenState.questions.length;
-  const existingAns = zhenState.answers[zhenState.currentIdx];
-  const pct = Math.round((pos - 1) / total * 100);
+  if(zhenState.currentIdx>=zhenState.questions.length){renderZhenComplete();return}
+  const q=zhenState.questions[zhenState.currentIdx];
+  const pos=zhenState.currentIdx+1,total=zhenState.questions.length;
+  if(zhenState.answers[zhenState.currentIdx]){renderZhenResult(q,zhenState.answers[zhenState.currentIdx]);return}
 
-  if (existingAns) { renderZhenResult(q, existingAns); return; }
+  initBgParticles(q.grammar_point);
 
-  document.getElementById('zhenGrid').innerHTML = `
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:0.85rem;color:#888">📝 汉译英 · ${pos}/${total}</span>
-      <button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.78rem">← 返回</button>
-    </div>
-    <div style="height:4px;background:#eef0f5;border-radius:2px;margin-bottom:16px;overflow:hidden">
-      <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#6366f1,#c084fc);border-radius:2px;transition:width 0.3s"></div>
-    </div>
-    <div class="main-card" style="margin-bottom:0">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="background:linear-gradient(135deg,#6366f1,#c084fc);border-radius:8px;padding:2px 10px;font-size:0.72rem;color:#fff;font-weight:700">${q.module}</span>
-        <span style="font-size:0.72rem;color:#888">难度 ${'⭐'.repeat(q.difficulty || 2)}</span>
-        <span style="font-size:0.7rem;padding:2px 8px;border-radius:6px;background:#f0f0ff;color:#6366f1">填空</span>
-      </div>
-      <div style="background:#f8f9fc;border-radius:14px;padding:20px 24px;border:1px solid #eef0f5;margin-bottom:16px;font-size:1.05rem;line-height:2;color:#2c2440">
-        ${renderPrompt(q.chinese_prompt)}
-      </div>
-      <div style="font-size:0.78rem;color:#999;margin-bottom:12px;background:#fff8f0;padding:8px 12px;border-radius:8px">
-        💡 将 <span style="color:#7c3aed;font-style:italic">紫色斜体</span> 的中文提示翻译成英文，填入上方 <span style="color:#6366f1;font-weight:600">蓝色底线</span> 处
-      </div>
-      <div class="input-section">
-        <label for="zhenInput">✏️ 在空格处填入英文：</label>
-        <textarea id="zhenInput" rows="3" placeholder="将中文提示翻译成英文，填入此处..." autofocus></textarea>
-      </div>
-      <div class="action-bar">
-        <button class="btn btn-primary" onclick="submitZhenAnswer()">提交批改</button>
-        <button class="btn btn-ghost" onclick="nextZhenQuestion()">跳过 →</button>
-      </div>
-    </div>
-    <div id="zhenResult"></div>
-  `;
-  setTimeout(() => {
-    const inp = document.getElementById('zhenInput');
-    if (inp) { inp.focus(); inp.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) submitZhenAnswer(); }); }
-  }, 50);
+  document.getElementById('zhenGrid').innerHTML='<div class="zhen-notebook">'+
+    '<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;padding:0 8px">'+
+    '<span style="font-size:0.8rem;color:#888;font-family:Georgia,serif">📝 '+q.module+' · '+pos+'/'+total+'</span>'+
+    '<button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.75rem">← 返回</button></div>'+
+    '<div class="zhen-exam-sheet"><div class="exam-header">'+
+    '<span style="font-weight:600">翻译填空</span>'+
+    '<span style="color:#C9A24B;font-weight:600">难度 '+('★'.repeat(q.difficulty||2))+'</span></div>'+
+    '<div class="exam-question">'+renderPrompt(q.chinese_prompt)+'</div></div>'+
+
+    '<div class="zhen-input-area">'+
+    '<label>✏️ 将上方紫色斜体的中文提示翻译成英文，填入空白处</label>'+
+    '<textarea id="zhenInput" rows="3" placeholder="在此输入英文翻译..." autofocus></textarea></div>'+
+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 8px">'+
+    '<button class="btn btn-primary" onclick="submitZhenAnswer()" style="background:#2F5D50;border:none;border-radius:0;padding:10px 24px;font-family:Georgia,serif">提交批改</button>'+
+    '<button class="btn btn-ghost" onclick="nextZhenQuestion()" style="font-size:0.82rem">跳过 →</button></div>'+
+    '<div id="zhenResult"></div></div>';
+
+  setTimeout(()=>{
+    const inp=document.getElementById('zhenInput');
+    if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))submitZhenAnswer()})}
+  },50);
 }
 
 async function submitZhenAnswer() {
-  const inp = document.getElementById('zhenInput');
-  if (!inp) return;
-  const answer = inp.value.trim();
-  if (!answer) return;
-  const q = zhenState.questions[zhenState.currentIdx];
-  const btn = document.querySelector('.btn-primary');
-  if (btn) { btn.textContent = '⏳ 批改中...'; btn.disabled = true; }
-
-  try {
-    const r = await fetch(ZHEN_API + '/grade', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        questionId: q.id,
-        userAnswer: answer,
-        username: currentUser ? currentUser.username : 'anonymous',
-        type: zhenState.mode
-      })
-    });
-    const result = await r.json();
-    if (result.error) { alert(result.error); if(btn){btn.textContent='提交批改';btn.disabled=false;} return; }
-    zhenState.answers[zhenState.currentIdx] = { user_answer: answer, score: result.score, errors: result.errors, question_id: q.id };
-    renderZhenResult(q, zhenState.answers[zhenState.currentIdx], result);
-  } catch(e) {
-    alert('批改服务暂时繁忙，请重试');
-    if(btn){btn.textContent='提交批改';btn.disabled=false;}
-  }
+  const inp=document.getElementById('zhenInput');
+  if(!inp)return;
+  const answer=inp.value.trim();
+  if(!answer)return;
+  const q=zhenState.questions[zhenState.currentIdx];
+  const btn=document.querySelector('.btn-primary');
+  if(btn){btn.textContent='⏳ 批改中...';btn.disabled=true}
+  try{
+    const r=await fetch(ZHEN_API+'/grade',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({questionId:q.id,userAnswer:answer,username:currentUser?currentUser.username:'anonymous',type:zhenState.mode})});
+    const result=await r.json();
+    if(result.error){alert(result.error);if(btn){btn.textContent='提交批改';btn.disabled=false}return}
+    zhenState.answers[zhenState.currentIdx]={user_answer:answer,score:result.score,errors:result.errors,question_id:q.id};
+    renderZhenResult(q,zhenState.answers[zhenState.currentIdx],result);
+  }catch(e){alert('批改服务繁忙');if(btn){btn.textContent='提交批改';btn.disabled=false}}
 }
 
 function renderZhenResult(q, ans, result) {
-  const res = result || ans;
-  const errors = typeof res.errors === 'string' ? JSON.parse(res.errors) : (res.errors || []);
-  const score = res.score || 0;
-  const pos = zhenState.currentIdx + 1;
-  const total = zhenState.questions.length;
+  const res=result||ans;
+  const errors=typeof res.errors==='string'?JSON.parse(res.errors):(res.errors||[]);
+  const score=res.score||0;
+  const pos=zhenState.currentIdx+1,total=zhenState.questions.length;
+  const rect=document.getElementById('zhenGrid')?.getBoundingClientRect();
+  spawnScoreParticles(score, (rect?.left||window.innerWidth/2)+100, (rect?.top||200));
 
-  document.getElementById('zhenGrid').innerHTML = `
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:0.85rem;color:#888">📝 汉译英 · ${pos}/${total}</span>
-      <button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.78rem">← 返回</button>
-    </div>
-    ${pos < total ? `<div style="height:4px;background:#eef0f5;border-radius:2px;margin-bottom:16px;overflow:hidden"><div style="height:100%;width:${Math.round(pos/total*100)}%;background:linear-gradient(90deg,#6366f1,#c084fc);border-radius:2px;transition:width 0.3s"></div></div>` : ''}
-    <div class="analysis-panel" style="margin-top:0">
-      <h2 style="display:flex;align-items:center;gap:8px;color:#4a3f5c">
-        <span style="background:${score >= 2 ? '#27ae60' : (score >= 1 ? '#e67e22' : '#e74c3c')};border-radius:10px;padding:4px 10px;font-size:0.78rem;color:#fff;font-weight:700">${score}/2</span>
-        批改结果
-      </h2>
+  const scoreColor=score>=2?'#2F5D50':(score>=1?'#C9A24B':'#B23A2F');
+  const scoreLabel=score>=2?'✓ 满分！':(score>=1?'部分正确':'需订正');
 
-      <div class="analysis-section">
-        <h3>✏️ 我的译文</h3>
-        <div class="user-answer" style="margin-top:4px">${escapeHtml(ans.user_answer || '')}</div>
-      </div>
+  document.getElementById('zhenGrid').innerHTML='<div class="zhen-notebook">'+
+    '<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;padding:0 8px">'+
+    '<span style="font-size:0.8rem;color:#888;font-family:Georgia,serif">📝 '+q.module+' · '+pos+'/'+total+'</span>'+
+    '<button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.75rem">← 返回</button></div>'+
 
-      <div class="analysis-section">
-        <h3>📊 评分与纠错</h3>
-        <div style="margin-top:6px;font-size:2rem;font-weight:700;color:${score >= 2 ? '#27ae60' : (score >= 1 ? '#e67e22' : '#e74c3c')}">${score}/2</div>
-        ${errors.length ? errors.map(e => '<div style="background:#fff5f5;border-radius:8px;padding:10px 14px;margin-top:6px;border-left:3px solid #e74c3c;font-size:0.85rem;color:#555">❌ ' + e + '</div>').join('') : '<div style="background:#f0faf0;border-radius:8px;padding:10px 14px;margin-top:6px;border-left:3px solid #27ae60;font-size:0.85rem;color:#27ae60">✅ 没有明显的语法错误</div>'}
-      </div>
+    '<div class="zhen-red-ink">'+
+    '<div class="ink-header">✒️ 批改反馈</div>'+
+    '<div class="ink-score" style="color:'+scoreColor+'">'+score+'/2 <span style="font-size:0.85rem;font-weight:400;color:#888">'+scoreLabel+'</span></div>'+
+    (errors.length?'': '<div style="color:#2F5D50;font-size:0.85rem;margin-bottom:12px;font-style:italic">没有语法错误，翻译准确。</div>')+
+    '<div style="margin-bottom:12px"><span style="font-size:0.82rem;color:#888">你的译文</span>'+
+    '<div style="font-size:0.9rem;color:#2B2B2B;padding:8px 0;border-bottom:1px solid #f0d0d0">'+escapeHtml(ans.user_answer||'')+'</div></div>'+
+    errors.map(e=>'<div class="ink-error" id="zhenError_'+pos+'">❌ '+e+'</div>').join('')+
+    '<div class="ink-reference">📖 '+escapeHtml(q.reference_answer)+'</div>'+
+    '<div class="ink-analysis">'+
+    '<div style="font-weight:600;color:#2F5D50;margin-bottom:4px">📌 考点</div>'+
+    '<div>'+q.grammar_point+'</div>'+
+    (q.key_phrases?'<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">'+
+      (typeof q.key_phrases==='string'?JSON.parse(q.key_phrases):q.key_phrases).map(k=>'<span style="background:#f5f0ff;padding:2px 10px;border-radius:0;font-size:0.82rem;color:#7c3aed;border:1px solid #e0d0f0">'+k+'</span>').join('')+'</div>':'')+
+    '</div></div>'+
 
-      <div class="analysis-section">
-        <h3>📖 标准参考译文</h3>
-        <div class="reference-answer" style="margin-top:4px">${q.reference_answer}</div>
-      </div>
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 8px">'+
+    '<button class="btn btn-primary" onclick="nextZhenQuestion()" style="background:#2F5D50;border:none;border-radius:0;padding:10px 24px;font-family:Georgia,serif">'+(pos<total?'下一题 →':'查看结果')+'</button></div></div>';
 
-      <div class="analysis-section" style="border-bottom:none">
-        <h3>🎯 考点解析</h3>
-        <div style="margin-top:6px;font-size:0.88rem;color:#555;line-height:1.6">${q.grammar_point || '本题考察综合翻译能力'}</div>
-        ${q.key_phrases ? '<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">' + (typeof q.key_phrases === 'string' ? JSON.parse(q.key_phrases) : q.key_phrases).map(k => '<span style="background:#ede7f6;padding:4px 12px;border-radius:12px;font-size:0.82rem;color:#7b1fa2">' + k + '</span>').join('') + '</div>' : ''}
-      </div>
-
-      <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;padding-top:16px;border-top:1px solid #edf0f5">
-        <button class="btn btn-primary" onclick="nextZhenQuestion()">${pos < total ? '下一题 →' : '查看结果'}</button>
-      </div>
-    </div>
-  `;
+  // 波浪线标注错误
+  if(errors.length){
+    setTimeout(()=>{
+      document.querySelectorAll('.ink-error').forEach(el=>showWiggleError(el));
+    },200);
+  }
 }
 
 function nextZhenQuestion() {
   zhenState.currentIdx++;
+  if(zhenState.currentIdx>=zhenState.questions.length){
+    checkStreakMilestone();
+  }
   renderZhenQuestion();
 }
 
-function renderZhenComplete() {
-  const total = zhenState.answers.length;
-  const scored = zhenState.answers.filter(a => a && a.score !== undefined);
-  const avg = scored.length ? (scored.reduce((s,a) => s + a.score, 0) / scored.length).toFixed(1) : 0;
-  const perfect = scored.filter(a => a.score >= 2).length;
-
-  document.getElementById('zhenGrid').innerHTML = `
-    <div style="max-width:500px;margin:20px auto;text-align:center">
-      <div style="background:linear-gradient(135deg,#1a1a2e,#2a1f4a);border-radius:20px;padding:32px;color:#fff;margin-bottom:20px">
-        <div style="font-size:2.5rem;margin-bottom:8px">${avg >= 1.5 ? '🎉' : '💪'}</div>
-        <div style="font-size:1.3rem;font-weight:700;margin-bottom:4px">${zhenState.mode === 'daily' ? '今日打卡完成！' : '练习完成！'}</div>
-        <div style="font-size:0.9rem;color:rgba(255,255,255,0.6)">完成 ${total} 题 · 平均 ${avg}/2 分 · 满分 ${perfect} 题</div>
-      </div>
-      <button class="btn btn-primary" onclick="renderZhenPage()">← 返回</button>
-    </div>
-  `;
+function checkStreakMilestone() {
+  if(zhenState.mode!=='daily'||!currentUser)return;
+  fetch(ZHEN_API+'/streak/'+encodeURIComponent(currentUser.username)).then(r=>r.json()).then(d=>{
+    const s=d.current_streak||0;
+    if(s>0&&s%7===0){
+      const rect=document.getElementById('zhenGrid')?.getBoundingClientRect();
+      spawnStreakParticles(rect?.left||window.innerWidth/2, rect?.top||200);
+    }
+  }).catch(()=>{});
 }
 
-function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function renderZhenComplete() {
+  clearBgParticles();
+  const total=zhenState.answers.length;
+  const scored=zhenState.answers.filter(a=>a&&a.score!==undefined);
+  const avg=scored.length?(scored.reduce((s,a)=>s+a.score,0)/scored.length).toFixed(1):0;
+  const perfect=scored.filter(a=>a.score>=2).length;
+  document.getElementById('zhenGrid').innerHTML='<div class="zhen-notebook">'+
+    '<div style="text-align:center;padding:40px 20px"><div style="font-size:3rem;margin-bottom:10px">'+(avg>=1.5?'🎉':'💪')+'</div>'+
+    '<h2 style="font-family:Georgia,serif;color:#2B2B2B;margin-bottom:6px">'+(zhenState.mode==='daily'?'今日打卡完成！':'练习完成！')+'</h2>'+
+    '<p style="color:#888;font-size:0.9rem;margin-bottom:8px">完成 '+total+' 题 · 平均 '+avg+'/2 分 · 满分 '+perfect+' 题</p>'+
+    '<button class="btn btn-primary" onclick="renderZhenPage()" style="background:#2F5D50;border:none;border-radius:0;margin-top:16px;padding:10px 32px;font-family:Georgia,serif">← 返回</button></div></div>';
+}
+
+function escapeHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}

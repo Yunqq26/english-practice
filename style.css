@@ -2267,3 +2267,29 @@ body {
 .tm-desc { color:#b8a8c8; font-size:0.82rem; }
 
 .zhen-cards{display:flex;flex-direction:column;gap:12px}.zhen-card{background:#fff;border-radius:16px;padding:20px 24px;cursor:pointer;text-align:left;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);border:2px solid #f0e0f0;box-shadow:0 2px 12px rgba(200,160,255,0.06)}.zhen-card:hover{transform:translateY(-2px);border-color:#c084fc;box-shadow:0 6px 24px rgba(192,132,252,0.15)}.zhen-card-icon{font-size:1.8rem;margin-bottom:4px}.zhen-card-title{font-weight:700;color:#4a3f5c;font-size:1rem;margin-bottom:2px}.zhen-card-desc{color:#b8a8c8;font-size:0.82rem;line-height:1.5}
+
+.zhen-notebook{background:#FAF8F3;max-width:600px;margin:0 auto;position:relative}
+.zhen-exam-sheet{background:#fff;border:1px solid #DDD6C8;border-radius:0;padding:28px 32px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.03);position:relative}
+.zhen-exam-sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#B23A2F,#C9A24B,#2F5D50)}
+.zhen-exam-sheet .exam-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #DDD6C8;font-size:0.78rem;color:#888}
+.zhen-exam-sheet .exam-question{font-family:'Source Serif 4','Noto Serif',Georgia,'Times New Roman',serif;font-size:1.05rem;line-height:2;color:#2B2B2B;padding:16px 0}
+.zhen-red-ink{background:#fff8f8;border:1px solid #f0d0d0;border-radius:0;padding:24px 28px;margin-bottom:20px;position:relative}
+.zhen-red-ink .ink-header{font-family:Georgia,serif;color:#B23A2F;font-size:0.82rem;font-weight:600;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #f0d0d0}
+.zhen-red-ink .ink-score{font-family:'Courier New',monospace;font-size:2.2rem;font-weight:700;margin-bottom:12px}
+.zhen-red-ink .ink-error{font-size:0.85rem;line-height:1.7;padding:8px 12px;margin-bottom:6px;border-left:3px solid #B23A2F;background:rgba(178,58,47,0.04)}
+.zhen-red-ink .ink-reference{font-family:'Source Serif 4','Noto Serif',Georgia,serif;font-size:0.92rem;line-height:1.7;color:#2B2B2B;padding:12px 16px;background:#f8f6f0;border:1px dashed #DDD6C8;margin-top:12px}
+.zhen-red-ink .ink-analysis{margin-top:12px;font-size:0.85rem;color:#555;line-height:1.6}
+.zhen-input-area{background:#fff;border:1px solid #DDD6C8;padding:20px 24px;margin-bottom:16px}
+.zhen-input-area textarea{width:100%;border:none;border-bottom:2px solid #DDD6C8;background:transparent;font-family:'Source Serif 4','Noto Serif',Georgia,serif;font-size:1rem;padding:8px 0;outline:none;resize:vertical;transition:border-color 0.2s}
+.zhen-input-area textarea:focus{border-bottom-color:#2F5D50}
+.zhen-input-area label{display:block;font-size:0.78rem;color:#888;margin-bottom:4px}
+.zhen-wiggle{display:inline;position:relative}
+.zhen-wiggle::after{content:"";position:absolute;bottom:-2px;left:0;right:0;height:4px;background:url("data:image/svg+xml,%3Csvg width='40' height='8' viewBox='0 0 40 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,4 C10,0 20,8 30,4 C35,2 38,4 40,4' stroke='%23B23A2F' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x;background-size:40px 8px;animation:wiggle-draw 0.5s ease-out}
+@keyframes wiggle-draw{from{background-position:-200px 0}to{background-position:0 0}}
+.zhen-particle{position:fixed;pointer-events:none;z-index:1000;animation:particle-fade 1.2s ease-out forwards}
+@keyframes particle-fade{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(-60px) rotate(20deg) scale(0.5)}}
+.zhen-streak-particle{position:fixed;pointer-events:none;z-index:1000;animation:streak-rise 1.5s ease-out forwards}
+@keyframes streak-rise{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-120px) scale(0.3)}}
+.zhen-bg-particle{position:fixed;pointer-events:none;z-index:0;font-family:Georgia,serif;color:#2B2B2B;animation:bg-float 20s linear infinite;user-select:none}
+@keyframes bg-float{0%{opacity:0;transform:translateY(100vh) rotate(-5deg)}10%{opacity:0.06}90%{opacity:0.06}100%{opacity:0;transform:translateY(-10vh) rotate(5deg)}}
+@media(prefers-reduced-motion:reduce){.zhen-particle,.zhen-streak-particle,.zhen-bg-particle{animation:none!important;display:none!important}}
