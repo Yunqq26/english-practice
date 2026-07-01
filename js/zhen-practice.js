@@ -2,6 +2,15 @@
 const ZHEN_API = 'https://backend-production-80b8b.up.railway.app/api/trans';
 let zhenState = { mode: null, questions: [], currentIdx: 0, answers: [] };
 
+/** 渲染题目文本：英文部分正常显示，中文提示斜体紫色，___ 高亮 */
+function renderPrompt(prompt) {
+  if (!prompt) return '';
+  // 处理格式: "英文 ___ (中文提示) 英文 ___ (中文提示)"
+  return prompt
+    .replace(/\(([^)]+)\)/g, '<span style="color:#7c3aed;font-style:italic;background:#f5f0ff;padding:1px 6px;border-radius:4px">($1)</span>')
+    .replace(/___+/g, '<span style="display:inline-block;min-width:80px;border-bottom:3px solid #6366f1;margin:0 4px;background:#f0f0ff;border-radius:4px;padding:0 8px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+}
+
 function renderZhenPage() {
   document.getElementById('zhenGrid').innerHTML = `
     <div style="max-width:500px;margin:40px auto;text-align:center">
@@ -23,7 +32,6 @@ function renderZhenPage() {
       </div>
     </div>
   `;
-  // 加载打卡数据
   if (currentUser) {
     fetch(ZHEN_API + '/streak/' + encodeURIComponent(currentUser.username))
       .then(r => r.json()).then(d => {
@@ -43,12 +51,11 @@ async function startZhenDaily() {
     const data = await r.json();
     if (data.empty) { alert('题库为空，请先联系管理员生成题目'); return; }
     zhenState.questions = data.questions;
-    // 恢复已答题
     for (const [qid, ans] of Object.entries(data.answers || {})) {
       zhenState.answers[zhenState.questions.findIndex(q => q.id == qid)] = ans;
     }
     renderZhenQuestion();
-  } catch(e) { alert('加载失败'); }
+  } catch(e) { alert('加载失败，请重试'); }
 }
 
 async function showZhenFreeOptions() {
@@ -99,15 +106,9 @@ function renderZhenQuestion() {
   const pos = zhenState.currentIdx + 1;
   const total = zhenState.questions.length;
   const existingAns = zhenState.answers[zhenState.currentIdx];
-
-  // 进度条
   const pct = Math.round((pos - 1) / total * 100);
 
-  // 检查是否已答
-  if (existingAns) {
-    renderZhenResult(q, existingAns);
-    return;
-  }
+  if (existingAns) { renderZhenResult(q, existingAns); return; }
 
   document.getElementById('zhenGrid').innerHTML = `
     <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
@@ -121,13 +122,17 @@ function renderZhenQuestion() {
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
         <span style="background:linear-gradient(135deg,#6366f1,#c084fc);border-radius:8px;padding:2px 10px;font-size:0.72rem;color:#fff;font-weight:700">${q.module}</span>
         <span style="font-size:0.72rem;color:#888">难度 ${'⭐'.repeat(q.difficulty || 2)}</span>
+        <span style="font-size:0.7rem;padding:2px 8px;border-radius:6px;background:#f0f0ff;color:#6366f1">填空</span>
       </div>
-      <div style="background:#f0f0ff;border-radius:14px;padding:18px 20px;border-left:4px solid #6366f1;margin-bottom:16px;font-size:1.05rem;line-height:1.7;color:#2c2440">
-        ${q.chinese_prompt}
+      <div style="background:#f8f9fc;border-radius:14px;padding:20px 24px;border:1px solid #eef0f5;margin-bottom:16px;font-size:1.05rem;line-height:2;color:#2c2440">
+        ${renderPrompt(q.chinese_prompt)}
+      </div>
+      <div style="font-size:0.78rem;color:#999;margin-bottom:12px;background:#fff8f0;padding:8px 12px;border-radius:8px">
+        💡 将 <span style="color:#7c3aed;font-style:italic">紫色斜体</span> 的中文提示翻译成英文，填入上方 <span style="color:#6366f1;font-weight:600">蓝色底线</span> 处
       </div>
       <div class="input-section">
-        <label for="zhenInput">✏️ 输入你的翻译：</label>
-        <textarea id="zhenInput" rows="3" placeholder="在此输入英文翻译..." autofocus></textarea>
+        <label for="zhenInput">✏️ 在空格处填入英文：</label>
+        <textarea id="zhenInput" rows="3" placeholder="将中文提示翻译成英文，填入此处..." autofocus></textarea>
       </div>
       <div class="action-bar">
         <button class="btn btn-primary" onclick="submitZhenAnswer()">提交批改</button>
@@ -163,7 +168,6 @@ async function submitZhenAnswer() {
     });
     const result = await r.json();
     if (result.error) { alert(result.error); if(btn){btn.textContent='提交批改';btn.disabled=false;} return; }
-
     zhenState.answers[zhenState.currentIdx] = { user_answer: answer, score: result.score, errors: result.errors, question_id: q.id };
     renderZhenResult(q, zhenState.answers[zhenState.currentIdx], result);
   } catch(e) {
@@ -185,7 +189,6 @@ function renderZhenResult(q, ans, result) {
       <button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.78rem">← 返回</button>
     </div>
     ${pos < total ? `<div style="height:4px;background:#eef0f5;border-radius:2px;margin-bottom:16px;overflow:hidden"><div style="height:100%;width:${Math.round(pos/total*100)}%;background:linear-gradient(90deg,#6366f1,#c084fc);border-radius:2px;transition:width 0.3s"></div></div>` : ''}
-
     <div class="analysis-panel" style="margin-top:0">
       <h2 style="display:flex;align-items:center;gap:8px;color:#4a3f5c">
         <span style="background:${score >= 2 ? '#27ae60' : (score >= 1 ? '#e67e22' : '#e74c3c')};border-radius:10px;padding:4px 10px;font-size:0.78rem;color:#fff;font-weight:700">${score}/2</span>
@@ -231,7 +234,6 @@ function renderZhenComplete() {
   const scored = zhenState.answers.filter(a => a && a.score !== undefined);
   const avg = scored.length ? (scored.reduce((s,a) => s + a.score, 0) / scored.length).toFixed(1) : 0;
   const perfect = scored.filter(a => a.score >= 2).length;
-  const passed = scored.filter(a => a.score >= 1).length;
 
   document.getElementById('zhenGrid').innerHTML = `
     <div style="max-width:500px;margin:20px auto;text-align:center">

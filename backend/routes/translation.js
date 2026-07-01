@@ -270,6 +270,32 @@ router.get('/streak/:username', async (req, res) => {
   saveDb();
 });
 
+
+// ===== 清理不符合格式的题目 =====
+router.delete('/clean', async (req, res) => {
+  const db = await getDb();
+  const stmt = db.prepare('SELECT id, chinese_prompt FROM zh_en_questions');
+  stmt.bind([]);
+  const badIds = [];
+  while (stmt.step()) {
+    const q = stmt.getAsObject();
+    // 检测是否为纯中文（没有英文字母）
+    if (!/[a-zA-Z]/.test(q.chinese_prompt || '')) {
+      badIds.push(q.id);
+    }
+  }
+  stmt.free();
+  if (badIds.length) {
+    const del = db.prepare('DELETE FROM zh_en_questions WHERE id = ?');
+    for (const id of badIds) {
+      del.run([id]);
+    }
+    del.free();
+    saveDb();
+  }
+  res.json({ ok: true, deleted: badIds.length });
+});
+
 // ===== 生成题目（调用 DeepSeek）=====
 router.post('/generate', async (req, res) => {
   const { module, count } = req.body;
@@ -279,12 +305,18 @@ router.post('/generate', async (req, res) => {
 
   const prompt = `你是英语试题出题老师。请生成${countNum}道浙江专升本英语汉译英题目，${module ? '模块："' + module + '"' : '覆盖以下模块：' + modules.join('、')}。
 
-题目优先使用"半句填空式"（保留部分英文，用___标记空格，让用户翻译中文部分），也可以是整句翻译。
+【重要】每道题必须采用"半句填空式"——保留部分英文句子结构，用___标记空格位置，在空格后用中文括号提示要翻译的内容。
+	绝对禁止生成纯中文句子或整句翻译题。禁止使用 full_sentence 格式。
+	
+	正确示例：
+	- "We had better ___ (避免在公共场合吸烟)." → avoid smoking in public
+	- "I have a book ___ (封面是红色的)." → whose cover is red
+	- "The ___ (人口老龄化) problem has become serious." → aging population
 
 请只返回json数组，每个元素包含：
 {
   "module": "所属模块名称",
-  "format": "full_sentence 或 fill_in_blank",
+  "format": "fill_in_blank（必须，禁止使用full_sentence）",
   "chinese_prompt": "题目文本",
   "reference_answer": "标准答案",
   "grammar_point": "本题考察的语法点",
