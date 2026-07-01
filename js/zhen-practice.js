@@ -72,6 +72,8 @@ function spawnStreakParticles(x, y) {
 }
 
 /* === 页面渲染 === */
+function showZhenLoading(){var el=document.getElementById('zhenGrid');if(el)el.innerHTML='<div class="zhen-notebook"><div style="text-align:center;padding:40px"><p style="color:#888;font-size:0.9rem">⏳ 正在连接服务器...</p></div></div>';}
+
 function renderZhenPage() {
   document.getElementById('zhenGrid').innerHTML = '<div class="zhen-notebook"><div style="text-align:center;padding:60px 0">' +
     '<div style="font-size:2.2rem;margin-bottom:12px">📝</div>' +
@@ -92,7 +94,10 @@ function renderZhenPage() {
 async function startZhenDaily() {
   if(!currentUser){alert('请先登录');return}
   zhenState.mode='daily';zhenState.currentIdx=0;zhenState.answers=[];
-  for(var retry=0;retry<2;retry++){
+  var firstTry=true;
+  for(var retry=0;retry<3;retry++){
+    if(!firstTry){showZhenLoading();await new Promise(function(r){setTimeout(r,3000)})}
+    firstTry=false;
     try{
       var r=await fetch(ZHEN_API+'/daily/'+encodeURIComponent(currentUser.username));
       var data=await r.json();
@@ -101,8 +106,9 @@ async function startZhenDaily() {
       for(var qid in data.answers||{}) if(data.answers.hasOwnProperty(qid))
         zhenState.answers[zhenState.questions.findIndex(function(q){return q.id==qid})]=data.answers[qid];
       renderZhenQuestion(); return;
-    }catch(e){if(retry===1)alert('服务器启动中，请再点一次');}
+    }catch(e){}
   }
+  alert('服务器暂时无法连接，请稍后重试');
 }
 
 async function showZhenFreeOptions() {
