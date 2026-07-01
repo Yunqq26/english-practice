@@ -1,4 +1,4 @@
-const CACHE = 'eng-practice-v3';
+const CACHE = 'eng-practice-v4';
 const URLS = [
   './', './index.html', './style.css',
   './js/app.js', './js/analyzer.js', './js/questions.js', './js/essay.js',
