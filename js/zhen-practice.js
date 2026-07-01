@@ -92,15 +92,17 @@ function renderZhenPage() {
 async function startZhenDaily() {
   if(!currentUser){alert('请先登录');return}
   zhenState.mode='daily';zhenState.currentIdx=0;zhenState.answers=[];
-  try{
-    var r=await fetch(ZHEN_API+'/daily/'+encodeURIComponent(currentUser.username));
-    var data=await r.json();
-    if(data.empty){alert('题库为空，请先联系管理员生成题目');return}
-    zhenState.questions=data.questions;
-    for(var qid in data.answers||{}) if(data.answers.hasOwnProperty(qid))
-      zhenState.answers[zhenState.questions.findIndex(function(q){return q.id==qid})]=data.answers[qid];
-    renderZhenQuestion();
-  }catch(e){alert('加载失败，请重试');}
+  for(var retry=0;retry<2;retry++){
+    try{
+      var r=await fetch(ZHEN_API+'/daily/'+encodeURIComponent(currentUser.username));
+      var data=await r.json();
+      if(data.empty){alert('题库为空');return}
+      zhenState.questions=data.questions;
+      for(var qid in data.answers||{}) if(data.answers.hasOwnProperty(qid))
+        zhenState.answers[zhenState.questions.findIndex(function(q){return q.id==qid})]=data.answers[qid];
+      renderZhenQuestion(); return;
+    }catch(e){if(retry===1)alert('服务器启动中，请再点一次');}
+  }
 }
 
 async function showZhenFreeOptions() {
