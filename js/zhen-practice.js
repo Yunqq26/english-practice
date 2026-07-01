@@ -9,30 +9,6 @@ function renderPrompt(p) {
     .replace(/___+/g,'<span style="display:inline-block;min-width:80px;border-bottom:3px solid #2F5D50;margin:0 4px;background:#f0faf0;border-radius:2px;padding:0 8px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
 }
 
-function initBgParticles(grammarPoints) {
-  const words = [];
-  if (grammarPoints) {
-    words.push(...grammarPoints.split(/[,，、\s]+/).filter(w => w.length > 0 && /[a-zA-Z]/.test(w)));
-  }
-  if (!words.length) words.push('that','which','who','-ing','to','if','the');
-  const existing = document.querySelectorAll('.zhen-bg-particle');
-  existing.forEach(e => e.remove());
-
-  for (let i = 0; i < 5; i++) {
-    const el = document.createElement('div');
-    el.className = 'zhen-bg-particle';
-    el.textContent = words[i % words.length];
-    el.style.left = (10 + Math.random() * 80) + '%';
-    el.style.fontSize = (12 + Math.random() * 8) + 'px';
-    el.style.animationDelay = (i * 4) + 's';
-    el.style.animationDuration = (18 + Math.random() * 10) + 's';
-    document.body.appendChild(el);
-  }
-}
-function clearBgParticles() {
-  document.querySelectorAll('.zhen-bg-particle').forEach(e => e.remove());
-}
-
 /* 粒子效果 */
 function spawnScoreParticles(score, x, y) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -77,7 +53,6 @@ function showWiggleError(errorEl) {
 
 /* 页面渲染 */
 function renderZhenPage() {
-  clearBgParticles();
   document.getElementById('zhenGrid').innerHTML = '<div class="zhen-notebook"><div style="text-align:center;padding:60px 0">' +
     '<div style="font-size:2.2rem;margin-bottom:12px">📝</div>' +
     '<h2 style="font-family:Georgia,serif;color:#2B2B2B;font-size:1.3rem;margin-bottom:6px">汉译英专项练习</h2>' +
@@ -146,7 +121,6 @@ function renderZhenQuestion() {
   const pos=zhenState.currentIdx+1,total=zhenState.questions.length;
   if(zhenState.answers[zhenState.currentIdx]){renderZhenResult(q,zhenState.answers[zhenState.currentIdx]);return}
 
-  initBgParticles(q.grammar_point);
 
   document.getElementById('zhenGrid').innerHTML='<div class="zhen-notebook">'+
     '<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;padding:0 8px">'+
@@ -252,7 +226,6 @@ function checkStreakMilestone() {
 }
 
 function renderZhenComplete() {
-  clearBgParticles();
   const total=zhenState.answers.length;
   const scored=zhenState.answers.filter(a=>a&&a.score!==undefined);
   const avg=scored.length?(scored.reduce((s,a)=>s+a.score,0)/scored.length).toFixed(1):0;
