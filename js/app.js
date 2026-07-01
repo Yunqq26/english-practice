@@ -141,11 +141,6 @@ function renderAuthPage(action) {
     const bookIcon = "📖";
     return `<div id="three-container" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0"></div>
     <div class="auth-wrapper" style="background:transparent!important">
-      <div class="auth-grid"></div>
-      <div class="auth-s1 auth-star"></div><div class="auth-s2 auth-star"></div>
-      <div class="auth-s3 auth-star"></div><div class="auth-s4 auth-star"></div>
-      <div class="auth-s5 auth-star"></div><div class="auth-s6 auth-star"></div>
-      <div class="auth-meteor"></div>
       <div class="auth-ambient"></div>
       <div class="auth-card">
         <div class="auth-card-header">
