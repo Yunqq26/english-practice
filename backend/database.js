@@ -4,6 +4,8 @@ const path = require('path');
 
 const DB_PATH = "/data/data.db";
 const DB_DIR = "/data";
+console.log("[DB] 数据库路径:", DB_PATH);
+console.log("[DB] Volume目录存在:", fs.existsSync(DB_DIR));
 try { if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true }); } catch(e) {}
 let db = null;
 
@@ -13,7 +15,10 @@ async function getDb() {
   try {
     const buffer = fs.readFileSync(DB_PATH);
     db = new SQL.Database(buffer);
+    console.log("[DB] 读取已有数据库, 大小:", buffer.length, "bytes");
   } catch (e) {
+    console.log("[DB] 未找到现有数据库:", e.message);
+    console.log("[DB] 创建新数据库...");
     db = new SQL.Database();
   }
   initTables();
@@ -55,6 +60,7 @@ function initTables() {
 }
 
 function saveDb() {
+  console.log("[DB] 保存数据库到:", DB_PATH);
   if (db) {
     const data = db.export();
     const buffer = Buffer.from(data);

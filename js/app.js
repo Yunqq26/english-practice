@@ -136,8 +136,8 @@ function renderAuthPage(action) {
 
   const sharedHTML = (mode) => {
     const isLogin = mode === 'login';
-    const lockSvg = `<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1"/><path d="M12 16v-2"/></svg>`;
-    const penSvg = `<svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;
+    const penIcon = "✒️";
+    const bookIcon = "📖";
     return `<div class="auth-wrapper">
       <div class="auth-grid"></div>
       <div class="auth-s1 auth-star"></div><div class="auth-s2 auth-star"></div>
@@ -147,7 +147,7 @@ function renderAuthPage(action) {
       <div class="auth-ambient"></div>
       <div class="auth-card">
         <div class="auth-card-header">
-          <div class="auth-logo">${isLogin ? lockSvg : penSvg}</div>
+          <div class="auth-logo">${isLogin ? penIcon : bookIcon}</div>
           <h2>${isLogin ? 'Welcome Back' : 'Create Account'}</h2>
           <p>${isLogin ? '登录继续你的翻译练习' : '加入英语翻译练习，每日精进'}</p>
         </div>
@@ -227,7 +227,8 @@ function renderAuthPage(action) {
   }
   document.querySelector('.header').style.display = 'none';
   const nb = document.querySelector('.nav-bar');
-  if (nb) nb.style.display = 'none';
+  if (nb) nb.style.display = .none.;
+  if (sd2) sd2.style.display = .none.;
 }
 
 function selectRole(role) {
@@ -1644,9 +1645,12 @@ function init() {
   const mt = document.querySelector('.mode-toggle');
   const bp = document.querySelector('.bottom-panel');
   const nb = document.querySelector('.nav-bar');
-  if (mt) mt.style.display = 'none';
-  if (bp) bp.style.display = 'none';
   if (nb) nb.style.display = 'none';
+  const sd2 = document.querySelector('.sd');
+  if (sd2) sd2.style.display = 'none';
+  if (bp) bp.style.display = 'none';
+  if (nb) nb.style.display = .none.;
+  if (sd2) sd2.style.display = .none.;
   renderAuthPage('login');
 }
 

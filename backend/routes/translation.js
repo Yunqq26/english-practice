@@ -272,47 +272,38 @@ router.get('/streak/:username', async (req, res) => {
 
 
 
+
+
+
+router.delete('/questions/:id', async (req, res) => {
+  const db = await getDb();
+  db.run('DELETE FROM zh_en_questions WHERE id = ?', [req.params.id]);
+  saveDb();
+  res.json({ok:true});
+});
 // ===== 批量导入题库 =====
 router.post('/batch-import', async (req, res) => {
   const { questions, overwrite } = req.body;
-  if (!Array.isArray(questions)) return res.status(400).json({ error: '格式错误，需要上传题目数组' });
+  if (!Array.isArray(questions)) return res.status(400).json({ error: '需要上传题目数组' });
   if (questions.length > 200) return res.status(400).json({ error: '单次最多导入 200 题' });
-
   const db = await getDb();
-  const results = { imported: 0, skipped: 0, errors: [], skippedIds: [] };
-
+  const results = { imported: 0, skipped: 0, errors: [] };
   for (let i = 0; i < questions.length; i++) {
     const q = questions[i];
-    const idx = i + 1;
-    // 字段校验
-    const missing = [];
-    if (!q.id) missing.push('id');
-    if (!q.chinese_prompt) missing.push('chinese_prompt');
-    if (!q.reference_answer) missing.push('reference_answer');
-    if (missing.length) {
-      results.errors.push('第' + idx + '题缺少字段: ' + missing.join(', '));
-      continue;
+    if (!q.chinese_prompt || !q.reference_answer) {
+      results.errors.push('第' + (i+1) + '题缺少 chinese_prompt 或 reference_answer'); continue;
     }
     if (!q.module) q.module = '高频词汇与固定搭配';
     if (!q.difficulty) q.difficulty = 2;
-
-    // id 去重
-    const stmt = db.prepare('SELECT id FROM zh_en_questions WHERE id = ?');
-    stmt.bind([String(q.id)]);
-    const exists = stmt.step();
-    stmt.free();
-
+    const stmt = db.prepare('SELECT id FROM zh_en_questions WHERE chinese_prompt = ?');
+    stmt.bind([q.chinese_prompt]);
+    const exists = stmt.step(); stmt.free();
     if (exists) {
-      if (!overwrite) {
-        results.skipped++;
-        results.skippedIds.push(String(q.id));
-        continue;
-      }
-      db.run('DELETE FROM zh_en_questions WHERE id = ?', [String(q.id)]);
+      if (!overwrite) { results.skipped++; continue; }
+      db.run('DELETE FROM zh_en_questions WHERE chinese_prompt = ?', [q.chinese_prompt]);
     }
-
-    db.run('INSERT INTO zh_en_questions (id, module, format, chinese_prompt, reference_answer, grammar_point, key_phrases, difficulty) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [String(q.id), q.module, q.format || 'fill_in_blank', q.chinese_prompt, q.reference_answer, q.grammar_point || '', JSON.stringify(q.key_phrases || []), q.difficulty || 2]);
+    db.run('INSERT INTO zh_en_questions (module, format, chinese_prompt, reference_answer, grammar_point, key_phrases, difficulty) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [q.module, q.format || 'fill_in_blank', q.chinese_prompt, q.reference_answer, q.grammar_point || '', JSON.stringify(q.key_phrases || []), q.difficulty || 2]);
     results.imported++;
   }
   saveDb();
