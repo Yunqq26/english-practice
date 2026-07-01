@@ -229,6 +229,8 @@ function renderAuthPage(action) {
   document.querySelector('.header').style.display = 'none';
   const nb = document.querySelector('.nav-bar');
   if (nb) nb.style.display = 'none';
+  if (sd2) sd2.style.display = 'none';
+}
 
 function selectRole(role) {
   document.getElementById('roleUserBtn').classList.toggle('active', role === 'user');
