@@ -8,42 +8,6 @@ function renderPrompt(p) {
     .replace(/___+/g,'<span style="display:inline-block;min-width:80px;border-bottom:3px solid #2F5D50;margin:0 4px;background:#f0faf0;border-radius:2px;padding:0 8px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
 }
 
-/* 粒子效果 */
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const count = score >= 2 ? 5 : 2;
-  const isPerfect = score >= 2;
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.textContent = isPerfect ? '✓' : '✗';
-    el.style.left = (x + (Math.random()-0.5)*40) + 'px';
-    el.style.top = (y + (Math.random()-0.5)*20) + 'px';
-    el.style.fontSize = (16 + Math.random()*14) + 'px';
-    el.style.color = isPerfect ? '#2F5D50' : '#B23A2F';
-    el.style.fontWeight = '700';
-    el.style.fontFamily = '"Courier New",monospace';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1500);
-  }
-}
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const icons = ['📖','✨','🏆','⭐']; // book, sparkle, trophy, star (using simple shapes)
-  for (let i = 0; i < 6; i++) {
-    const el = document.createElement('div');
-    el.textContent = icons[i % icons.length];
-    el.style.left = (x + (Math.random()-0.5)*80) + 'px';
-    el.style.top = y + 'px';
-    el.style.fontSize = (14 + Math.random()*10) + 'px';
-    el.style.animationDelay = (i * 0.12) + 's';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 2000);
-  }
-}
-
-  if (!errorEl || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-}
-
-/* 页面渲染 */
 function renderZhenPage() {
   document.getElementById('zhenGrid').innerHTML = '<div class="zhen-notebook"><div style="text-align:center;padding:60px 0">' +
     '<div style="font-size:2.2rem;margin-bottom:12px">📝</div>' +
@@ -67,12 +31,12 @@ async function startZhenDaily() {
   try{
     const r=await fetch(ZHEN_API+'/daily/'+encodeURIComponent(currentUser.username));
     const data=await r.json();
-    if(data.empty){alert('题库为空');return}
+    if(data.empty){alert('题库为空，请先联系管理员生成题目');return}
     zhenState.questions=data.questions;
     for(const[qid,ans]of Object.entries(data.answers||{}))
       zhenState.answers[zhenState.questions.findIndex(q=>q.id==qid)]=ans;
     renderZhenQuestion();
-  }catch(e){alert('加载失败');}
+  }catch(e){alert('加载失败，请重试');}
 }
 
 async function showZhenFreeOptions() {
@@ -113,7 +77,6 @@ function renderZhenQuestion() {
   const pos=zhenState.currentIdx+1,total=zhenState.questions.length;
   if(zhenState.answers[zhenState.currentIdx]){renderZhenResult(q,zhenState.answers[zhenState.currentIdx]);return}
 
-
   document.getElementById('zhenGrid').innerHTML='<div class="zhen-notebook">'+
     '<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;padding:0 8px">'+
     '<span style="font-size:0.8rem;color:#888;font-family:Georgia,serif">📝 '+q.module+' · '+pos+'/'+total+'</span>'+
@@ -122,11 +85,9 @@ function renderZhenQuestion() {
     '<span style="font-weight:600">翻译填空</span>'+
     '<span style="color:#C9A24B;font-weight:600">难度 '+('★'.repeat(q.difficulty||2))+'</span></div>'+
     '<div class="exam-question">'+renderPrompt(q.chinese_prompt)+'</div></div>'+
-
     '<div class="zhen-input-area">'+
     '<label>✏️ 将上方紫色斜体的中文提示翻译成英文，填入空白处</label>'+
     '<textarea id="zhenInput" rows="3" placeholder="在此输入英文翻译..." autofocus></textarea></div>'+
-
     '<div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 8px">'+
     '<button class="btn btn-primary" onclick="submitZhenAnswer()" style="background:#2F5D50;border:none;border-radius:0;padding:10px 24px;font-family:Georgia,serif">提交批改</button>'+
     '<button class="btn btn-ghost" onclick="nextZhenQuestion()" style="font-size:0.82rem">跳过 →</button></div>'+
@@ -161,8 +122,6 @@ function renderZhenResult(q, ans, result) {
   const errors=typeof res.errors==='string'?JSON.parse(res.errors):(res.errors||[]);
   const score=res.score||0;
   const pos=zhenState.currentIdx+1,total=zhenState.questions.length;
-  const rect=document.getElementById('zhenGrid')?.getBoundingClientRect();
-
   const scoreColor=score>=2?'#2F5D50':(score>=1?'#C9A24B':'#B23A2F');
   const scoreLabel=score>=2?'✓ 满分！':(score>=1?'部分正确':'需订正');
 
@@ -170,14 +129,13 @@ function renderZhenResult(q, ans, result) {
     '<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;padding:0 8px">'+
     '<span style="font-size:0.8rem;color:#888;font-family:Georgia,serif">📝 '+q.module+' · '+pos+'/'+total+'</span>'+
     '<button class="btn btn-ghost" onclick="renderZhenPage()" style="font-size:0.75rem">← 返回</button></div>'+
-
     '<div class="zhen-red-ink">'+
     '<div class="ink-header">✒️ 批改反馈</div>'+
     '<div class="ink-score" style="color:'+scoreColor+'">'+score+'/2 <span style="font-size:0.85rem;font-weight:400;color:#888">'+scoreLabel+'</span></div>'+
     (errors.length?'': '<div style="color:#2F5D50;font-size:0.85rem;margin-bottom:12px;font-style:italic">没有语法错误，翻译准确。</div>')+
     '<div style="margin-bottom:12px"><span style="font-size:0.82rem;color:#888">你的译文</span>'+
     '<div style="font-size:0.9rem;color:#2B2B2B;padding:8px 0;border-bottom:1px solid #f0d0d0">'+escapeHtml(ans.user_answer||'')+'</div></div>'+
-    errors.map(e=>'<div class="ink-error" id="zhenError_'+pos+'">❌ '+e+'</div>').join('')+
+    errors.map(e=>'<div class="ink-error">❌ '+e+'</div>').join('')+
     '<div class="ink-reference">📖 '+escapeHtml(q.reference_answer)+'</div>'+
     '<div class="ink-analysis">'+
     '<div style="font-weight:600;color:#2F5D50;margin-bottom:4px">📌 考点</div>'+
@@ -185,33 +143,13 @@ function renderZhenResult(q, ans, result) {
     (q.key_phrases?'<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">'+
       (typeof q.key_phrases==='string'?JSON.parse(q.key_phrases):q.key_phrases).map(k=>'<span style="background:#f5f0ff;padding:2px 10px;border-radius:0;font-size:0.82rem;color:#7c3aed;border:1px solid #e0d0f0">'+k+'</span>').join('')+'</div>':'')+
     '</div></div>'+
-
     '<div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 8px">'+
     '<button class="btn btn-primary" onclick="nextZhenQuestion()" style="background:#2F5D50;border:none;border-radius:0;padding:10px 24px;font-family:Georgia,serif">'+(pos<total?'下一题 →':'查看结果')+'</button></div></div>';
-
-  // 波浪线标注错误
-  if(errors.length){
-    setTimeout(()=>{
-    },200);
-  }
 }
 
 function nextZhenQuestion() {
   zhenState.currentIdx++;
-  if(zhenState.currentIdx>=zhenState.questions.length){
-    checkStreakMilestone();
-  }
   renderZhenQuestion();
-}
-
-function checkStreakMilestone() {
-  if(zhenState.mode!=='daily'||!currentUser)return;
-  fetch(ZHEN_API+'/streak/'+encodeURIComponent(currentUser.username)).then(r=>r.json()).then(d=>{
-    const s=d.current_streak||0;
-    if(s>0&&s%7===0){
-      const rect=document.getElementById('zhenGrid')?.getBoundingClientRect();
-    }
-  }).catch(()=>{});
 }
 
 function renderZhenComplete() {
