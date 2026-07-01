@@ -1,127 +1,203 @@
-// ===== Three.js 粒子登录效果 =====
-// 依赖：Three.js（CDN 加载）
-
+// ===== Three.js 粒子登录效果（蜡笔小新头像）=====
 (function() {
-  let scene, camera, renderer, particles, particleGeo;
-  let targetPositions = [];
-  let mouseX = 0, mouseY = 0;
-  let animationId = null;
-  let progress = 0; // 0-1 聚合进度
-  const PARTICLE_COUNT = window.innerWidth < 768 ? 1200 : 3500;
-  const AGGREGATE_DURATION = 2.0; // 秒
-  let startTime = null;
-  let onComplete = null;
+  let scene, camera, renderer, particles, particleGeo, animationId;
+  let targetPositions = [], targetColors = [];
+  let mouseX = 0, mouseY = 0, startTime, onComplete;
+  const isMobile = window.innerWidth < 768;
+  const PARTICLE_COUNT = isMobile ? 1500 : 4000;
+  const AGGREGATE_DURATION = 2.0;
 
-  // ===== 小新头像轮廓点阵 =====
-  function generateShinchanSilhouette(count) {
-    const points = [];
-    // 小新头部特征：圆脸、粗眉毛、大嘴轮廓
-    // 使用极坐标 + 变形来近似头部形状
-    for (let i = 0; i < count; i++) {
-      let x, y, valid = false;
-      let attempts = 0;
-      while (!valid && attempts < 200) {
-        attempts++;
-        const angle = Math.random() * Math.PI * 2;
-        // 头部基本形状：横向略椭圆的圆形，下巴略收窄
-        const r = 0.3 + Math.random() * 0.6;
-        let rx = 1.0, ry = 1.0;
-        // 头部：上面宽下面窄
-        const topRatio = Math.sin(angle) * 0.15;
-        rx = 1.0 - Math.abs(Math.sin(angle * 0.5)) * 0.1;
-        ry = 1.0 - topRatio * 0.3;
-        const br = r * 0.85;
-        let px = Math.cos(angle) * br * rx;
-        let py = Math.sin(angle) * br * ry - 0.05;
-        // 添加特征：顶部头发凸起
-        if (py < -0.5 && Math.abs(px) < 0.2) {
-          py += (Math.random() * 0.15);
-        }
-        // 眉毛区域：在脸上半部加粗
-        const inEyebrow = (py > -0.15 && py < 0.05 && Math.abs(px) > 0.2 && Math.abs(px) < 0.55);
-        // 嘴巴区域
-        const inMouth = (py > 0.25 && py < 0.4 && Math.abs(px) < 0.35);
-        // 随机采样，使眉毛区域密度更高
-        const densityBias = inEyebrow ? 3.0 : (inMouth ? 1.5 : 1.0);
-        if (Math.random() > 1.0 / densityBias) continue;
+  // ===== Canvas 绘制小新头像并采样 =====
+  function sampleShinchan(count) {
+    const canvas = document.createElement('canvas');
+    const size = 256;
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
 
-        // 检查是否在头部轮廓内（用简单椭圆检测）
-        const ex = px / 0.85;
-        const ey = py / (0.9 + Math.sin(angle * 0.3) * 0.1);
-        if (ex * ex + ey * ey < 1.0) {
-          x = px;
-          y = py;
-          valid = true;
-        }
-      }
-      if (valid) {
-        points.push({ x: x * 2.5, y: y * 2.5 });
+    // 背景透明
+    ctx.clearRect(0, 0, size, size);
+
+    // ---- 绘制小新标志性面部 ----
+    const cx = size / 2, cy = size / 2;
+
+    // 1. 头发（头顶的黑色乱发）
+    ctx.fillStyle = '#2a1a0a';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy - 50, 50, 25, 0, Math.PI, 0);
+    ctx.fill();
+    // 头发尖刺
+    for (let i = -3; i <= 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo(cx + i * 14, cy - 55);
+      ctx.lineTo(cx + i * 14 + (i % 3) * 6, cy - 75);
+      ctx.lineTo(cx + i * 14 + 8, cy - 58);
+      ctx.fill();
+    }
+
+    // 2. 面部（标志性的豆子脸型）
+    ctx.fillStyle = '#f5d6a8';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy - 5, 55, 58, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // 脸颊（更宽）
+    ctx.beginPath();
+    ctx.ellipse(cx - 20, cy + 10, 25, 30, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx + 20, cy + 10, 25, 30, 0.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. 眉毛（极粗——小新最标志性的特征）
+    ctx.fillStyle = '#2a1a0a';
+    ctx.beginPath();
+    ctx.roundRect(cx - 40, cy - 28, 30, 8, 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(cx + 10, cy - 28, 30, 8, 2);
+    ctx.fill();
+    // 眉毛外延加粗
+    ctx.beginPath();
+    ctx.roundRect(cx - 42, cy - 24, 34, 3, 1);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(cx + 8, cy - 24, 34, 3, 1);
+    ctx.fill();
+
+    // 4. 眼睛
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath();
+    ctx.ellipse(cx - 22, cy - 8, 6, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx + 22, cy - 8, 6, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 5. 嘴巴（标志性的大嘴）
+    ctx.strokeStyle = '#8B4513';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 18, 18, 10, 0, 0, Math.PI);
+    ctx.stroke();
+    // 嘴巴内部涂红
+    ctx.fillStyle = '#d4504a';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 18, 17, 9, 0, 0, Math.PI);
+    ctx.fill();
+
+    // 6. 腮红
+    ctx.fillStyle = 'rgba(255,150,150,0.25)';
+    ctx.beginPath();
+    ctx.ellipse(cx - 35, cy + 8, 10, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx + 35, cy + 8, 10, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 7. 耳朵
+    ctx.fillStyle = '#e8c48a';
+    ctx.beginPath();
+    ctx.ellipse(cx - 56, cy, 7, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx + 56, cy, 7, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ---- 采样像素 ----
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const data = imageData.data;
+    const samples = [];
+
+    // 权重图：眉毛和眼睛区域提高采样密度
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const idx = (y * size + x) * 4;
+        const r = data[idx], g = data[idx + 1], b = data[idx + 2], a = data[idx + 3];
+        if (a < 10) continue; // 跳过透明
+
+        // 判断区域特征
+        const isSkin = (r > 200 && g > 160 && b > 100);
+        const isDark = (r < 60 && g < 40 && b < 30);
+        const isMouth = (r > 180 && g < 100 && b < 100);
+
+        // 权重：深色特征（眉毛/眼睛/头发）提高采样概率
+        let weight = 1;
+        if (isDark) weight = 3;
+        if (isMouth) weight = 1.5;
+        if (isSkin) weight = 0.8;
+
+        if (Math.random() < 1 / weight) continue;
+
+        // 映射到 3D 坐标空间 (-3 到 3)
+        const px = (x / size - 0.5) * 5.5;
+        const py = -(y / size - 0.5) * 5.5;
+
+        // 颜色
+        let color = { r: 1, g: 1, b: 1 };
+        if (isSkin) { color = { r: 0.95, g: 0.75, b: 0.55 }; }
+        else if (isDark) { color = { r: 0.15, g: 0.1, b: 0.06 }; }
+        else if (isMouth) { color = { r: 0.83, g: 0.31, b: 0.29 }; }
+
+        samples.push({ x: px, y: py, color: color });
       }
     }
-    // 确保足够点数
-    while (points.length < count) {
-      const angle = Math.random() * Math.PI * 2;
-      const r = Math.random() * 0.5;
-      points.push({ x: Math.cos(angle) * r * 2, y: Math.sin(angle) * r * 2 });
+
+    // shuffle
+    for (let i = samples.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [samples[i], samples[j]] = [samples[j], samples[i]];
     }
-    return points.slice(0, count);
+
+    return samples.slice(0, count);
   }
 
   // ===== 初始化 Three.js =====
-  function init(canvasContainer, onReady) {
-    onComplete = onReady || function(){};
-
-    const container = document.getElementById(canvasContainer) || canvasContainer;
-    if (!container) return;
+  function init(containerId, callback) {
+    onComplete = callback || function(){};
+    const container = document.getElementById(containerId);
+    if (!container) { if (onComplete) onComplete(); return; }
 
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    // 场景
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0D0F0C);
 
-    // 相机
     camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 1000);
-    camera.position.z = 5.5;
+    camera.position.z = isMobile ? 6.5 : 5.5;
 
-    // 渲染器
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // 粒子材质
+    // 采样小新头像
+    const samples = sampleShinchan(PARTICLE_COUNT);
+
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
     const colors = new Float32Array(PARTICLE_COUNT * 3);
     const sizes = new Float32Array(PARTICLE_COUNT);
-    const positions = new Float32Array(PARTICLE_COUNT * 3);
 
-    // 目标位置（小新轮廓）
-    const silhouette = generateShinchanSilhouette(PARTICLE_COUNT);
-
-    // 初始化随机位置和颜色
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      // 随机起始位置（在 3D 空间散开）
-      positions[i * 3] = (Math.random() - 0.5) * 10;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 8;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
+      // 随机起始位置
+      positions[i * 3] = (Math.random() - 0.5) * 12;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 6;
 
-      // 目标位置（小新轮廓在 XY 平面，Z 在 -0.5 到 0.5 之间）
-      const s = silhouette[i] || { x: 0, y: 0 };
-      targetPositions.push(s.x, s.y, (Math.random() - 0.5) * 0.6);
+      // 目标位置
+      const s = samples[i] || { x: 0, y: 0, color: { r: 0.5, g: 0.5, b: 0.5 } };
+      targetPositions[i * 3] = s.x;
+      targetPositions[i * 3 + 1] = s.y;
+      targetPositions[i * 3 + 2] = (Math.random() - 0.5) * 0.8;
 
-      // 颜色：主色为橙黄/肤色 (小新的标志性颜色)
-      const isDark = Math.random() > 0.7;
-      if (isDark) {
-        // 深色轮廓点
-        colors[i * 3] = 0.08; colors[i * 3 + 1] = 0.08; colors[i * 3 + 2] = 0.1;
-      } else {
-        // 肤色/橙黄
-        colors[i * 3] = 0.9 + Math.random() * 0.1;
-        colors[i * 3 + 1] = 0.6 + Math.random() * 0.2;
-        colors[i * 3 + 2] = 0.2 + Math.random() * 0.2;
-      }
-      sizes[i] = 0.02 + Math.random() * 0.04;
+      targetColors[i * 3] = s.color.r;
+      targetColors[i * 3 + 1] = s.color.g;
+      targetColors[i * 3 + 2] = s.color.b;
+
+      colors[i * 3] = s.color.r;
+      colors[i * 3 + 1] = s.color.g;
+      colors[i * 3 + 2] = s.color.b;
+      sizes[i] = isMobile ? 0.06 + Math.random() * 0.08 : 0.04 + Math.random() * 0.06;
     }
 
     particleGeo = new THREE.BufferGeometry();
@@ -130,10 +206,10 @@
     particleGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
     const particleMat = new THREE.PointsMaterial({
-      size: 0.08,
+      size: isMobile ? 0.15 : 0.12,
       vertexColors: true,
       transparent: true,
-      opacity: 1,
+      opacity: 0.9,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       sizeAttenuation: true
@@ -142,13 +218,21 @@
     particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    // 鼠标监听
     document.addEventListener('mousemove', onMouseMove);
-
-    // 窗口缩放
     window.addEventListener('resize', onResize);
 
-    // 开始动画
+    // 环境光晕（用半透明球体）
+    const glowGeo = new THREE.SphereGeometry(3, 32, 32);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0x2F5D50,
+      transparent: true,
+      opacity: 0.06,
+      wireframe: false
+    });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    glow.position.z = -2;
+    scene.add(glow);
+
     startTime = Date.now();
     animate();
   }
@@ -167,62 +251,57 @@
 
   function animate() {
     animationId = requestAnimationFrame(animate);
-
     if (!particles || !particleGeo) return;
 
     const pos = particleGeo.attributes.position.array;
     const elapsed = (Date.now() - startTime) / 1000;
-    progress = Math.min(1, elapsed / AGGREGATE_DURATION);
+    const progress = Math.min(1, elapsed / AGGREGATE_DURATION);
+    const t = 1 - Math.pow(1 - progress, 3); // ease-out cubic
 
-    // 缓动函数（ease-out cubic）
-    const t = 1 - Math.pow(1 - progress, 3);
+    // 保存初始随机位置（第一次动画时缓存）
+    if (!animate._initPos) {
+      animate._initPos = new Float32Array(pos);
+    }
+    const initPos = animate._initPos;
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
-      // 起始位置（从随机位置插值到目标位置）
-      const startX = (Math.random() - 0.5) * 10;
-      const startY = (Math.random() - 0.5) * 8;
-      const startZ = (Math.random() - 0.5) * 4;
-
-      pos[i3] = startX + (targetPositions[i3] - startX) * t;
-      pos[i3 + 1] = startY + (targetPositions[i3 + 1] - startY) * t;
-      pos[i3 + 2] = startZ + (targetPositions[i3 + 2] - startZ) * t;
-    }
-
-    // 聚合完成后微浮动（呼吸效果）
-    if (progress >= 1) {
-      const breathe = Math.sin(elapsed * 0.5) * 0.03;
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        pos[i * 3 + 1] += Math.sin(elapsed + i * 0.01) * 0.001;
-        pos[i * 3] += Math.cos(elapsed * 0.7 + i * 0.01) * 0.001;
-      }
-
-      // 鼠标扰动
-      if (Math.abs(mouseX) > 0.1 || Math.abs(mouseY) > 0.1) {
-        for (let i = 0; i < Math.min(200, PARTICLE_COUNT); i++) {
-          const idx = Math.floor(Math.random() * PARTICLE_COUNT) * 3;
-          pos[idx] += mouseX * 0.002;
-          pos[idx + 1] += mouseY * 0.002;
-        }
-      }
+      pos[i3] = initPos[i3] + (targetPositions[i3] - initPos[i3]) * t;
+      pos[i3 + 1] = initPos[i3 + 1] + (targetPositions[i3 + 1] - initPos[i3 + 1]) * t;
+      pos[i3 + 2] = initPos[i3 + 2] + (targetPositions[i3 + 2] - initPos[i3 + 2]) * t;
     }
 
     particleGeo.attributes.position.needsUpdate = true;
 
-    // 缓慢旋转视角
+    // 聚合完成后：呼吸浮动 + 缓慢旋转
     if (progress >= 1) {
-      particles.rotation.y += 0.0005;
-      particles.rotation.x += 0.0003;
+      const breathe = Math.sin(elapsed * 0.6) * 0.02;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const i3 = i * 3;
+        pos[i3] += Math.cos(elapsed * 0.4 + i * 0.005) * 0.002;
+        pos[i3 + 1] += Math.sin(elapsed * 0.5 + i * 0.005) * 0.002 + breathe * 0.3;
+      }
+      particleGeo.attributes.position.needsUpdate = true;
+
+      // 鼠标扰动
+      if (Math.abs(mouseX) > 0.1 || Math.abs(mouseY) > 0.1) {
+        for (let i = 0; i < Math.min(300, PARTICLE_COUNT); i++) {
+          const idx = Math.floor(Math.random() * PARTICLE_COUNT) * 3;
+          pos[idx] += mouseX * 0.003;
+          pos[idx + 1] += mouseY * 0.003;
+        }
+      }
+
+      particles.rotation.y += 0.003;
+      particles.rotation.x = Math.sin(elapsed * 0.2) * 0.03;
     }
 
     renderer.render(scene, camera);
 
     // 聚合完成回调
-    if (progress >= 1 && startTime) {
-      if (onComplete && typeof onComplete === 'function') {
-        onComplete();
-        onComplete = null;
-      }
+    if (progress >= 1 && startTime && onComplete) {
+      onComplete();
+      onComplete = null;
     }
   }
 
@@ -232,17 +311,15 @@
     window.removeEventListener('resize', onResize);
     if (renderer) {
       renderer.dispose();
-      if (renderer.domElement && renderer.domElement.parentNode) {
+      if (renderer.domElement && renderer.domElement.parentNode)
         renderer.domElement.parentNode.removeChild(renderer.domElement);
-      }
     }
     if (particleGeo) particleGeo.dispose();
     scene = camera = renderer = particles = particleGeo = null;
+    animate._initPos = null;
+    targetPositions = [];
+    targetColors = [];
   }
 
-  // 暴露全局接口
-  window.ShinchanParticles = {
-    init: init,
-    cleanup: cleanup
-  };
+  window.ShinchanParticles = { init, cleanup };
 })();
