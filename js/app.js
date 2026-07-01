@@ -232,6 +232,11 @@ function renderAuthPage(action) {
   if (nb) nb.style.display = 'none';
   const sbEl = document.querySelector('.sd');
   if (sbEl) sbEl.style.display = 'none';
+
+  // 启动粒子动画
+  if (window.ShinchanParticles && window.ShinchanParticles.init) {
+    setTimeout(() => window.ShinchanParticles.init('three-container'), 100);
+  }
 }
 
 function selectRole(role) {
@@ -313,6 +318,10 @@ function loadCurrentUserData() {
 }
 
 function showAppAfterLogin() {
+  // 清理登录页粒子动画
+  if (window.ShinchanParticles && window.ShinchanParticles.cleanup) {
+    window.ShinchanParticles.cleanup();
+  }
   document.body.style.background = '#f0f2f5';
   document.body.style.padding = '20px';
   document.body.style.margin = '';
