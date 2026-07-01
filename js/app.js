@@ -126,7 +126,8 @@ function renderAuthPage(action) {
   root.style.boxShadow = 'none';
   const panels = [document.getElementById('analysisPanel'), document.querySelector('.bottom-panel'), document.querySelector('.mode-toggle')];
   panels.forEach(p => { if (p) { p.style.display = 'none'; } });
-  document.body.style.background = '#0f0c29';
+  document.body.classList.add("login-page");
+  document.body.style.background = "#FAF8F3";
   document.body.style.padding = '0';
   document.body.style.margin = '0';
   const c = document.querySelector('.container');
@@ -227,9 +228,7 @@ function renderAuthPage(action) {
   }
   document.querySelector('.header').style.display = 'none';
   const nb = document.querySelector('.nav-bar');
-  if (nb) nb.style.display = .none.;
-  if (sd2) sd2.style.display = .none.;
-}
+  if (nb) nb.style.display = 'none';
 
 function selectRole(role) {
   document.getElementById('roleUserBtn').classList.toggle('active', role === 'user');
@@ -1649,8 +1648,8 @@ function init() {
   const sd2 = document.querySelector('.sd');
   if (sd2) sd2.style.display = 'none';
   if (bp) bp.style.display = 'none';
-  if (nb) nb.style.display = .none.;
-  if (sd2) sd2.style.display = .none.;
+  if (nb) nb.style.display = 'none';
+  if (sd2) sd2.style.display = 'none';
   renderAuthPage('login');
 }
 
