@@ -132,11 +132,11 @@
         const px = (x / size - 0.5) * 5.5;
         const py = -(y / size - 0.5) * 5.5;
 
-        // 颜色
-        let color = { r: 1, g: 1, b: 1 };
-        if (isSkin) { color = { r: 0.95, g: 0.75, b: 0.55 }; }
-        else if (isDark) { color = { r: 0.15, g: 0.1, b: 0.06 }; }
-        else if (isMouth) { color = { r: 0.83, g: 0.31, b: 0.29 }; }
+        // 颜色 — 香槟/珍珠/银灰 ethereal palette
+        let color = { r: 0.85, g: 0.83, b: 0.82 };
+        if (isSkin) { color = { r: 0.88, g: 0.85, b: 0.80 }; }
+        else if (isDark) { color = { r: 0.72, g: 0.70, b: 0.72 }; }
+        else if (isMouth) { color = { r: 0.82, g: 0.77, b: 0.78 }; }
 
         samples.push({ x: px, y: py, color: color });
       }
@@ -161,14 +161,15 @@
     const h = window.innerHeight;
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0D0F0C);
+    // 透明背景 — 让 CSS 渐变透出来
 
     camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 1000);
     camera.position.z = isMobile ? 6.5 : 5.5;
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
     // 采样小新头像
@@ -206,11 +207,11 @@
     particleGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
     const particleMat = new THREE.PointsMaterial({
-      size: isMobile ? 0.15 : 0.12,
+      size: isMobile ? 0.1 : 0.07,
       vertexColors: true,
       transparent: true,
-      opacity: 0.9,
-      blending: THREE.AdditiveBlending,
+      opacity: 0.35,
+      blending: THREE.NormalBlending,
       depthWrite: false,
       sizeAttenuation: true
     });
@@ -221,12 +222,12 @@
     document.addEventListener('mousemove', onMouseMove);
     window.addEventListener('resize', onResize);
 
-    // 环境光晕（用半透明球体）
-    const glowGeo = new THREE.SphereGeometry(3, 32, 32);
+    // 环境光晕 — 柔和香槟色
+    const glowGeo = new THREE.SphereGeometry(3.5, 32, 32);
     const glowMat = new THREE.MeshBasicMaterial({
-      color: 0x2F5D50,
+      color: 0xD4CCD0,
       transparent: true,
-      opacity: 0.06,
+      opacity: 0.04,
       wireframe: false
     });
     const glow = new THREE.Mesh(glowGeo, glowMat);

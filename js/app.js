@@ -127,7 +127,7 @@ function renderAuthPage(action) {
   const panels = [document.getElementById('analysisPanel'), document.querySelector('.bottom-panel'), document.querySelector('.mode-toggle')];
   panels.forEach(p => { if (p) { p.style.display = 'none'; } });
   document.body.classList.add("login-page");
-  document.body.style.background = "#0D0F0C";
+  document.body.style.background = "linear-gradient(135deg, #F5F0EB 0%, #F0E6D6 35%, #E4E2E8 65%, #D6E0E8 100%)";
   document.body.style.padding = '0';
   document.body.style.margin = '0';
   const c = document.querySelector('.container');
@@ -141,7 +141,6 @@ function renderAuthPage(action) {
     const bookIcon = "📖";
     return `<div id="three-container" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0"></div>
     <div class="auth-wrapper" style="background:transparent!important">
-      <div class="auth-ambient"></div>
       <div class="auth-card">
         <div class="auth-card-header">
           <div class="auth-logo">${isLogin ? penIcon : bookIcon}</div>
