@@ -1418,7 +1418,7 @@ body {
 .auth-card-header h2 {
   color: #2C2C35;
   font-size: 1.1rem;
-  font-weight: 300;
+  font-weight: 500;
   letter-spacing: 0.15em;
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -1426,11 +1426,11 @@ body {
 }
 
 .auth-card-header p {
-  color: #B0ADB5;
+  color: #7A7885;
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   margin: 0;
-  font-weight: 300;
+  font-weight: 400;
   font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
 }
 
@@ -1488,11 +1488,11 @@ body {
   top: 50%;
   transform: translateY(-50%);
   font-size: 0.78rem;
-  color: #B0ADB5;
+  color: #8A8895;
   letter-spacing: 0.04em;
   pointer-events: none;
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .auth-field input:focus + label,
@@ -1500,7 +1500,7 @@ body {
   top: -4px;
   transform: translateY(0);
   font-size: 0.62rem;
-  color: #A8A5B2;
+  color: #6A6875;
   letter-spacing: 0.08em;
 }
 
@@ -1523,7 +1523,7 @@ body {
   font-size: 1rem;
   font-weight: 300;
   letter-spacing: 6px;
-  color: #A8A5B2;
+  color: #787685;
   background: rgba(210, 208, 215, 0.06);
   border: 0.5px solid rgba(210, 208, 215, 0.2);
   border-radius: 8px;
@@ -1545,13 +1545,13 @@ body {
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.3s;
-  color: #C0BEC8;
+  color: #8A8895;
 }
 
 .auth-captcha-refresh:hover {
   background: rgba(210, 208, 215, 0.06);
   transform: rotate(90deg);
-  color: #A8A5B2;
+  color: #6A6875;
 }
 
 /* ── Role toggle ── */
@@ -1571,20 +1571,20 @@ body {
   text-align: center;
   font-size: 0.7rem;
   letter-spacing: 0.05em;
-  color: #B0ADB5;
+  color: #8A8895;
   transition: all 0.3s;
   font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
 }
 
 .auth-role-btn.active {
-  border-color: rgba(160, 158, 175, 0.3);
-  color: #5A5A65;
+  border-color: rgba(140, 138, 155, 0.3);
+  color: #4A4A55;
   background: rgba(210, 208, 215, 0.04);
 }
 
 .auth-role-btn:hover:not(.active) {
   border-color: rgba(210, 208, 215, 0.4);
-  color: #8A8895;
+  color: #6A6875;
 }
 
 /* ── Primary action button ── */
@@ -1604,17 +1604,17 @@ body {
 }
 
 .auth-btn-primary {
-  background: rgba(210, 208, 215, 0.12);
-  color: #6A6A75;
+  background: rgba(180, 178, 190, 0.15);
+  color: #4A4A55;
 }
 
 .auth-btn-primary:hover {
-  background: rgba(210, 208, 215, 0.2);
+  background: rgba(180, 178, 190, 0.25);
   letter-spacing: 0.2em;
 }
 
 .auth-btn-primary:active {
-  background: rgba(210, 208, 215, 0.25);
+  background: rgba(180, 178, 190, 0.3);
   transition-duration: 0.05s;
 }
 
@@ -1657,18 +1657,18 @@ body {
   margin-top: 20px;
   font-size: 0.7rem;
   letter-spacing: 0.05em;
-  color: #C0BEC8;
+  color: #8A8895;
   font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
 }
 
 .auth-link a {
-  color: #A0A0B0;
+  color: #6A6875;
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .auth-link a:hover {
-  color: #6A6A75;
+  color: #4A4A55;
 }
 
 /* ── User badge in header ── */
