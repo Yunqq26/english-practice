@@ -229,7 +229,8 @@ function renderAuthPage(action) {
   document.querySelector('.header').style.display = 'none';
   const nb = document.querySelector('.nav-bar');
   if (nb) nb.style.display = 'none';
-  if (sd2) sd2.style.display = 'none';
+  const sbEl = document.querySelector('.sd');
+  if (sbEl) sbEl.style.display = 'none';
 }
 
 function selectRole(role) {
@@ -1648,10 +1649,11 @@ function init() {
   const nb = document.querySelector('.nav-bar');
   if (nb) nb.style.display = 'none';
   const sd2 = document.querySelector('.sd');
-  if (sd2) sd2.style.display = 'none';
+  const sbEl = document.querySelector('.sd');
+  if (sbEl) sbEl.style.display = 'none';
   if (bp) bp.style.display = 'none';
   if (nb) nb.style.display = 'none';
-  if (sd2) sd2.style.display = 'none';
+  if (sbEl) sbEl.style.display = 'none';
   renderAuthPage('login');
 }
 
