@@ -1,7 +1,6 @@
 // ===== 汉译英 · 批注本风格 =====
 const ZHEN_API = 'https://backend-production-80b8b.up.railway.app/api/trans';
 let zhenState = { mode: null, questions: [], currentIdx: 0, answers: [] };
-let zhenBgParticles = [];
 
 function renderPrompt(p) {
   if (!p) return '';
@@ -10,13 +9,11 @@ function renderPrompt(p) {
 }
 
 /* 粒子效果 */
-function spawnScoreParticles(score, x, y) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const count = score >= 2 ? 5 : 2;
   const isPerfect = score >= 2;
   for (let i = 0; i < count; i++) {
     const el = document.createElement('div');
-    el.className = 'zhen-particle';
     el.textContent = isPerfect ? '✓' : '✗';
     el.style.left = (x + (Math.random()-0.5)*40) + 'px';
     el.style.top = (y + (Math.random()-0.5)*20) + 'px';
@@ -29,12 +26,10 @@ function spawnScoreParticles(score, x, y) {
   }
 }
 
-function spawnStreakParticles(x, y) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const icons = ['📖','✨','🏆','⭐']; // book, sparkle, trophy, star (using simple shapes)
   for (let i = 0; i < 6; i++) {
     const el = document.createElement('div');
-    el.className = 'zhen-streak-particle';
     el.textContent = icons[i % icons.length];
     el.style.left = (x + (Math.random()-0.5)*80) + 'px';
     el.style.top = y + 'px';
@@ -45,10 +40,7 @@ function spawnStreakParticles(x, y) {
   }
 }
 
-function showWiggleError(errorEl) {
   if (!errorEl || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  errorEl.classList.add('zhen-wiggle');
-  setTimeout(() => errorEl.classList.remove('zhen-wiggle'), 800);
 }
 
 /* 页面渲染 */
@@ -170,7 +162,6 @@ function renderZhenResult(q, ans, result) {
   const score=res.score||0;
   const pos=zhenState.currentIdx+1,total=zhenState.questions.length;
   const rect=document.getElementById('zhenGrid')?.getBoundingClientRect();
-  spawnScoreParticles(score, (rect?.left||window.innerWidth/2)+100, (rect?.top||200));
 
   const scoreColor=score>=2?'#2F5D50':(score>=1?'#C9A24B':'#B23A2F');
   const scoreLabel=score>=2?'✓ 满分！':(score>=1?'部分正确':'需订正');
@@ -201,7 +192,6 @@ function renderZhenResult(q, ans, result) {
   // 波浪线标注错误
   if(errors.length){
     setTimeout(()=>{
-      document.querySelectorAll('.ink-error').forEach(el=>showWiggleError(el));
     },200);
   }
 }
@@ -220,7 +210,6 @@ function checkStreakMilestone() {
     const s=d.current_streak||0;
     if(s>0&&s%7===0){
       const rect=document.getElementById('zhenGrid')?.getBoundingClientRect();
-      spawnStreakParticles(rect?.left||window.innerWidth/2, rect?.top||200);
     }
   }).catch(()=>{});
 }

@@ -2283,13 +2283,3 @@ body {
 .zhen-input-area textarea{width:100%;border:none;border-bottom:2px solid #DDD6C8;background:transparent;font-family:'Source Serif 4','Noto Serif',Georgia,serif;font-size:1rem;padding:8px 0;outline:none;resize:vertical;transition:border-color 0.2s}
 .zhen-input-area textarea:focus{border-bottom-color:#2F5D50}
 .zhen-input-area label{display:block;font-size:0.78rem;color:#888;margin-bottom:4px}
-.zhen-wiggle{display:inline;position:relative}
-.zhen-wiggle::after{content:"";position:absolute;bottom:-2px;left:0;right:0;height:4px;background:url("data:image/svg+xml,%3Csvg width='40' height='8' viewBox='0 0 40 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,4 C10,0 20,8 30,4 C35,2 38,4 40,4' stroke='%23B23A2F' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x;background-size:40px 8px;animation:wiggle-draw 0.5s ease-out}
-@keyframes wiggle-draw{from{background-position:-200px 0}to{background-position:0 0}}
-.zhen-particle{position:fixed;pointer-events:none;z-index:1000;animation:particle-fade 1.2s ease-out forwards}
-@keyframes particle-fade{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(-60px) rotate(20deg) scale(0.5)}}
-.zhen-streak-particle{position:fixed;pointer-events:none;z-index:1000;animation:streak-rise 1.5s ease-out forwards}
-@keyframes streak-rise{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-120px) scale(0.3)}}
-.zhen-bg-particle{position:fixed;pointer-events:none;z-index:0;font-family:Georgia,serif;color:#2B2B2B;animation:bg-float 20s linear infinite;user-select:none}
-@keyframes bg-float{0%{opacity:0;transform:translateY(100vh) rotate(-5deg)}10%{opacity:0.06}90%{opacity:0.06}100%{opacity:0;transform:translateY(-10vh) rotate(5deg)}}
-@media(prefers-reduced-motion:reduce){.zhen-particle,.zhen-streak-particle,.zhen-bg-particle{animation:none!important;display:none!important}}
