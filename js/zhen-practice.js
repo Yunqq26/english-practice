@@ -82,7 +82,7 @@ function renderZhenPage() {
     '<div class="zhen-cards">' +
     '<div class="zhen-card" onclick="startZhenDaily()"><div class="zhen-card-icon">📅</div><div class="zhen-card-title">每日五题</div><div class="zhen-card-desc">每天 5 题，覆盖不同语法模块。连续打卡养成习惯。</div><div id="zhenStreak" style="margin-top:8px;font-size:0.78rem;color:#C9A24B"></div></div>' +
     '<div class="zhen-card" onclick="showZhenFreeOptions()"><div class="zhen-card-icon">📚</div><div class="zhen-card-title">自由练习</div><div class="zhen-card-desc">按语法模块筛选，自选题量，针对性薄弱环节训练。</div></div>' +
-    '</div></div></div>';
+    '</div></div><div style="margin-top:12px;text-align:center"><button class="btn btn-ghost" onclick="showZhenImportUI()" style="font-size:0.75rem;color:#888;font-family:Georgia,serif">📥 导入题库</button></div></div>';
   if (currentUser) {
     fetch(ZHEN_API+'/streak/'+encodeURIComponent(currentUser.username)).then(function(r){return r.json()}).then(function(d){
       var el=document.getElementById('zhenStreak');
