@@ -66,9 +66,7 @@ body {
 }
 
 /* Giant ambient background text (login page only) */
-.container::before {
-  display: none;
-  content: 'TRANSLATION';
+.auth-bg-text {
   position: fixed;
   top: 45%;
   left: 50%;
@@ -76,15 +74,12 @@ body {
   font-family: 'Newsreader', Georgia, serif;
   font-size: clamp(5rem, 18vw, 14rem);
   font-weight: 300;
-  color: rgba(200, 200, 215, 0.03);
+  color: rgba(200, 200, 215, 0.035);
   letter-spacing: 0.08em;
   pointer-events: none;
   user-select: none;
-  z-index: -1;
+  z-index: 1;
   white-space: nowrap;
-}
-body.login-page .container::before {
-  display: block;
 }
 
 /* ===== Header ===== */

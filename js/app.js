@@ -141,6 +141,7 @@ function renderAuthPage(action) {
     const bookIcon = "📖";
     return `<div id="three-container" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0"></div>
     <div class="auth-wrapper" style="background:transparent!important">
+      <div class="auth-bg-text">TRANSLATION</div>
       <div class="auth-card">
         <div class="auth-card-header">
           <div class="auth-logo">${isLogin ? penIcon : bookIcon}</div>
