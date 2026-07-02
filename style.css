@@ -1900,22 +1900,21 @@ body {
 
 /* ── User badge in header ── */
 .user-badge {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   padding: 4px 14px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 20px;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.8);
+  background: rgba(180, 170, 155, 0.1);
+  border: 0.5px solid var(--glass-border);
+  color: var(--text-primary);
 }
 
 .user-badge a {
-  color: rgba(255,255,255,0.4) !important;
+  color: var(--text-muted) !important;
+  font-size: 0.72rem;
   transition: color 0.2s;
 }
 
 .user-badge a:hover {
-  color: rgba(255,255,255,0.8) !important;
+  color: var(--text-secondary) !important;
 }
 
 /* ── Admin key field (initially hidden) ── */
