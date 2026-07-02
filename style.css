@@ -74,7 +74,7 @@ body {
   font-family: 'Newsreader', Georgia, serif;
   font-size: clamp(5rem, 18vw, 14rem);
   font-weight: 300;
-  color: rgba(200, 200, 215, 0.035);
+  color: rgba(60, 55, 50, 0.08);
   letter-spacing: 0.08em;
   pointer-events: none;
   user-select: none;
