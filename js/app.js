@@ -341,7 +341,7 @@ function showAppAfterLogin() {
     const badge = document.createElement('span');
     badge.className = 'user-badge';
     badge.innerHTML = `👤 ${currentUser.username} ${currentUser.role === 'admin' ? '🔑' : ''} <a href="#" onclick="handleLogout();return false" style="color:rgba(255,255,255,0.6);font-size:0.75rem;margin-left:6px">退出</a>`;
-    document.querySelector('.header-meta').appendChild(badge);
+    document.querySelector('.header-right').appendChild(badge);
   }
   initAfterLogin();
 }
@@ -1651,11 +1651,14 @@ function init() {
   const mt = document.querySelector('.mode-toggle');
   const bp = document.querySelector('.bottom-panel');
   const nb = document.querySelector('.nav-bar');
+  const hd = document.querySelector('.header');
+  if (hd) hd.style.display = 'none';
   if (nb) nb.style.display = 'none';
   const sd2 = document.querySelector('.sd');
   const sbEl = document.querySelector('.sd');
   if (sbEl) sbEl.style.display = 'none';
   if (bp) bp.style.display = 'none';
+  if (mt) mt.style.display = 'none';
   if (nb) nb.style.display = 'none';
   if (sbEl) sbEl.style.display = 'none';
   renderAuthPage('login');

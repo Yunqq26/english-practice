@@ -1858,6 +1858,62 @@ body {
   .heatmap-cell { width: 12px; height: 12px; }
 }
 
+/* ===== Navigation: Table of Contents ===== */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 0 20px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--rule-light);
+  flex-wrap: wrap;
+}
+.nav-tab {
+  background: none;
+  border: none;
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 6px 2px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--rule);
+  cursor: pointer;
+  transition: color 0.2s;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-tab:hover { color: var(--ink); }
+.nav-tab.active {
+  color: var(--ink);
+  font-weight: 600;
+  position: relative;
+}
+.nav-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--riso);
+}
+.nav-num {
+  font-family: 'Space Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--rule);
+  transition: color 0.2s;
+}
+.nav-tab.active .nav-num { color: var(--riso); }
+.nav-dot {
+  color: var(--rule-light);
+  font-size: 0.7rem;
+  margin: 0 6px;
+}
+.page-section { display: block; }
+.page-section[hidden] { display: none; }
+
 
 /* ===== Essay Bank ===== */
 .essay-import {
