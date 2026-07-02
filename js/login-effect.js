@@ -235,6 +235,7 @@
     scene.add(glow);
 
     startTime = Date.now();
+    animate._phase = 'aggregate';
     animate();
   }
 
@@ -250,60 +251,108 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+  const DISPERSE_DURATION = 2.0;
+
   function animate() {
     animationId = requestAnimationFrame(animate);
     if (!particles || !particleGeo) return;
 
     const pos = particleGeo.attributes.position.array;
     const elapsed = (Date.now() - startTime) / 1000;
-    const progress = Math.min(1, elapsed / AGGREGATE_DURATION);
-    const t = 1 - Math.pow(1 - progress, 3); // ease-out cubic
 
-    // 保存初始随机位置（第一次动画时缓存）
-    if (!animate._initPos) {
-      animate._initPos = new Float32Array(pos);
-    }
-    const initPos = animate._initPos;
+    // ---- Phase 1: 聚合 ----
+    if (animate._phase === 'aggregate') {
+      const progress = Math.min(1, elapsed / AGGREGATE_DURATION);
+      const t = 1 - Math.pow(1 - progress, 3);
 
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const i3 = i * 3;
-      pos[i3] = initPos[i3] + (targetPositions[i3] - initPos[i3]) * t;
-      pos[i3 + 1] = initPos[i3 + 1] + (targetPositions[i3 + 1] - initPos[i3 + 1]) * t;
-      pos[i3 + 2] = initPos[i3 + 2] + (targetPositions[i3 + 2] - initPos[i3 + 2]) * t;
-    }
+      if (!animate._initPos) {
+        animate._initPos = new Float32Array(pos);
+      }
+      const initPos = animate._initPos;
 
-    particleGeo.attributes.position.needsUpdate = true;
-
-    // 聚合完成后：呼吸浮动 + 缓慢旋转
-    if (progress >= 1) {
-      const breathe = Math.sin(elapsed * 0.6) * 0.02;
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const i3 = i * 3;
-        pos[i3] += Math.cos(elapsed * 0.4 + i * 0.005) * 0.002;
-        pos[i3 + 1] += Math.sin(elapsed * 0.5 + i * 0.005) * 0.002 + breathe * 0.3;
+        pos[i3] = initPos[i3] + (targetPositions[i3] - initPos[i3]) * t;
+        pos[i3 + 1] = initPos[i3 + 1] + (targetPositions[i3 + 1] - initPos[i3 + 1]) * t;
+        pos[i3 + 2] = initPos[i3 + 2] + (targetPositions[i3 + 2] - initPos[i3 + 2]) * t;
       }
+
       particleGeo.attributes.position.needsUpdate = true;
 
-      // 鼠标扰动
-      if (Math.abs(mouseX) > 0.1 || Math.abs(mouseY) > 0.1) {
-        for (let i = 0; i < Math.min(300, PARTICLE_COUNT); i++) {
-          const idx = Math.floor(Math.random() * PARTICLE_COUNT) * 3;
-          pos[idx] += mouseX * 0.003;
-          pos[idx + 1] += mouseY * 0.003;
+      if (progress >= 1) {
+        animate._phase = 'disperse';
+        animate._disperseStart = elapsed;
+        animate._disperseTargets = new Float32Array(PARTICLE_COUNT * 3);
+        animate._disperseOffsets = new Float32Array(PARTICLE_COUNT);
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          const i3 = i * 3;
+          animate._disperseTargets[i3] = (Math.random() - 0.5) * 14;
+          animate._disperseTargets[i3 + 1] = (Math.random() - 0.5) * 10;
+          animate._disperseTargets[i3 + 2] = (Math.random() - 0.5) * 4;
+          animate._disperseOffsets[i] = (Math.random() - 0.5) * 0.3;
         }
       }
 
-      particles.rotation.y += 0.003;
-      particles.rotation.x = Math.sin(elapsed * 0.2) * 0.03;
+      if (progress >= 1 && startTime && onComplete) {
+        onComplete();
+        onComplete = null;
+      }
+    }
+
+    // ---- Phase 2: 分散 ----
+    if (animate._phase === 'disperse') {
+      const dElapsed = elapsed - animate._disperseStart;
+      const rawProgress = Math.min(1, dElapsed / DISPERSE_DURATION);
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const i3 = i * 3;
+        const offset = animate._disperseOffsets[i];
+        const p = Math.min(1, Math.max(0, rawProgress + offset));
+        const pt = 1 - Math.pow(1 - p, 2);
+        const speed = pt * 0.08;
+        pos[i3] += (animate._disperseTargets[i3] - pos[i3]) * speed;
+        pos[i3 + 1] += (animate._disperseTargets[i3 + 1] - pos[i3 + 1]) * speed;
+        pos[i3 + 2] += (animate._disperseTargets[i3 + 2] - pos[i3 + 2]) * speed;
+      }
+
+      particleGeo.attributes.position.needsUpdate = true;
+
+      if (rawProgress >= 1) {
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          const i3 = i * 3;
+          pos[i3] = animate._disperseTargets[i3];
+          pos[i3 + 1] = animate._disperseTargets[i3 + 1];
+          pos[i3 + 2] = animate._disperseTargets[i3 + 2];
+        }
+        particleGeo.attributes.position.needsUpdate = true;
+        animate._phase = 'float';
+      }
+    }
+
+    // ---- Phase 3: 分散后缓慢浮动 ----
+    if (animate._phase === 'float') {
+      const floatElapsed = elapsed - animate._disperseStart - DISPERSE_DURATION;
+      const breathe = Math.sin(floatElapsed * 0.5) * 0.015;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const i3 = i * 3;
+        pos[i3] += Math.cos(floatElapsed * 0.35 + i * 0.008) * 0.0015;
+        pos[i3 + 1] += Math.sin(floatElapsed * 0.4 + i * 0.008) * 0.0015 + breathe * 0.25;
+      }
+      particleGeo.attributes.position.needsUpdate = true;
+
+      if (Math.abs(mouseX) > 0.1 || Math.abs(mouseY) > 0.1) {
+        for (let i = 0; i < Math.min(300, PARTICLE_COUNT); i++) {
+          const idx = Math.floor(Math.random() * PARTICLE_COUNT) * 3;
+          pos[idx] += mouseX * 0.002;
+          pos[idx + 1] += mouseY * 0.002;
+        }
+      }
+
+      particles.rotation.y += 0.001;
+      particles.rotation.x = Math.sin(floatElapsed * 0.15) * 0.02;
     }
 
     renderer.render(scene, camera);
-
-    // 聚合完成回调
-    if (progress >= 1 && startTime && onComplete) {
-      onComplete();
-      onComplete = null;
-    }
   }
 
   function cleanup() {
@@ -317,7 +366,10 @@
     }
     if (particleGeo) particleGeo.dispose();
     scene = camera = renderer = particles = particleGeo = null;
+    animate._phase = 'aggregate';
     animate._initPos = null;
+    animate._disperseTargets = null;
+    animate._disperseOffsets = null;
     targetPositions = [];
     targetColors = [];
   }
