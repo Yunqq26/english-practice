@@ -316,7 +316,7 @@ function showAppAfterLogin() {
   if (window.ShinchanParticles && window.ShinchanParticles.cleanup) {
     window.ShinchanParticles.cleanup();
   }
-  document.body.style.background = '#f0f2f5';
+  document.body.style.background = '#F3EFE3';
   document.body.style.padding = '20px';
   document.body.style.margin = '';
   document.documentElement.style.margin = '';
