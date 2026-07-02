@@ -1982,8 +1982,23 @@ body {
   font-size: 0.6rem;
   margin: 0 5px;
 }
-.page-section { display: block; }
+.page-section { display: block; position: relative; }
 .page-section[hidden] { display: none; }
+
+/* Content background bar — frosted glass under main card area */
+.content-bg-bar {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(248, 244, 235, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 0.5px solid rgba(200, 190, 175, 0.06);
+  pointer-events: none;
+  z-index: 0;
+}
 
 
 /* ===== Essay Bank ===== */
