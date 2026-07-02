@@ -1992,11 +1992,13 @@ body {
   left: -16px;
   right: -16px;
   bottom: -20px;
-  background: rgba(245, 240, 230, 0.5);
+  background: rgba(248, 244, 235, 0.25);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 0.5px solid rgba(200, 190, 175, 0.1);
-  box-shadow: 0 4px 40px rgba(180, 170, 155, 0.08);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 8px 60px rgba(180, 170, 155, 0.1),
+    0 0 40px rgba(255, 255, 255, 0.06);
   pointer-events: none;
   z-index: -1;
 }
