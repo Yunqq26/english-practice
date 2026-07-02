@@ -65,8 +65,9 @@ body {
   z-index: 0;
 }
 
-/* Giant ambient background text */
+/* Giant ambient background text (login page only) */
 .container::before {
+  display: none;
   content: 'TRANSLATION';
   position: fixed;
   top: 45%;
@@ -81,6 +82,9 @@ body {
   user-select: none;
   z-index: -1;
   white-space: nowrap;
+}
+body.login-page .container::before {
+  display: block;
 }
 
 /* ===== Header ===== */
