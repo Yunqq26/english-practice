@@ -59,12 +59,27 @@ function initTables() {
   saveDb();
 }
 
+let _savePending = false;
+let _saveTimer = null;
 function saveDb() {
-  console.log("[DB] 保存数据库到:", DB_PATH);
-  if (db) {
-    const data = db.export();
-    const buffer = Buffer.from(data);
-    fs.writeFileSync(DB_PATH, buffer);
+  // 防抖：1秒内的多次写入合并为一次
+  if (_saveTimer) clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => {
+    _saveTimer = null;
+    _savePending = false;
+    try {
+      console.log("[DB] 保存数据库到:", DB_PATH);
+      if (db) {
+        const data = db.export();
+        const buffer = Buffer.from(data);
+        fs.writeFileSync(DB_PATH, buffer);
+      }
+    } catch(e) {
+      console.error("[DB] 写入失败:", e.message);
+    }
+  }, 1000);
+  if (!_savePending) {
+    _savePending = true;
   }
 }
 

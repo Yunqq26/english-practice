@@ -20,6 +20,13 @@ app.use('/api/trans', translationRoutes);
 // 健康检查
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
+process.on('uncaughtException', (err) => {
+  console.error('[FATAL]', err.message);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('[FATAL]', reason);
+});
+
 app.listen(PORT, () => {
   console.log(`✅ 后端 API 运行在 http://localhost:${PORT}`);
   console.log(`   排行: GET /api/public/leaderboard`);
