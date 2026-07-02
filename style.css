@@ -6,15 +6,15 @@
 }
 
 :root {
-  --bg-surface: rgba(250, 247, 242, 0.85);
-  --bg-card: rgba(255, 255, 255, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-border-hover: rgba(200, 200, 215, 0.4);
-  --text-primary: #2C2C35;
-  --text-secondary: #8A8895;
-  --text-muted: #B0ADB8;
-  --gold: #7A8895;
-  --gold-dim: rgba(180, 190, 210, 0.15);
+  --bg-surface: rgba(248, 244, 235, 0.9);
+  --bg-card: rgba(248, 244, 235, 0.65);
+  --glass-border: rgba(200, 190, 175, 0.2);
+  --glass-border-hover: rgba(180, 170, 155, 0.35);
+  --text-primary: #2C2823;
+  --text-secondary: #6B655C;
+  --text-muted: #9A938A;
+  --gold: #6B655C;
+  --gold-dim: rgba(180, 170, 155, 0.12);
   /* Legacy aliases */
   --paper: var(--bg-card);
   --ink: var(--text-primary);
@@ -34,8 +34,8 @@ body::before {
   z-index: 9999;
   opacity: 0.15;
   background-image:
-    linear-gradient(90deg, rgba(180, 190, 210, 0.15) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(180, 190, 210, 0.15) 1px, transparent 1px);
+    linear-gradient(90deg, rgba(180, 170, 155, 0.1) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(180, 170, 155, 0.1) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 70%);
   -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 70%);
@@ -44,12 +44,11 @@ body::before {
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: linear-gradient(
-    145deg,
+    160deg,
     #F5F0E8 0%,
-    #F0EDE8 30%,
-    #ECE9EC 55%,
-    #E4E5EA 80%,
-    #DEE3EA 100%
+    #F2EBE0 30%,
+    #EEE8DA 60%,
+    #EBE4D5 100%
   );
   color: var(--text-primary);
   line-height: 1.7;
@@ -86,7 +85,7 @@ body {
 
 /* ===== Header ===== */
 .header {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(248, 244, 235, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 18px 24px;
@@ -97,13 +96,13 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  box-shadow: 0 2px 20px rgba(200, 200, 215, 0.06);
+  box-shadow: 0 2px 20px rgba(180, 170, 155, 0.06);
 }
 
 .journal-title {
   font-family: 'Newsreader', Georgia, serif;
-  font-size: 1.2rem;
-  font-weight: 400;
+  font-size: 1.3rem;
+  font-weight: 600;
   color: var(--text-primary);
   line-height: 1.1;
   letter-spacing: -0.3px;
@@ -112,7 +111,7 @@ body {
 .journal-subtitle {
   font-family: 'Inter', sans-serif;
   font-size: 0.6rem;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--text-muted);
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -173,7 +172,7 @@ body {
 
 /* ===== Main Card ===== */
 .main-card {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(248, 244, 235, 0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 0.5px solid var(--glass-border);
@@ -181,7 +180,7 @@ body {
   margin-bottom: 24px;
   position: relative;
   z-index: 1;
-  box-shadow: 0 4px 30px rgba(200, 200, 215, 0.06);
+  box-shadow: 0 4px 30px rgba(180, 170, 155, 0.06);
 }
 
 .question-section {
@@ -276,17 +275,17 @@ body {
 
 .btn {
   padding: 10px 20px;
-  border: 0.5px solid rgba(200, 200, 215, 0.2);
+  border: 0.5px solid rgba(180, 170, 155, 0.15);
   border-radius: 10px;
-  font-size: 0.78rem;
-  font-weight: 450;
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
   font-family: 'Inter', sans-serif;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(248, 244, 235, 0.4);
   color: var(--text-secondary);
   letter-spacing: 0.03em;
-  box-shadow: 0 1px 6px rgba(200, 200, 215, 0.04);
+  box-shadow: 0 1px 6px rgba(180, 170, 155, 0.04);
 }
 
 .btn:active {
@@ -294,15 +293,16 @@ body {
 }
 
 .btn-primary {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(248, 244, 235, 0.6);
   color: var(--text-primary);
-  border-color: rgba(200, 200, 215, 0.3);
+  border-color: rgba(180, 170, 155, 0.2);
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(200, 200, 215, 0.4);
-  box-shadow: 0 2px 12px rgba(200, 200, 215, 0.08);
+  background: rgba(248, 244, 235, 0.85);
+  border-color: rgba(180, 170, 155, 0.3);
+  box-shadow: 0 2px 12px rgba(180, 170, 155, 0.08);
 }
 
 .btn-outline {
@@ -1945,20 +1945,20 @@ body {
   appearance: none;
   padding: 6px 2px;
   font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: color 0.3s;
   letter-spacing: 0.04em;
   display: flex;
   align-items: center;
   gap: 4px;
-  font-weight: 400;
+  font-weight: 500;
 }
-.nav-tab:hover { color: var(--text-secondary); }
+.nav-tab:hover { color: var(--text-primary); }
 .nav-tab.active {
   color: var(--text-primary);
-  font-weight: 500;
+  font-weight: 600;
   position: relative;
 }
 .nav-tab.active::after {
@@ -1968,17 +1968,17 @@ body {
   left: 0;
   right: 0;
   height: 1.5px;
-  background: rgba(180, 190, 210, 0.3);
-  border-radius: 2px;
+  background: rgba(160, 150, 135, 0.25);
 }
 .nav-num {
   font-family: 'Space Mono', 'Courier New', monospace;
   font-size: 0.6rem;
   color: var(--text-muted);
+  font-weight: 400;
 }
-.nav-tab.active .nav-num { color: var(--text-secondary); }
+.nav-tab.active .nav-num { color: var(--text-secondary); font-weight: 600; }
 .nav-dot {
-  color: rgba(200, 200, 215, 0.15);
+  color: rgba(180, 170, 155, 0.15);
   font-size: 0.6rem;
   margin: 0 5px;
 }
@@ -2355,12 +2355,12 @@ body {
   }
 }
 .sd-card {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(248, 244, 235, 0.5);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 0.5px solid var(--glass-border);
   padding: 16px;
-  box-shadow: 0 4px 24px rgba(200, 200, 215, 0.06);
+  box-shadow: 0 4px 24px rgba(180, 170, 155, 0.06);
 }
 .sd-title {
   font-family: 'Inter', sans-serif;
